@@ -2,7 +2,7 @@
 pybase64
 configparser
 datetime
-dateutil
+python-dateutil
 firebase_admin
 flask
 imgurpython
