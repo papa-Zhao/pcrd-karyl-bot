@@ -11,5 +11,5 @@ numpy
 opencv-python
 pandas
 pygsheets
-random
+random2
 requests
