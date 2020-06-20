@@ -158,7 +158,9 @@ def handle_message(event):
     # user_id = event.source.user_id
     # line_bot_api.link_rich_menu_to_user(user_id, 'richmenu-36d5000e0e2bd620a04a7ec9facfcf1d')
 
-    reply_msg = ''
+    reply_msg = 'papago'
+    send_msg = TextSendMessage(text= reply_msg )
+    line_bot_api.reply_message(event.reply_token, send_msg)
 
     msg_source = event.source.type
 
@@ -174,5 +176,5 @@ def handle_message(event):
 
 if __name__ == "__main__":
     # app.debug = True
-    # port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0')
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
