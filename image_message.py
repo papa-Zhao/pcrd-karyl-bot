@@ -3,8 +3,8 @@ from linebot.models import (
 )
 
 import configparser
-import random
-import pybase64
+import random2 as random
+import pybase64 as base64
 import cv2
 import numpy as np
 
@@ -29,10 +29,10 @@ def get_image():
 def content_to_image(content):
 
     # Convert to base64 encoding
-    img_as_text = pybase64.b64encode(content)
+    img_as_text = base64.b64encode(content)
 
     # Convert back to binary
-    img_original = pybase64.b64decode(img_as_text)
+    img_original = base64.b64decode(img_as_text)
     img_as_np = np.frombuffer(img_original, dtype=np.uint8)
     img = cv2.imdecode(img_as_np, flags=1)
 
