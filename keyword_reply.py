@@ -1,4 +1,4 @@
-import random
+import random2 as random
 
 def get_key_msg(str, name):
 

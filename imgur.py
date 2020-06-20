@@ -1,6 +1,6 @@
 import configparser
 from imgurpython import ImgurClient
-import random
+import random2 as random
 import cv2
 
 config = configparser.ConfigParser()
