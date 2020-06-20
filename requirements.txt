@@ -12,3 +12,4 @@ pandas
 pygsheets
 random2
 requests
+setuptools==40.3.0

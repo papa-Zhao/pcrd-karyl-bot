@@ -19,6 +19,7 @@ from linebot.models import (
 )
 
 import configparser
+import os
 
 from cloud_firestore import *
 from text_message import *
