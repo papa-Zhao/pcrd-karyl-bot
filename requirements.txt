@@ -1,2 +1,14 @@
-line-bot-sdk
+base64
+configparser
+datetime
+dateutil
+firebase_admin
 flask
+imgurpython
+line-bot-sdk
+numpy
+opencv-python
+pandas
+pygsheets
+random
+requests
