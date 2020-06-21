@@ -11,7 +11,7 @@ from clan_sheet import *
 
 config = configparser.ConfigParser()
 config.read('config.ini')
-
+# config.read('test_config.ini')
 cred = credentials.Certificate(config.get('cloud-firestore', 'firebase_key')) # Service Account Key Address
 firebase_admin.initialize_app(cred, {
     'databaseURL' : config.get('cloud-firestore', 'url') # Firebase Url

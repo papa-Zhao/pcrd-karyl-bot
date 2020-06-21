@@ -30,7 +30,7 @@ character = {100:'似似花',101:'日和',102:'茉莉',103:'真步',104:'香織'
 # Input: Cropped Character Image
 # Output: Character ID
 def get_id(img):
-    charas_all = ['./icon/charas_gray.png', './icon/charas_a_gray.png', './icon/charas6x_gray.png']
+    charas_all = ['./icon/charas_a_gray.png', './icon/charas_gray.png', './icon/charas6x_gray.png']
     
     min = 1e10
     loc = None
@@ -47,7 +47,10 @@ def get_id(img):
 
     row = str(int(loc[1]/60))
     column = str(int(loc[0]/60))
-    index = str(index+1)
+    if index == 0 or index == 2:
+        index = str(index+1)
+    else:
+        index = str(index)
     id = int(index + row + column)
     return id
 
@@ -126,6 +129,7 @@ def upload_battle_processing(img):
     for i in range(5):
         crop_img = img[y:y+h, x:x+w]
         team.append(get_id(crop_img))
+        # cv2.imwrite('./test/our_' + str(i) +'.jpg', crop_img)
         x = x+w+7
 
     # Enemy team Character
@@ -134,9 +138,10 @@ def upload_battle_processing(img):
     for i in range(5):
         crop_img = img[y:y+h, x:x+w]
         enemy.append(get_id(crop_img))
+        # cv2.imwrite('./test/enemy_' + str(i) +'.jpg', crop_img)
         x = x+w+7
         
-    return team,enemy,result
+    return team, enemy, result
 
 
 # Image Preprocessing
@@ -189,9 +194,10 @@ def confirm_record_success(our, enemy, mode):
     try:
         if mode == 'upload':
             for i in range(len(our)):
-                character[our[i]]
+                print(character[our[i]])
+
         for i in range(len(enemy)):
-            character[enemy[i]]
+            print(character[enemy[i]])
         # print(True)
         return True
     except KeyError:
@@ -216,7 +222,7 @@ def create_record_img(record, good, bad):
                 division = 100
                 
             index = int(icon/division)-1
-            print('index=%d' %(index))
+            # print('index=%d' %(index))
             icon %= division
             division = int(division/10)
             pic_row = int(icon/division)*62

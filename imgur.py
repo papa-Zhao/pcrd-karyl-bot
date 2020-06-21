@@ -5,6 +5,7 @@ import cv2
 
 config = configparser.ConfigParser()
 config.read('config.ini')
+# config.read('test_config.ini')
 client_id = config.get('imgur', 'client_id')
 client_secret = config.get('imgur', 'client_secret')
 access_token = config.get('imgur', 'access_token')

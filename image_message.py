@@ -16,6 +16,7 @@ from cloud_firestore import *
 
 config = configparser.ConfigParser()
 config.read('config.ini')
+# config.read('test_config.ini')
 # Channel Access Token
 line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
@@ -56,9 +57,11 @@ def handle_user_image_message(event):
     if mode == 'not record':
         return reply_msg
 
-    # print('圖片mode = ', mode)
+    print('圖片mode = ', mode)
     if mode == 'upload':
         our, enemy, win = upload_battle_processing(pre_img)
+        print('our = %s' %(our))
+        print('enemy = %s' %(enemy))
         status = confirm_record_success(our, enemy, mode)
         if status == True:
             find_status = find_arena_record(our, enemy, win, user_id)

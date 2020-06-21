@@ -16,6 +16,7 @@ from imgur import *
 
 config = configparser.ConfigParser()
 config.read('config.ini')
+# config.read('test_config.ini')
 # Channel Access Token
 line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
@@ -67,10 +68,10 @@ def handle_group_text_message(event):
     
     msg = strQ2B(msg)
 
-    if '!' in msg:
+    if '!' == msg[0]:
         msg = msg.replace('!', '')
         reply_msg = clan_group_find_str_processing(group_id, user_id, user_name, msg)
-    elif '#' in msg:
+    elif '#' == msg[0]:
         group_member = get_group_member(group_id)
         try:
             group_member[user_name]

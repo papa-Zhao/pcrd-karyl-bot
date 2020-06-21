@@ -32,6 +32,7 @@ app = Flask(__name__)
 
 config = configparser.ConfigParser()
 config.read('config.ini')
+# config.read('test_config.ini')
 # Channel Access Token
 line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
@@ -173,6 +174,7 @@ def handle_message(event):
 
 
 if __name__ == "__main__":
-    # app.debug = True
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    # port = int(os.environ.get('PORT', 5000))
+    # app.run(host='0.0.0.0', port=port)
+    app.debug = True
+    app.run()
