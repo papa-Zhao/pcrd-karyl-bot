@@ -1,3 +1,6 @@
 test/
 venv/
 
+*.ini
+key/pcrd-277413-firebase-key.json
+key/google_key.json
