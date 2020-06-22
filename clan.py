@@ -210,6 +210,15 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
     if msg == '戰隊戰加入':
         reply_msg = update_line_group(group_id, user_id, user_name)
 
+    if msg == '戰隊成員':
+        group_member = get_group_member(group_id)
+        num = len(group_member.keys())
+        reply_msg = '目前戰隊成員有' + str(num) + '位'
+        reply_msg += '\n名單: '
+        for name in group_member.keys():
+            reply_msg += name + ', '
+            # print(name)
+
     if msg == '指令':
         reply_msg = '指令查詢網址:https://docs.google.com/document/d/1Ba6H2ppgacKxicyB7y9xEaYRktuAuIPyI0mbW5wutsA/edit#'
 
