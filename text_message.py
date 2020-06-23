@@ -13,6 +13,10 @@ from cloud_firestore import *
 from keyword_reply import *
 from imgur import *
 
+import sys
+sys.path.append('./bin')
+from scrape_sonet import *
+
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -45,7 +49,9 @@ def handle_user_text_message(event):
     user_id = event.source.user_id
 
     msg = strQ2B(msg)
-    
+
+    if msg == '!今天消息':
+        reply_msg = scrape_pcrd_sonet()
     if '#' == msg:
         msg = msg.replace('#', '')
         reply_msg = clan_user_str_processing(user_id, msg)
@@ -75,7 +81,7 @@ def handle_group_text_message(event):
         group_member = get_group_member(group_id)
         try:
             group_member[user_name]
-            if clan_period():
+            if clan_period() == False:
                 msg = msg.replace('#', '')
                 reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
             else:
