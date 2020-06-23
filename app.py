@@ -80,8 +80,6 @@ def handle_follow(event):
 def handle_follow(event):
 
     user_id = event.source.user_id
-    # profile = line_bot_api.get_profile(user_id)
-    # name = profile.display_name
     print('使用者已刪除好友, user_id: %s' % (user_id))
     delete_line_user(user_id)
 

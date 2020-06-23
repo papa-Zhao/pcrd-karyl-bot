@@ -14,7 +14,7 @@ from app import *
 def clan_time_start():
 
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
-    start = datetime.strptime("2020-06-18 05:00:00", ISOTIMEFORMAT)
+    start = datetime.strptime("2020-06-24 05:00:00", ISOTIMEFORMAT)
 
     return start
 
@@ -154,16 +154,6 @@ def clan_user_str_processing(user_id, msg):
     sh =initial_worksheet()
     profile = line_bot_api.get_profile(user_id)
     name = profile.display_name
-
-    ########## Add member ##########
-    # ws = sh.worksheet_by_title('成員')
-    # name_index = ws.find(name)
-    # if name_index:
-    #     name_index = name_index[0]
-    # else:
-    #     index = ws.get_col(1).index('')
-    #     ws.update_values((index+1 , 1), [[name, user_id]])
-
 
     if '回報刀表' in msg:
         reply_msg = set_atk_list(sh, name, msg)
@@ -475,16 +465,6 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
 
 def multicast_user_id(sh, group_id, name_list, boss, status):
 
-    # user_id_tree = []
-    # ws = sh.worksheet_by_title('成員')
-    # for index in range(len(name_list)):
-    #     name_index = ws.find(name_list[index])
-    #     if name_index:
-    #         name_index = name_index[0]
-    #         user_id = name_index.label.replace('A', 'B')
-    #         user_id_tree.append(ws.get_value(user_id))
-    # print('user_id_tree = ', user_id_tree)
-
     user_id_tree = []
     group_member = get_group_member(group_id)
     for index in range(len(name_list)):
@@ -544,7 +524,7 @@ def update_boss_status(sh, cycle, boss, complete):
 
     ########## Updated Boss Blood ##########
 
-    boss_blood_list = [ [600, 600, 600], [800, 800, 900], [1000, 1000, 1300], [1200, 1200, 1500], [1500, 1500, 2000]]
+    boss_blood_list = [ [600, 600, 700], [800, 800, 900], [1000, 1000, 1300], [1200, 1200, 1500], [1500, 1500, 2000]]
     boss_cycle_list = [1, 4, 11]
     stages_index = 0
 
