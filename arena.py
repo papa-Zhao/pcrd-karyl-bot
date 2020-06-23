@@ -1,7 +1,5 @@
 import numpy as np
 import cv2
-import datetime
-
 
 # Character Image
 
@@ -194,10 +192,12 @@ def confirm_record_success(our, enemy, mode):
     try:
         if mode == 'upload':
             for i in range(len(our)):
-                print(character[our[i]])
+                character[our[i]]
+                # print(character[our[i]])
 
         for i in range(len(enemy)):
-            print(character[enemy[i]])
+            character[enemy[i]]
+            # print(character[enemy[i]])
         # print(True)
         return True
     except KeyError:

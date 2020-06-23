@@ -1,4 +1,4 @@
-pybase64
+bs4
 configparser
 datetime
 python-dateutil
@@ -9,6 +9,7 @@ line-bot-sdk
 numpy
 opencv-python
 pandas
+pybase64
 pygsheets
 random2
 requests
