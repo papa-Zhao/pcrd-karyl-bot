@@ -11,6 +11,11 @@ from linebot import (
 
 from app import *
 
+import sys
+sys.path.append('./bin')
+from scrape_sonet import *
+
+
 def clan_time_start():
 
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
@@ -180,6 +185,9 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
 
     sh =initial_worksheet()
     ws = sh.worksheet_by_title('報刀')
+
+    if msg == '今天消息':
+        reply_msg = scrape_pcrd_sonet()
 
     if msg == '報名查詢':
         try:

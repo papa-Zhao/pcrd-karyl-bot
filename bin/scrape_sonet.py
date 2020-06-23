@@ -2,13 +2,21 @@ from linebot import (
     LineBotApi, WebhookHandler
 )
 
+from linebot.models import (
+    MessageEvent, TextMessage, TextSendMessage, ImageSendMessage
+)
+
 from datetime import datetime
 from bs4 import BeautifulSoup
 import requests
 import configparser
 
+
+import sys
+sys.path.append('../')
+
 config = configparser.ConfigParser()
-config.read('../config.ini')
+config.read('config.ini')
 # config.read('test_config.ini')
 # Channel Access Token
 line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
@@ -60,4 +68,5 @@ def scrape_pcrd_sonet():
 
 if __name__ == "__main__":
     msg = scrape_pcrd_sonet()
-    line_bot_api.push_message('U13fc4e6b8fa1ddbba5dd2acdc5489e32', TextSendMessage(text=msg))
+    # U13fc4e6b8fa1ddbba5dd2acdc5489e32
+    line_bot_api.push_message('C423cd7dee7263b3a2db0e06ae06d095e', TextSendMessage(text=msg))
