@@ -68,5 +68,4 @@ def scrape_pcrd_sonet():
 
 if __name__ == "__main__":
     msg = scrape_pcrd_sonet()
-    member_group = ['C1f08f2cc641df24f803b133691e46e92']
-    line_bot_api.multicast(member_group, TextSendMessage(text=msg))
+    line_bot_api.push_message('C1f08f2cc641df24f803b133691e46e92', TextSendMessage(text=msg))
