@@ -32,7 +32,7 @@ def clan_time_end():
 
 
 def clan_period():
-    
+    return True
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
     
     clan_start = clan_time_start()

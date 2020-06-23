@@ -81,7 +81,7 @@ def handle_group_text_message(event):
         group_member = get_group_member(group_id)
         try:
             group_member[user_name]
-            if clan_period() == False:
+            if clan_period():
                 msg = msg.replace('#', '')
                 reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
             else:
