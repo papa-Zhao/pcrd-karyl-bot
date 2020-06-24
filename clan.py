@@ -758,7 +758,7 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
 
         ws = sh.worksheet_by_title('出刀次數')
         name_index = ws.find(name, matchCase=True)
-
+        print(len(name_index))
         if name_index:
             for i in range(len(name_index)):
                 if name == name_index[i].value:
@@ -768,6 +768,8 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
             index = ws.get_col(1).index('')
             row = index+1
             ws.update_value((row, 1), name)
+
+        print(row)
 
         if '完整' in complete:
             ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
