@@ -182,7 +182,7 @@ def get_clan_atk_times(sh, status):
 
     reply_msg = ''
     if status == '完整刀':
-        info = ws.get_col(day)
+        info = ws.get_col(day+1)
         reply_msg = '完整刀狀態(已出幾刀):'
     else:
         col = ws.find('補償刀', matchCase=True)[0].col
