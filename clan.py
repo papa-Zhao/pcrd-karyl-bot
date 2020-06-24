@@ -416,7 +416,7 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
     if '代刀' in msg:
         info = msg.split(' ')
         if len(info) == 4:
-            user_name = info[1]
+            user_name = info[1].replace('@', '')
             msg = msg.replace(info[0] + ' ' + info[1] + ' ','')
 
     if '設定周目' in msg:
