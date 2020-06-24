@@ -660,7 +660,9 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
             row = ws.rows
             # print('row=', row)
             ISOTIMEFORMAT = "%H:%M"
-            now = datetime.now().strftime(ISOTIMEFORMAT) + timedelta(hours=8)
+            now = (datetime.now() + timedelta(hours=8))
+            now = now.strftime(ISOTIMEFORMAT)
+            # now = datetime.now().strftime(ISOTIMEFORMAT) + timedelta(hours=8)
             # print(name, now, cycle, boss, damage, complete, '等待')
             sign_up = [name, now, cycle, boss, damage, complete, '等待']
             ws.update_row(row, values=sign_up)
