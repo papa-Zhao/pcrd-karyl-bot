@@ -692,8 +692,11 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
 
         reply_msg = '更新狀態失敗，請再輸入一次！'
         if cell_id:
-            cell_id = cell_id[0]
-            info = ws.get_row(cell_id.row)
+            for i in range(len(cell_id)):
+                if name == cell_id[i].value:
+                    cell_id = cell_id[i]
+            row = cell_id.row
+            info = ws.get_row(row)
             cycle = ws.get_value('B1')
             boss = ws.get_value('B2')
             if cycle != info[2]:
@@ -718,9 +721,13 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
 
         ws = sh.worksheet_by_title('報刀')
         name_index = ws.find(name, matchCase=True)
+
         if name_index:
-            name_index = name_index[0]
-            info = ws.get_row(name_index.row)
+            for i in range(len(name_index)):
+                if name == name_index[i].value:
+                    name_index = name_index[i]
+            row = name_index.row
+            info = ws.get_row(row)
             cycle = info[2]
             complete = info[5]
         else:
@@ -809,7 +816,9 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
             name_index = ws.find(name, matchCase=True)
 
             if name_index:
-                name_index = name_index[0]
+                for i in range(len(name_index)):
+                    if name == name_index[i].value:
+                        name_index = name_index[i]
                 row = name_index.row
             else:
                 index = ws.get_col(1).index('')
