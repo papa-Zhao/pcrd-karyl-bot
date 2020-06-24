@@ -406,7 +406,7 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
     
     permission = search_user_permission(user_id)
     
-    admin_instruction = ['代刀', '設定周目', '設定boss', '設定BOSS', '設定完整刀', '設定補償刀', '出刀刀表重置', '報名刀表重置']
+    admin_instruction = ['代刀', '代報名', '設定周目', '設定boss', '設定BOSS', '設定完整刀', '設定補償刀', '出刀刀表重置', '報名刀表重置']
     if permission == False:
         for i in range(len(admin_instruction)):
             if admin_instruction[i] in msg:
@@ -418,6 +418,18 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
         if len(info) == 4:
             user_name = info[1].replace('@', '')
             msg = msg.replace(info[0] + ' ' + info[1] + ' ','')
+        else:
+            reply_msg = '輸入格式錯誤，代刀失敗。'
+            return reply_msg
+
+    if '代報名' in msg:
+        info = msg.split(' ')
+        if len(info) > 4:
+            user_name = info[1].replace('@', '')
+            msg = msg.replace(info[0] + ' ' + info[1] + ' ','')
+        else:
+            reply_msg = '輸入格式錯誤，代報名失敗。'
+            return reply_msg
 
     if '設定周目' in msg:
         ws = sh.worksheet_by_title('報刀')
