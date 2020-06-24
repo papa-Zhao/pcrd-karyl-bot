@@ -19,14 +19,14 @@ from scrape_sonet import *
 def clan_time_start():
 
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
-    start = datetime.strptime("2020-06-24 13:00:00", ISOTIMEFORMAT)
+    start = datetime.strptime("2020-06-23 21:00:00", ISOTIMEFORMAT)
 
     return start
 
 def clan_time_end():
 
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
-    end = datetime.strptime("2020-06-30 08:00:00", ISOTIMEFORMAT)
+    end = datetime.strptime("2020-06-29 16:00:00", ISOTIMEFORMAT)
 
     return end
 
