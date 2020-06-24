@@ -558,7 +558,9 @@ def confirm_atk_info(sh, name, complete):
     name_index = ws.find(name, matchCase=True)
     
     if name_index:
-        name_index = name_index[0]
+        for i in range(len(name_index)):
+            if name == name_index[i].value:
+                name_index = name_index[i]
         row = name_index.row
     else:
         index = ws.get_col(1).index('')
@@ -760,7 +762,7 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
 
         ws = sh.worksheet_by_title('出刀次數')
         name_index = ws.find(name, matchCase=True)
-        print(len(name_index))
+        # print(len(name_index))
         if name_index:
             for i in range(len(name_index)):
                 if name == name_index[i].value:
@@ -771,7 +773,7 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
             row = index+1
             ws.update_value((row, 1), name)
 
-        print(row)
+        # print(row)
 
         if '完整' in complete:
             ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
