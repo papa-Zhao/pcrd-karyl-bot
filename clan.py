@@ -760,7 +760,9 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
         name_index = ws.find(name, matchCase=True)
 
         if name_index:
-            name_index = name_index[0]
+            for i in range(len(name_index)):
+                if name == name_index[i].value:
+                    name_index = name_index[i]
             row = name_index.row
         else:
             index = ws.get_col(1).index('')
