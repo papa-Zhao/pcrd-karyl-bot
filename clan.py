@@ -582,11 +582,11 @@ def confirm_atk_info(sh, name, complete):
     clan_start = clan_time_start()
     now = datetime.now().strftime(ISOTIMEFORMAT)
     now = datetime.strptime(now, ISOTIMEFORMAT)
-    day = (now-clan_start).days + 1
+    day = (now-clan_start).days + 1 + 1
     val = ws.get_value((row, day+1))
-    
-    print('day = %d' %(day))
-    print('val = %d' %(val))
+
+    print('day = %d' %(int(day)))
+    print('val = %d' %(int(val)))
     print('remain_val = %d' %(remain_val))
 
     if int(val) > 2 and int(remain_val) == 0:
