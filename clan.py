@@ -585,10 +585,6 @@ def confirm_atk_info(sh, name, complete):
     day = (now-clan_start).days + 1 + 1
     val = ws.get_value((row, day+1))
 
-    print('day = %d' %(int(day)))
-    print('val = %d' %(int(val)))
-    print('remain_val = %d' %(remain_val))
-
     if int(val) > 2 and int(remain_val) == 0:
         reply_msg = '，你今日已經出完三刀，報名失敗！'
         return reply_msg
