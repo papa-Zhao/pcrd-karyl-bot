@@ -822,11 +822,11 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
             update_boss_status(sh, cycle, boss, complete)
             update_tree_status(sh, group_id, cycle, boss, status)
 
-            next_cycle = cycle
+            next_cycle = int(cycle)
             boss_index = boss_list.index(boss)
             if boss_index == 4:
-                next_cycle = cycle+1
-            boss_index = (boss_index+1) % 5
+                next_cycle = int(cycle)+1
+            boss_index = (int(boss_index)+1) % 5
             next_boss = boss_list[boss_index]
 
             call_next_boss_attacker(sh, group_id, next_cycle, next_boss)
