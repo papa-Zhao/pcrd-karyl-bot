@@ -13,7 +13,7 @@ def get_key_msg(str, name):
             '這就是你和我的真正的力量呢...! \n只要和' + name + '再一起，感覺就不會輸！',
             ]
 
-    num = random.randint(0,len(msg))
+    num = random.randint(0,len(msg)-1)
 
     return msg[num]
 
