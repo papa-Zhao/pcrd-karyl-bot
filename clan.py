@@ -221,7 +221,6 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
 
     if msg == '報名查詢':
         try:
-            
             ws = sh.worksheet_by_title('報刀')
             index = ws.find(user_name, matchCase=True)[0].row
             user_info = ws.get_row(index)
@@ -667,6 +666,9 @@ def get_clan_sign_up_info(sh, text):
         cycle = int(ws.get_value((1, 2)))
 
     text = text.split(' ')
+
+    if len(text) < 2:
+        return msg, cycle, boss, complete, damage
 
     boss_list = ['一王', '二王', '三王', '四王', '五王']
     if text[0] in boss_list:
