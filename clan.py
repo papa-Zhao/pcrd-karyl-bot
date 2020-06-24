@@ -521,8 +521,25 @@ def multicast_user_id(sh, group_id, name_list, boss, status):
             line_bot_api.multicast(user_id_tree, TextSendMessage(text= boss + '倒了，可以下樹摟!'))
         elif status == '呼叫':
             line_bot_api.multicast(user_id_tree, TextSendMessage(text= '目前' + boss + '卡住了，你有時間幫忙出刀嗎!?'))
+        elif status == '王倒下':
+            line_bot_api.multicast(user_id_tree, TextSendMessage(text= '目前到' + boss + '了，請準備出刀！'))
         
 
+def call_next_boss_attacker(sh, group_id, cycle, boss):
+
+    ws = sh.worksheet_by_title('報刀')
+
+    row = ws.rows
+
+    name_tree = []
+
+    for i in reversed(range(5, row+1)):
+        info = ws.get_row(i)
+        if cycle == info[2] and boss == info[3]:
+            name_tree.append(info[0])
+
+    if len(name_tree) > 0:
+        multicast_user_id(sh, group_id, name_tree, boss, '王倒下')
 
 
 def update_tree_status(sh, group_id, cycle, boss, status):
@@ -540,8 +557,6 @@ def update_tree_status(sh, group_id, cycle, boss, status):
             ws.delete_rows(i)
             if '掛樹' == info[6]:
                 name_tree.append(info[0])
-
-
 
     # print("掛樹成員: ", name_tree)
     if len(name_tree) > 0:
@@ -807,8 +822,13 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
             update_boss_status(sh, cycle, boss, complete)
             update_tree_status(sh, group_id, cycle, boss, status)
 
-            
-            #call_next_boss(sh, group_id, )
+            boss_index = boss_list.index(boss)
+            if boss_index == 4:
+                next_cycle = cycle+1
+            boss_index = (boss_index+1) % 5
+            next_boss = boss_list[boss_index]
+
+            call_next_boss_attacker(sh, group_id, next_cycle, next_boss)
 
 
 
