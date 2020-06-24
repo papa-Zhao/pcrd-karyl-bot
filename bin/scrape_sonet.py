@@ -54,18 +54,24 @@ def scrape_pcrd_sonet():
     ISOTIMEFORMAT = '%Y-%m-%d'
     todayTime = datetime.now()
 
+    news = False
     msg = '今日最新消息:\n'
     for i in range(num):
         new_time = info[i].replace(status[i], '')
         newTime = datetime.strptime(new_time, "%Y.%m.%d")
         if todayTime.month == newTime.month and todayTime.day == newTime.day:
+            news = True
             msg += content[i] + '\n'
             msg += sonet_url + url[i] + '\n'
             # print(content[i])
     
-    return msg
+    if news:
+        return msg
+    else:
+        return ''
 
 
 if __name__ == "__main__":
     msg = scrape_pcrd_sonet()
-    line_bot_api.push_message('C423cd7dee7263b3a2db0e06ae06d095e', TextSendMessage(text=msg))
+    if msg != '':
+        line_bot_api.push_message('C423cd7dee7263b3a2db0e06ae06d095e', TextSendMessage(text=msg))
