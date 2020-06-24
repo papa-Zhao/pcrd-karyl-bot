@@ -56,7 +56,7 @@ def scrape_pcrd_cygame():
         if todayTime.month == newTime.month and todayTime.day == newTime.day:
             news = True
             msg += content[i] + '\n'
-            msg += cygame_url + url[i] + '\n'
+            msg += url[i] + '\n'
             # print(content[i])
             
     if news:

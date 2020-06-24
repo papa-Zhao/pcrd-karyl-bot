@@ -14,6 +14,7 @@ from app import *
 import sys
 sys.path.append('./bin')
 from scrape_sonet import *
+from scrape_cygame import *
 
 
 def clan_time_start():
@@ -168,6 +169,32 @@ def clan_user_str_processing(user_id, msg):
 
     return reply_msg
 
+def get_clan_atk_times(sh, status):
+
+    ws = sh.worksheet_by_title('出刀次數')
+    ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
+    clan_start = clan_time_start()
+    now = datetime.now().strftime(ISOTIMEFORMAT)
+    now = datetime.strptime(now, ISOTIMEFORMAT)
+    day = (now-clan_start).days + 1
+
+    name = ws.get_col(1)
+
+    reply_msg = ''
+    if status == '完整刀':
+        info = ws.get_col(day)
+        reply_msg = '完整刀狀態(已出幾刀):'
+    else:
+        col = ws.find('補償刀', matchCase=True)[0].col
+        info = ws.get_col(col)
+        reply_msg = '補償刀狀態(尚有幾刀):'
+        
+    for i in range(1, len(name)-1):
+        if int(info[i]) > 0:
+            reply_msg += '\n' + name[i] + ': ' + info[i]
+
+    # print(reply_msg)
+    return reply_msg
 
 
 def clan_group_find_str_processing(group_id, user_id, user_name, msg):
@@ -186,8 +213,11 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
     sh =initial_worksheet()
     ws = sh.worksheet_by_title('報刀')
 
-    if msg == '今天消息':
+    if msg == '今日台服消息':
         reply_msg = scrape_pcrd_sonet()
+
+    if msg == '今日日服消息':
+        reply_msg = scrape_pcrd_cygame()
 
     if msg == '報名查詢':
         try:
@@ -233,6 +263,13 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
         boss_blood = ws.get_value('B3')
         reply_msg = '當前boss為: ' + boss
         reply_msg += '\nboss血量: ' + boss_blood 
+
+    if msg == '完整刀':
+        reply_msg = get_clan_atk_times(sh, '完整刀')
+
+    if msg == '補償刀':
+        reply_msg = get_clan_atk_times(sh, '補償刀')
+    
 
     if msg == '剩刀':
         remainder = ws.get_value('E1')
@@ -640,6 +677,9 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
     cell_id = ws.find(name, matchCase=True)
 
     reply_msg = '更新失敗，請再輸入一次！'
+    
+    boss_list = ['一王', '二王', '三王', '四王', '五王']
+
     if msg == '報名':
 
         reply_msg = '報名失敗，請再輸入一次！'
@@ -767,6 +807,9 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
             update_boss_status(sh, cycle, boss, complete)
             update_tree_status(sh, group_id, cycle, boss, status)
 
+            
+            #call_next_boss(sh, group_id, )
+
 
 
         ################  出刀次數表格  ################
@@ -866,7 +909,6 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
             reply_msg += boss + '剩餘血量為: ' + str(boss_blood)
         else:
             reply_msg += name + '已經擊殺了' + boss + '\n'
-            boss_list = ['一王', '二王', '三王', '四王', '五王']
             boss_index = (boss_list.index(boss) + 1) %len(boss_list)
             if boss == '五王':
                 cycle = str(int(cycle)+1)
