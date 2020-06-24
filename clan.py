@@ -620,10 +620,10 @@ def get_clan_sign_up_info(sh, text):
     else:
         msg = '報名失敗，boss格式錯誤，請輸入欲報名哪王！'
     
-    if '完整' in text[1] or '補償' in text[1]:
+    if '補償' in text[1]:
         complete = text[1]
     else:
-        msg = '報名失敗，刀種格式錯誤，請輸入完整刀或補償刀！'
+        complete = text[1] + '完整刀'
 
     if len(text) > 2:
         damage = text[2]
