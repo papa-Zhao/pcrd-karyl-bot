@@ -643,10 +643,14 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
     if msg == '報名':
 
         reply_msg = '報名失敗，請再輸入一次！'
-        if cell_id:
-            for i in range(len(cell_id)):
-                if name == cell_id[i].value:
-                    cell_id = cell_id[i]
+        
+        find = False
+        for i in range(len(cell_id)):
+            if name == cell_id[i].value:
+                find = True
+                cell_id = cell_id[i]
+
+        if find == True:
             val = ws.get_value((cell_id.row, 4))
             
             if val == boss:
