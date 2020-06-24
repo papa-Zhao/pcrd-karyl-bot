@@ -491,6 +491,9 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
         #print('報名刀表重置')
     elif '報名' in msg:
         msg, cycle, boss, complete, damage = get_clan_sign_up_info(sh, msg)
+        if msg == '':
+            reply_msg = user_name + '，指令格式錯誤，報名失敗。'
+            return reply_msg
         confirm = confirm_atk_info(sh, user_name, complete)
 
         if msg == '報名' and confirm == '成功':
