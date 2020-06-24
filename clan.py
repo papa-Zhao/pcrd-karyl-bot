@@ -19,14 +19,14 @@ from scrape_sonet import *
 def clan_time_start():
 
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
-    start = datetime.strptime("2020-06-24 05:00:00", ISOTIMEFORMAT)
+    start = datetime.strptime("2020-06-24 13:00:00", ISOTIMEFORMAT)
 
     return start
 
 def clan_time_end():
 
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
-    end = datetime.strptime("2020-06-30 00:00:00", ISOTIMEFORMAT)
+    end = datetime.strptime("2020-06-30 08:00:00", ISOTIMEFORMAT)
 
     return end
 
@@ -582,7 +582,7 @@ def confirm_atk_info(sh, name, complete):
     clan_start = clan_time_start()
     now = datetime.now().strftime(ISOTIMEFORMAT)
     now = datetime.strptime(now, ISOTIMEFORMAT)
-    day = (now-clan_start).days + 1 + 1
+    day = (now-clan_start).days + 1
     val = ws.get_value((row, day+1))
 
     if int(val) > 2 and int(remain_val) == 0:
