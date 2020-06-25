@@ -423,7 +423,7 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
     
     permission = search_user_permission(user_id)
     
-    admin_instruction = ['代刀', '代報名', '設定周目', '設定boss', '設定BOSS', '設定完整刀', '設定補償刀', '出刀刀表重置', '報名刀表重置']
+    admin_instruction = ['代刀', '代報名', '代取消', '出刀', '設定周目', '設定boss', '設定BOSS', '設定完整刀', '設定補償刀', '出刀刀表重置', '報名刀表重置']
     if permission == False:
         for i in range(len(admin_instruction)):
             if admin_instruction[i] in msg:
