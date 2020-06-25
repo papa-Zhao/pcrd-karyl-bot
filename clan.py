@@ -572,6 +572,7 @@ def call_next_boss_attacker(sh, group_id, cycle, boss):
             name_tree.append(info[0])
 
     print(name_tree)
+    sys.stdout.flush()
     if len(name_tree) > 0:
         multicast_user_id(sh, group_id, name_tree, boss, '王倒下')
 
