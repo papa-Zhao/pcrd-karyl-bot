@@ -216,18 +216,6 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
     sh =initial_worksheet()
     ws = sh.worksheet_by_title('報刀')
 
-    if msg == '趴趴test':
-        cycle = ws.get_value('B1')
-        boss = ws.get_value('B2')
-        boss_list = ['一王', '二王', '三王', '四王', '五王']
-        next_cycle = cycle
-        boss_index = boss_list.index(boss)
-        if boss_index == 4:
-            next_cycle = str(int(cycle)+1)
-        boss_index = (boss_index+1) % 5
-        next_boss = boss_list[boss_index]
-        call_next_boss_attacker(sh, group_id, next_cycle, next_boss)
-
     if msg == '今日台服消息':
         reply_msg = scrape_pcrd_sonet()
 
@@ -431,31 +419,19 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
                 return reply_msg
     
     if '代刀' in msg:
-        info = msg.split(' ')
-        if len(info) == 4:
-            user_name = info[1].replace('@', '')
-            msg = msg.replace(info[0] + ' ' + info[1] + ' ','')
-        else:
-            reply_msg = '輸入格式錯誤，代刀失敗。'
-            return reply_msg
+        msg = msg.replace('代刀 ','')
+        user_name = msg[:msg.index('王出刀')-2]
+        msg = msg.replace(user_name + ' ', '')
 
     if '代報名' in msg:
-        info = msg.split(' ')
-        if len(info) >= 4:
-            user_name = info[1].replace('@', '')
-            msg = msg.replace(info[0] + ' ' + info[1] + ' ','')
-        else:
-            reply_msg = '輸入格式錯誤，代報名失敗。'
-            return reply_msg
+        msg = msg.replace('代報名 ','')
+        user_name = msg[:msg.index('報名')-1]
+        msg = msg.replace(user_name + ' ', '')
 
     if '代取消' in msg:
-        info = msg.split(' ')
-        if len(info) == 3:
-            user_name = info[1].replace('@', '')
-            msg = msg.replace(info[0] + ' ' + info[1] + ' ','')
-        else:
-            reply_msg = '輸入格式錯誤，代取消失敗。'
-            return reply_msg    
+        msg = msg.replace('代取消 ','')
+        user_name = msg[:msg.index('取消')-1]
+        msg = msg.replace(user_name + ' ', '')
 
     if '設定周目' in msg:
         ws = sh.worksheet_by_title('報刀')
