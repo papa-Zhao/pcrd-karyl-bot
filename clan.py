@@ -216,6 +216,18 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
     sh =initial_worksheet()
     ws = sh.worksheet_by_title('報刀')
 
+    if msg == '趴趴test':
+        cycle = ws.get_value('B1')
+        boss = ws.get_value('B2')
+        boss_list = ['一王', '二王', '三王', '四王', '五王']
+        next_cycle = cycle
+        boss_index = boss_list.index(boss)
+        if boss_index == 4:
+            next_cycle = str(int(cycle)+1)
+        boss_index = (boss_index+1) % 5
+        next_boss = boss_list[boss_index]
+        call_next_boss_attacker(sh, group_id, next_cycle, next_boss)
+
     if msg == '今日台服消息':
         reply_msg = scrape_pcrd_sonet()
 
