@@ -435,6 +435,15 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
             reply_msg = '輸入格式錯誤，代報名失敗。'
             return reply_msg
 
+    if '代取消' in msg:
+        info = msg.split(' ')
+        if len(info) == 3:
+            user_name = info[1].replace('@', '')
+            msg = msg.replace(info[0] + ' ' + info[1] + ' ','')
+        else:
+            reply_msg = '輸入格式錯誤，代取消失敗。'
+            return reply_msg    
+
     if '設定周目' in msg:
         ws = sh.worksheet_by_title('報刀')
         find = False
