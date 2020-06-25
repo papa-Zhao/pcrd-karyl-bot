@@ -865,7 +865,7 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
                 next_cycle = int(cycle)+1
             boss_index = (int(boss_index)+1) % 5
             next_boss = boss_list[boss_index]
-            call_next_boss_attacker(sh, group_id, next_cycle, next_boss)
+            call_next_boss_attacker(sh, group_id, str(next_cycle), next_boss)
 
 
 
