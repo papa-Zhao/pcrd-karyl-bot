@@ -420,17 +420,17 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
     
     if '代刀' in msg:
         msg = msg.replace('代刀 ','')
-        user_name = msg[:msg.index('王出刀')-2]
+        user_name = msg[1:msg.index('王出刀')-2]
         msg = msg.replace(user_name + ' ', '')
 
     if '代報名' in msg:
         msg = msg.replace('代報名 ','')
-        user_name = msg[:msg.index('報名')-1]
+        user_name = msg[1:msg.index('報名')-1]
         msg = msg.replace(user_name + ' ', '')
 
     if '代取消' in msg:
         msg = msg.replace('代取消 ','')
-        user_name = msg[:msg.index('取消')-1]
+        user_name = msg[1:msg.index('取消')-1]
         msg = msg.replace(user_name + ' ', '')
 
     if '設定周目' in msg:
