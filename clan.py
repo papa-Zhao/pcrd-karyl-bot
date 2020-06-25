@@ -391,7 +391,8 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
 
 def search_user_permission(user):
 
-    admin = ['U13fc4e6b8fa1ddbba5dd2acdc5489e32', 'U6baf0b50d8eb1d67f43be074d959d282', 
+    admin = ['Uc2d23ed107e40a72c3416ff90e4a9bd7',
+                'U13fc4e6b8fa1ddbba5dd2acdc5489e32', 'U6baf0b50d8eb1d67f43be074d959d282', 
              'U89fac2b99c977ed589ac9e26a8b91d59', 'U782b1f50739f0de272b0ee23eb10ffde',
              'U03c9c9314f7e87c3976ea999b988b98d', 'U91103dadf5e53122210dc0fe407cce7c',]
 
@@ -572,7 +573,6 @@ def call_next_boss_attacker(sh, group_id, cycle, boss):
             name_tree.append(info[0])
 
     print(name_tree)
-    sys.stdout.flush()
     if len(name_tree) > 0:
         multicast_user_id(sh, group_id, name_tree, boss, '王倒下')
 
@@ -732,6 +732,7 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
     reply_msg = '更新失敗，請再輸入一次！'
     
     boss_list = ['一王', '二王', '三王', '四王', '五王']
+    
 
     if msg == '報名':
 
@@ -864,7 +865,7 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
             boss_index = boss_list.index(boss)
             if boss_index == 4:
                 next_cycle = str(int(cycle)+1)
-            boss_index = (int(boss_index)+1) % 5
+            boss_index = (boss_index+1) % 5
             next_boss = boss_list[boss_index]
             call_next_boss_attacker(sh, group_id, next_cycle, next_boss)
 
