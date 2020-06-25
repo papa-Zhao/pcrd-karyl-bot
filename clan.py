@@ -571,6 +571,7 @@ def call_next_boss_attacker(sh, group_id, cycle, boss):
         if cycle == info[2] and boss == info[3]:
             name_tree.append(info[0])
 
+    print(name_tree)
     if len(name_tree) > 0:
         multicast_user_id(sh, group_id, name_tree, boss, '王倒下')
 
@@ -864,7 +865,6 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
                 next_cycle = int(cycle)+1
             boss_index = (int(boss_index)+1) % 5
             next_boss = boss_list[boss_index]
-
             call_next_boss_attacker(sh, group_id, next_cycle, next_boss)
 
 
