@@ -61,17 +61,6 @@ def handle_user_text_message(event):
 
     return reply_msg
 
-def search_user_permission(user):
-
-    admin = ['U13fc4e6b8fa1ddbba5dd2acdc5489e32', 'U6baf0b50d8eb1d67f43be074d959d282', 
-             'U89fac2b99c977ed589ac9e26a8b91d59', 'U782b1f50739f0de272b0ee23eb10ffde',]
-
-    try:
-        admin.index(user)
-        return True
-    except ValueError:
-        return False
-
 
 def handle_group_text_message(event):
 

@@ -187,11 +187,14 @@ def get_clan_atk_times(sh, status):
     else:
         col = ws.find('補償刀', matchCase=True)[0].col
         info = ws.get_col(col)
-        reply_msg = '補償刀狀態(尚有幾刀):'
+        reply_msg = '補償刀狀態:'
         
     for i in range(1, len(name)-1):
         if int(info[i]) > 0:
-            reply_msg += '\n' + name[i] + ': ' + info[i]
+            if status == '完整刀':
+                reply_msg += '\n' + name[i] + ': ' + info[i]
+            else:
+                reply_msg += '\n' + name[i]
 
     # print(reply_msg)
     return reply_msg
@@ -389,7 +392,8 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
 def search_user_permission(user):
 
     admin = ['U13fc4e6b8fa1ddbba5dd2acdc5489e32', 'U6baf0b50d8eb1d67f43be074d959d282', 
-             'U89fac2b99c977ed589ac9e26a8b91d59', 'U782b1f50739f0de272b0ee23eb10ffde',]
+             'U89fac2b99c977ed589ac9e26a8b91d59', 'U782b1f50739f0de272b0ee23eb10ffde',
+             'U03c9c9314f7e87c3976ea999b988b98d', 'U91103dadf5e53122210dc0fe407cce7c',]
 
     try:
         admin.index(user)
