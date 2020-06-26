@@ -536,7 +536,10 @@ def multicast_user_id(sh, group_id, name_list, boss, status):
     group_member = get_group_member(group_id)
     for index in range(len(name_list)):
         name = name_list[index]
-        user_id_tree.append(group_member[name])
+        try:
+            user_id_tree.append(group_member[name])
+        except KeyError:
+            print('not found')
 
     if len(user_id_tree) > 0 :
         if status == '下樹':
