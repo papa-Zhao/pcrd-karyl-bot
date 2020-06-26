@@ -51,8 +51,7 @@ def handle_user_text_message(event):
     msg = strQ2B(msg)
 
     if '#' in msg:
-        # msg = msg.replace('#', '')
-        msg = msg[1:]
+        msg = msg.replace('#', '')
         reply_msg = clan_user_str_processing(user_id, msg)
     else:
         handle_key_message(event) 
@@ -74,7 +73,8 @@ def handle_group_text_message(event):
     msg = strQ2B(msg)
 
     if '!' == msg[0]:
-        msg = msg.replace('!', '')
+        # msg = msg.replace('!', '')
+        msg = msg[1:]
         reply_msg = clan_group_find_str_processing(group_id, user_id, user_name, msg)
     elif '#' == msg[0]:
         group_member = get_group_member(group_id)
@@ -83,7 +83,8 @@ def handle_group_text_message(event):
         except KeyError:
             reply_msg = user_name + '，你非戰隊成員，請先加入戰隊戰。'
         if clan_period():
-            msg = msg.replace('#', '')
+            # msg = msg.replace('#', '')
+            msg = msg[1:]
             reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
         else:
             reply_msg = '非戰隊戰期間，不開放此功能'
