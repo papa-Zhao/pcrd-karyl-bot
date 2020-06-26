@@ -421,7 +421,8 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
     if '發送訊息:' in msg:
         msg = msg.replace('發送訊息:', '')
         multicast_group_to_user_info(group_id, msg)
-        reply_msg = ''
+        return reply_msg = ''
+
 
     if '代刀' in msg:
         msg = msg.replace('代刀 ','')
