@@ -234,7 +234,7 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
             reply_msg += '\n報名boss: ' + user_info[3]
             reply_msg += '\n報名刀種: ' + user_info[5]
             
-        except ValueError:
+        except IndexError:
             reply_msg = user_name + '，你目前沒有報名紀錄。'
 
     if msg == '戰隊戰加入':
