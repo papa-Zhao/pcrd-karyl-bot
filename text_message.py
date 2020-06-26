@@ -51,7 +51,8 @@ def handle_user_text_message(event):
     msg = strQ2B(msg)
 
     if '#' in msg:
-        msg = msg.replace('#', '')
+        # msg = msg.replace('#', '')
+        msg = msg[1:]
         reply_msg = clan_user_str_processing(user_id, msg)
     else:
         handle_key_message(event) 
