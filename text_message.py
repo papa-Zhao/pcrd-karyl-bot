@@ -50,8 +50,6 @@ def handle_user_text_message(event):
 
     msg = strQ2B(msg)
 
-    if msg == '!今天消息':
-        reply_msg = scrape_pcrd_sonet()
     if '#' == msg:
         msg = msg.replace('#', '')
         reply_msg = clan_user_str_processing(user_id, msg)
