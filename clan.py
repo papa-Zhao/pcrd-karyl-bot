@@ -391,9 +391,9 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
 
 def search_user_permission(user):
 
-    admin = ['Uc2d23ed107e40a72c3416ff90e4a9bd7',
+    admin = ['Uc2d23ed107e40a72c3416ff90e4a9bd7', 'U28de6cdccf72c0078b78de1400a2ca2c',
                 'U13fc4e6b8fa1ddbba5dd2acdc5489e32', 'U6baf0b50d8eb1d67f43be074d959d282', 
-             'U89fac2b99c977ed589ac9e26a8b91d59', 'U782b1f50739f0de272b0ee23eb10ffde',
+             'U782b1f50739f0de272b0ee23eb10ffde',
              'U03c9c9314f7e87c3976ea999b988b98d', 'U91103dadf5e53122210dc0fe407cce7c',]
 
     try:

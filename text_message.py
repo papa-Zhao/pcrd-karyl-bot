@@ -81,13 +81,13 @@ def handle_group_text_message(event):
         group_member = get_group_member(group_id)
         try:
             group_member[user_name]
-            if clan_period():
-                msg = msg.replace('#', '')
-                reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
-            else:
-                reply_msg = '非戰隊戰期間，不開放此功能'
         except KeyError:
             reply_msg = user_name + '，你非戰隊成員，請先加入戰隊戰。'
+        if clan_period():
+            msg = msg.replace('#', '')
+            reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
+        else:
+            reply_msg = '非戰隊戰期間，不開放此功能'
     else:
         handle_key_message(event) 
 
