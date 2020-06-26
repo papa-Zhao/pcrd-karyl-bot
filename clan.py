@@ -418,6 +418,11 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
                 reply_msg = user_name + '，你權限不符，無法使用此指令。'
                 return reply_msg
     
+    if '發送訊息:' in msg:
+        msg = msg.replace('發送訊息:', '')
+        multicast_group_to_user_info(group_id, msg)
+        reply_msg = ''
+
     if '代刀' in msg:
         msg = msg.replace('代刀 ','')
         user_name = msg[1:msg.index('王出刀')-2]
@@ -529,6 +534,15 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
         #     reply_msg = '報名失敗，資料填寫不完全'
 
     return reply_msg
+
+def multicast_group_to_user_info(group_id, msg):
+
+    user_id_tree = []
+    group_member = get_group_member(group_id)
+    for i in group_member.values():
+        user_id_tree.append(i)
+
+    line_bot_api.multicast(user_id_tree, TextSendMessage(text= msg))
 
 def multicast_user_id(sh, group_id, name_list, boss, status):
 
