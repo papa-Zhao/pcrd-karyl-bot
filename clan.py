@@ -492,12 +492,15 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
         reply_msg = initial_atk_list(sh)
         #print('出刀刀表重置')
     elif '出刀' in msg:
-        msg = msg.replace('出刀', '')
-        msg = msg.split(' ')
-        boss = msg[0]
-        damage = msg[1]
-        msg = '出刀'
-        reply_msg = update_clan_sign_up(sh, group_id, msg, user_name, boss=boss, damage=damage, status = '出刀')
+        try:
+            msg = msg.replace('出刀', '')
+            msg = msg.split(' ')
+            boss = msg[0]
+            damage = msg[1]
+            msg = '出刀'
+            reply_msg = update_clan_sign_up(sh, group_id, msg, user_name, boss=boss, damage=damage, status = '出刀')
+        except IndexError:
+            reply_msg = '出刀格式錯誤，請再輸入一次！'
 
     if '掛樹' == msg:
         reply_msg = update_clan_sign_up(sh, group_id, msg, user_name, status = '掛樹')
@@ -538,7 +541,7 @@ def multicast_user_id(sh, group_id, name_list, boss, status):
         except KeyError:
             print('not found')
 
-    print(user_id_tree)
+    print('multicast_user_id = ', user_id_tree)
     sys.stdout.flush()
     if len(user_id_tree) > 0 :
         if status == '下樹':
@@ -561,7 +564,7 @@ def call_next_boss_attacker(sh, group_id, cycle, boss):
         if cycle == info[2] and boss == info[3]:
             name_tree.append(info[0])
 
-    print(name_tree)
+    print('call_next_boss_attacker = ', name_tree)
     sys.stdout.flush()
     if len(name_tree) > 0:
         multicast_user_id(sh, group_id, name_tree, boss, '王倒下')
