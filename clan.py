@@ -216,11 +216,6 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
     sh =initial_worksheet()
     ws = sh.worksheet_by_title('報刀')
 
-    if msg == '趴趴test':
-        user_id_tree = ['U13fc4e6b8fa1ddbba5dd2acdc5489e32']
-        line_bot_api.multicast(user_id_tree, TextSendMessage(text= '目前到二了，請準備出刀！'))
-        line_bot_api.multicast(user_id_tree, TextSendMessage(text= '目前到三了，請準備出刀！'))
-
     if msg == '今日台服消息':
         reply_msg = scrape_pcrd_sonet()
 
@@ -543,6 +538,8 @@ def multicast_user_id(sh, group_id, name_list, boss, status):
         except KeyError:
             print('not found')
 
+    print(user_id_tree)
+    sys.stdout.flush()
     if len(user_id_tree) > 0 :
         if status == '下樹':
             line_bot_api.multicast(user_id_tree, TextSendMessage(text= boss + '倒了，可以下樹摟!'))
