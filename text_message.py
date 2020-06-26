@@ -50,7 +50,7 @@ def handle_user_text_message(event):
 
     msg = strQ2B(msg)
 
-    if '#' == msg:
+    if '#' in msg:
         msg = msg.replace('#', '')
         reply_msg = clan_user_str_processing(user_id, msg)
     else:
