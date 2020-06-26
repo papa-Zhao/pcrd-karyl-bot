@@ -216,6 +216,11 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
     sh =initial_worksheet()
     ws = sh.worksheet_by_title('報刀')
 
+    if msg == '趴趴test':
+        user_id_tree = ['U13fc4e6b8fa1ddbba5dd2acdc5489e32']
+        line_bot_api.multicast(user_id_tree, TextSendMessage(text= '目前到二了，請準備出刀！'))
+        line_bot_api.multicast(user_id_tree, TextSendMessage(text= '目前到三了，請準備出刀！'))
+
     if msg == '今日台服消息':
         reply_msg = scrape_pcrd_sonet()
 
@@ -525,9 +530,6 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
         # if len(msg.split(' ')) != 3:
         #     reply_msg = '報名失敗，資料填寫不完全'
 
-
-
-
     return reply_msg
 
 def multicast_user_id(sh, group_id, name_list, boss, status):
@@ -555,7 +557,6 @@ def call_next_boss_attacker(sh, group_id, cycle, boss):
     ws = sh.worksheet_by_title('報刀')
 
     row = ws.rows
-
     name_tree = []
 
     for i in reversed(range(5, row+1)):
@@ -564,6 +565,7 @@ def call_next_boss_attacker(sh, group_id, cycle, boss):
             name_tree.append(info[0])
 
     print(name_tree)
+    sys.stdout.flush()
     if len(name_tree) > 0:
         multicast_user_id(sh, group_id, name_tree, boss, '王倒下')
 
@@ -573,7 +575,6 @@ def update_tree_status(sh, group_id, cycle, boss, status):
     ws = sh.worksheet_by_title('報刀')
 
     row = ws.rows
-
     name_tree = []
 
     for i in reversed(range(5, row+1)):
