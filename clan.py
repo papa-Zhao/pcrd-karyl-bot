@@ -357,7 +357,10 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
 
             ws = sh.worksheet_by_title('出刀時間')
             ISOTIMEFORMAT = "%H:%M"
-            now = datetime.now().strftime(ISOTIMEFORMAT)
+
+            #now = datetime.now().strftime(ISOTIMEFORMAT)
+            now = (datetime.now() + timedelta(hours=8))
+            now = now.strftime(ISOTIMEFORMAT)
             now = datetime.strptime(now, ISOTIMEFORMAT)
             moment = ''
             if now.hour >= 5 and now.hour < 12:
