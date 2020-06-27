@@ -91,7 +91,10 @@ def set_atk_list(sh, name, msg):
     
     name_index = ws.find(name, matchCase=True)
     if name_index:
-        row = name_index[0].row
+        for i in range(len(name_index)):
+            if name == name_index[i].value:
+                name_index = name_index[i]
+        row = name_index.row
         ws.clear(start=(row, 2), end=(row, 11))
         reply_msg = name + ', 已更改你的刀表'
     else:
@@ -128,7 +131,10 @@ def set_atk_time(sh, name, msg):
     
     name_index = ws.find(name, matchCase=True)
     if name_index:
-        row = name_index[0].row
+        for i in range(len(name_index)):
+            if name == name_index[i].value:
+                name_index = name_index[i]
+        row = name_index.row
         if '早上' in msg or '下午' in msg or '晚上' in msg:
             ws.clear(start=(row, 2), end=(row, 4))
         reply_msg = name + ', 已更新你出刀時間'
