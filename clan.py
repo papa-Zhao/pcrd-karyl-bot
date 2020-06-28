@@ -707,6 +707,8 @@ def get_clan_sign_up_info(sh, text):
     complete = ''
     damage = ''
 
+    boss_list = ['一王', '二王', '三王', '四王', '五王']
+
     ws = sh.worksheet_by_title('報刀')
     msg = '報名'
     
@@ -717,18 +719,25 @@ def get_clan_sign_up_info(sh, text):
         text = text.replace('報名', '')
         cycle = int(ws.get_value((1, 2)))
 
-    text = text.split(' ')
-
     if len(text) < 2:
         msg = ''
         return msg, cycle, boss, complete, damage
 
-    boss_list = ['一王', '二王', '三王', '四王', '五王']
-    if text[0] in boss_list:
-        boss = text[0]
-    else:
-        msg = '報名失敗，boss格式錯誤，請輸入欲報名哪王！'
+
     
+    try:
+        if text[0] in boss_list:
+            boss = text[0]
+        else:
+            msg = '報名失敗，boss格式錯誤，請輸入欲報名哪王！'
+
+        now_boss = ws.get_value((2, 2))
+        if boss_list.index(boss) < boss_list.index(now_boss):
+            cycle += 1
+    except ValueError:
+        msg = '報名失敗，boss格式錯誤，請輸入欲報名哪王！'
+
+
     if '補償' in text[1]:
         complete = text[1]
     else:
