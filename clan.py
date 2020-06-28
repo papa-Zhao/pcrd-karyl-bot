@@ -720,6 +720,7 @@ def get_clan_sign_up_info(sh, text):
     text = text.split(' ')
 
     if len(text) < 2:
+        msg = ''
         return msg, cycle, boss, complete, damage
 
     boss_list = ['一王', '二王', '三王', '四王', '五王']
