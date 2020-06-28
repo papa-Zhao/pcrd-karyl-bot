@@ -719,6 +719,8 @@ def get_clan_sign_up_info(sh, text):
         text = text.replace('報名', '')
         cycle = int(ws.get_value((1, 2)))
 
+    text = text.split(' ')
+
     if len(text) < 2:
         msg = ''
         return msg, cycle, boss, complete, damage
