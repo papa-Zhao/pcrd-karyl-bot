@@ -385,7 +385,7 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
 
             # print(call_list)
 
-            multicast_user_id(sh, group_id, call_list, msg, '呼叫')
+            # multicast_user_id(sh, group_id, call_list, msg, '呼叫')
 
             call_list = '%s，'*len(call_list) % tuple(call_list)  
             reply_msg = '目前還有' + msg + '刀且此時段可以出刀的人為:\n' + call_list
@@ -875,7 +875,7 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
             damage = boss_blood
             boss_blood = int(boss_blood) - int(damage)
             update_boss_status(sh, cycle, boss, complete)
-            update_tree_status(sh, group_id, cycle, boss, status)
+            # update_tree_status(sh, group_id, cycle, boss, status)
 
             next_cycle = cycle
             boss_index = boss_list.index(boss)
@@ -883,7 +883,7 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
                 next_cycle = str(int(cycle)+1)
             boss_index = (boss_index+1) % 5
             next_boss = boss_list[boss_index]
-            call_next_boss_attacker(sh, group_id, next_cycle, next_boss)
+            # call_next_boss_attacker(sh, group_id, next_cycle, next_boss)
 
 
 
