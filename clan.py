@@ -610,8 +610,8 @@ def update_tree_status(sh, group_id, cycle, boss, status):
                 name_tree.append(info[0])
 
     # print("掛樹成員: ", name_tree)
-    if len(name_tree) > 0:
-        multicast_user_id(sh, group_id, name_tree, boss, '下樹')
+    # if len(name_tree) > 0:
+    #     multicast_user_id(sh, group_id, name_tree, boss, '下樹')
     
 
 
@@ -871,13 +871,13 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
         if int(boss_blood) > int(damage):
             boss_blood = int(boss_blood) - int(damage)
             ws.update_value('B3', boss_blood)
+            ws.delete_rows(name_index.row)
         else:
             damage = boss_blood
             boss_blood = int(boss_blood) - int(damage)
             update_boss_status(sh, cycle, boss, complete)
-            # update_tree_status(sh, group_id, cycle, boss, status)
+            update_tree_status(sh, group_id, cycle, boss, status)
 
-        ws.delete_rows(name_index.row)
         # next_cycle = cycle
         # boss_index = boss_list.index(boss)
         # if boss_index == 4:
