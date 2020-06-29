@@ -118,6 +118,11 @@ def handle_key_message(event):
         line_bot_api.reply_message(event.reply_token, send_msg)
 
 
+    sticker_key = ['讚', '呼呼', '愛你', '哈哈', '早安', '失望', '累了', '餓', 
+            '主人', '謝謝', '不愧是', '嗯?', '晚安', '不行唷!', '知道了', '請看',
+            '拜託', '傲嬌', '不錯', '笨蛋', '掰掰', '有心就做得到', '隨便', '喵',
+            '謝謝', '指教', '好厲害']
+            
     for i in range(len(sticker_key)):
         if sticker_key[i] in msg:
             url = get_key_sticker(i)
