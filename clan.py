@@ -427,26 +427,38 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
                 reply_msg = user_name + '，你權限不符，無法使用此指令。'
                 return reply_msg
     
-    if '發送訊息:' in msg:
+    if '發送訊息:' in msg:   ###### Depreciated ######
         msg = msg.replace('發送訊息:', '')
-        multicast_group_to_user_info(group_id, msg)
+        # multicast_group_to_user_info(group_id, msg)
         reply_msg = ''
         return reply_msg
 
     if '代刀' in msg:
-        msg = msg.replace('代刀 ','')
-        user_name = msg[1:msg.index('王出刀')-2]
-        msg = msg.replace('@' + user_name + ' ', '')
+        try:
+            msg = msg.replace('代刀 ','')
+            user_name = msg[1:msg.index('王出刀')-2]
+            msg = msg.replace('@' + user_name + ' ', '')
+        except ValueError:
+            reply_msg = '代刀格式錯誤，請重新輸入。'
+            return reply_msg
 
     if '代報名' in msg:
-        msg = msg.replace('代報名 ','')
-        user_name = msg[1:msg.index('報名')-1]
-        msg = msg.replace('@' + user_name + ' ', '')
+        try:
+            msg = msg.replace('代報名 ','')
+            user_name = msg[1:msg.index('報名')-1]
+            msg = msg.replace('@' + user_name + ' ', '')
+        except ValueError:
+            reply_msg = '代報名格式錯誤，請重新輸入。'
+            return reply_msg
 
     if '代取消' in msg:
-        msg = msg.replace('代取消 ','')
-        user_name = msg[1:msg.index('取消')-1]
-        msg = msg.replace('@' + user_name + ' ', '')
+        try:
+            msg = msg.replace('代取消 ','')
+            user_name = msg[1:msg.index('取消')-1]
+            msg = msg.replace('@' + user_name + ' ', '')
+        except ValueError:
+            reply_msg = '代取消格式錯誤，請重新輸入。'
+            return reply_msg
 
     if '設定周目' in msg:
         ws = sh.worksheet_by_title('報刀')
