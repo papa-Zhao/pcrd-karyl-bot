@@ -27,7 +27,6 @@ def get_album_image(key):
     return url
 
 
-
 def upload_album_image(image):
     
     path = './image/search.jpg'

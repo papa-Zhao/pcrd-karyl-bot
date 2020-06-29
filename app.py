@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*
-
 from flask import Flask, request, abort
 
 from linebot import (

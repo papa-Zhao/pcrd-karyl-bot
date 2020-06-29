@@ -104,7 +104,6 @@ def handle_key_message(event):
     for i in range(len(key)):
         if key[i] in msg:
             print('關鍵字: %s' %(key[i]))
-            # url = get_url(key[i])
             url = get_album_image(key[i])
             send_msg = ImageSendMessage(url, url)
             line_bot_api.reply_message(event.reply_token, send_msg)
@@ -117,3 +116,11 @@ def handle_key_message(event):
         reply_msg = get_key_msg(msg, name)
         send_msg = TextSendMessage(text= reply_msg )
         line_bot_api.reply_message(event.reply_token, send_msg)
+
+
+    for i in range(len(sticker_key)):
+        if sticker_key[i] in msg:
+            url = get_key_sticker(i)
+            send_msg = ImageSendMessage('', url)
+            line_bot_api.reply_message(event.reply_token, send_msg)
+            break

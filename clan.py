@@ -389,7 +389,7 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
 
             call_list = '%s，'*len(call_list) % tuple(call_list)  
             reply_msg = '目前還有' + msg + '刀且此時段可以出刀的人為:\n' + call_list
-            reply_msg += '\n已經呼叫他們前來支援！'
+            # reply_msg += '\n已經呼叫他們前來支援！'
         except ValueError:
             reply_msg = user_name + '，輸入boss錯誤，查詢失敗！'
 
@@ -465,10 +465,11 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
         find = False
         cycle = ws.cell('B1')
         msg = msg.split(' ')
-        for i in msg:
-            if i.isdigit():
+        for num in msg:
+            if num.isdigit():
                 find = True
-                cycle.value = int(i)
+                cycle.value = int(num)
+                break
         
         if find == True:
             reply_msg = '已更改周目: ' + str(cycle.value)
