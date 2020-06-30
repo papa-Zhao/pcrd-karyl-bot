@@ -24,7 +24,10 @@ def get_key_sticker(index):
                 'https://i.imgur.com/nOf8YQ9.png', 'https://i.imgur.com/3nPO6Uj.png', 'https://i.imgur.com/A5oN2vd.png', 'https://i.imgur.com/98iH6u1.png', 
                 'https://i.imgur.com/7C2Pf7I.png', 'https://i.imgur.com/q1WbaKj.png', 'https://i.imgur.com/h7ZnaIp.png', 'https://i.imgur.com/W25wzZi.png',
                 'https://i.imgur.com/TpGirhX.png', 'https://i.imgur.com/aGAR4c1.png', 'https://i.imgur.com/awE4VVQ.png', 'https://i.imgur.com/2Z2Tqad.png',
-                'https://i.imgur.com/kFavn96.png', 'https://i.imgur.com/QnSUj0X.png',  'https://i.imgur.com/2PFcjKE.png']
+                'https://i.imgur.com/kFavn96.png', 'https://i.imgur.com/QnSUj0X.png',  'https://i.imgur.com/2PFcjKE.png',
+                'https://i.imgur.com/x9zqDy8.jpg', 'https://i.imgur.com/Pq4ZKbK.jpg', 'https://i.imgur.com/447X3SH.jpg', 'https://i.imgur.com/nRDwwfh.png',
+                'https://i.imgur.com/UHXCPLF.jpg', 'https://i.imgur.com/EFdFnQL.jpg', 'https://i.imgur.com/88BT0c9.jpg', 'https://i.imgur.com/aRjLcpr.jpg'
+                ]
 
         return key_url[index]
 
