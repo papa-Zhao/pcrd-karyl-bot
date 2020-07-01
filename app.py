@@ -10,7 +10,7 @@ from linebot.exceptions import (
 )
 from linebot.models import (
     MessageEvent, JoinEvent, LeaveEvent, MemberJoinedEvent, MemberLeftEvent, FollowEvent, UnfollowEvent, PostbackEvent,
-    TextMessage, ImageMessage,
+    TextMessage, ImageMessage, LocationMessage, 
     TextSendMessage, ImageSendMessage, TemplateSendMessage,
     MessageAction, DatetimePickerAction, PostbackAction, URIAction, CameraAction, CameraRollAction, LocationAction,
     QuickReply, QuickReplyButton, 
@@ -58,6 +58,10 @@ def callback():
     return 'OK'
 
 
+@app.route("/")
+def root():
+    return "Root Page"
+
 @handler.add(PostbackEvent)
 def handle_follow(event):
     print('msg = ', event.postback.data)
@@ -70,7 +74,7 @@ def handle_follow(event):
     profile = line_bot_api.get_profile(user_id)
     name = profile.display_name
     print('新加入者: %s , user_id: %s' % (name, user_id))
-    create_line_user(name, user_id)
+    create_line_user(name, '', user_id)
     reply_msg = name + '你啊，不要若無其事地向我搭話啦!畢竟又不是朋友，什麼都不是啊！'
     line_bot_api.reply_message(event.reply_token, TextMessage(text=reply_msg))
 
@@ -104,7 +108,6 @@ def handle_join(event):
 def handle_join(event):
 
     # print(event.joined.members)
-
     user_id = event.joined.members[0].user_id
     group_id = event.source.group_id
     group_profile = line_bot_api.get_group_member_profile(group_id, user_id)
@@ -120,8 +123,18 @@ def handle_join(event):
 @handler.add(MemberLeftEvent)
 def handle_join(event):
 
-    reply_msg = "我的身體怎麼不見了....?"
-    line_bot_api.reply_message(event.reply_token, TextMessage(text=reply_msg))
+    group_id = event.source.group_id
+    user_id_list = []
+    for i in range(len(event.left.members)):
+        user_id_list.append(event.left.members[i].user_id)
+    for i in range(len(user_id_list)):
+        delete_line_group_member(group_id, user_id_list[i])
+        # print('name_list = ', user_id_list[i])
+
+    # print('group = ', event.source.group_id)
+    # print('left member = ', event.left.members[0])
+    # reply_msg = "我的身體怎麼不見了....?"
+    # line_bot_api.push_message(group_id, TextSendMessage(text=reply_msg))
     # print("JoinEvent =", MemberLeftEvent)
 
 
@@ -132,6 +145,21 @@ def handle_leave(event):
     delete_line_group(group_id)
     print("leave Event =", event)
     print('群組踢除: ', event.source.group_id)
+
+@handler.add(MessageEvent, message=LocationMessage)
+def handle_message(event):
+
+    address = event.message.address
+    latitude = event.message.latitude
+    longitude = event.message.longitude
+
+    reply_msg = 'address = ' + address
+    reply_msg += '\nlatitude = ' + str(latitude)
+    reply_msg += '\nlongitude = ' + str(longitude)
+    send_msg = TextSendMessage(text= reply_msg )
+    line_bot_api.reply_message(event.reply_token, send_msg)
+
+    
 
 
 @handler.add(MessageEvent, message=ImageMessage)
@@ -155,9 +183,6 @@ def handle_message(event):
 
     # user_id = event.source.user_id
     # line_bot_api.link_rich_menu_to_user(user_id, 'richmenu-36d5000e0e2bd620a04a7ec9facfcf1d')
-    
-
-
     reply_msg = ''
 
     msg_source = event.source.type

@@ -20,20 +20,19 @@ from scrape_cygame import *
 def clan_time_start():
 
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
-    start = datetime.strptime("2020-06-23 21:00:00", ISOTIMEFORMAT)
+    start = datetime.strptime("2020-06-30 21:00:00", ISOTIMEFORMAT)
 
     return start
 
 def clan_time_end():
 
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
-    end = datetime.strptime("2020-06-29 16:00:00", ISOTIMEFORMAT)
+    end = datetime.strptime("2020-07-31 16:00:00", ISOTIMEFORMAT)
 
     return end
 
 
 def clan_period():
-    return True
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
     
     clan_start = clan_time_start()
@@ -170,8 +169,8 @@ def clan_user_str_processing(user_id, msg):
     if '回報刀表' in msg:
         reply_msg = set_atk_list(sh, name, msg)
 
-    if '出刀時間' in msg:
-        reply_msg = set_atk_time(sh, name, msg)
+    # if '出刀時間' in msg:
+    #     reply_msg = set_atk_time(sh, name, msg)
 
     return reply_msg
 
@@ -206,6 +205,20 @@ def get_clan_atk_times(sh, status):
     return reply_msg
 
 
+def myAlign(string, length=0):
+	if length == 0:
+		return string
+	slen = len(string)
+	re = string
+	if isinstance(string, str):
+		placeholder = ' '
+	else:
+		placeholder = u'　'
+	while slen < length:
+		re += placeholder
+		slen += 1
+	return re
+
 def clan_group_find_str_processing(group_id, user_id, user_name, msg):
     
 
@@ -230,6 +243,21 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
 
     if msg == '報名查詢':
         try:
+            tplt = '{0:{5}^6}\t{1:^6}\t{2:{5}^6}\t{3:{5}^6}\t{4:{5}^6}'
+            reply_msg = tplt.format("報名者", "周目", "boss", '傷害', '刀種', chr(12288))
+
+            ws = sh.worksheet_by_title('報刀')
+            rows = ws.rows
+            for row in range(5, rows):
+                user_info = ws.get_row(row)
+                print(user_info)
+                reply_msg += '\n'
+                reply_msg += tplt.format(user_info[0], user_info[2], user_info[3], user_info[4], user_info[5], chr(12288))
+        except IndexError:
+            reply_msg = '目前沒有報名紀錄。'
+
+    if msg == '我的報名':
+        try:
             ws = sh.worksheet_by_title('報刀')
             index = ws.find(user_name, matchCase=True)[0].row
             user_info = ws.get_row(index)
@@ -239,7 +267,6 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
             reply_msg += '\n報名周目: ' + str(user_info[2]) 
             reply_msg += '\n報名boss: ' + user_info[3]
             reply_msg += '\n報名刀種: ' + user_info[5]
-            
         except IndexError:
             reply_msg = user_name + '，你目前沒有報名紀錄。'
 
@@ -334,66 +361,6 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
             reply_msg = '目前還有' + msg + '刀的成員為:\n' + name_list
         except ValueError:
             reply_msg = user_name + '，輸入boss錯誤，查詢失敗！'
-
-    if '呼叫' in msg:
-        msg = msg.replace('呼叫 ', '')
-        boss_list = ['一王', '二王', '三王', '四王', '五王']
-        try:
-            boss_list.index(msg)
-            ws = sh.worksheet_by_title('刀表')
-            index_boss = ws.find(msg, matchCase=True)[0].col
-            
-            name_list = []
-            
-            name_index = ws.get_col(1)
-            atk= ws.get_col(index_boss)
-            status = ws.get_col(index_boss+1)
-            # print(atk)
-            for i in range(1, ws.rows):
-                if atk[i] != '' and status[i] == '':
-                    name_list.append(name_index[i])
-            
-            # print(name_list)
-
-            ws = sh.worksheet_by_title('出刀時間')
-            ISOTIMEFORMAT = "%H:%M"
-
-            #now = datetime.now().strftime(ISOTIMEFORMAT)
-            now = (datetime.now() + timedelta(hours=8))
-            now = now.strftime(ISOTIMEFORMAT)
-            now = datetime.strptime(now, ISOTIMEFORMAT)
-            moment = ''
-            if now.hour >= 5 and now.hour < 12:
-                moment = 2
-                # print('8:00~12:00')
-            elif now.hour >= 12 and now.hour < 18:
-                moment = 3
-                # print('12:00~18:00')
-            else:
-                moment = 4
-                # print('18:00~5:00')
-
-            name_index = ws.get_col(1)
-            time_index = ws.get_col(moment)
-
-            call_list = []
-            for i in range(1, ws.rows):
-                # print(time_index)
-                # print(name_index[i])
-                if time_index[i] == 'TRUE' and name_index[i] in name_list:
-                    call_list.append(name_index[i])
-
-            # print(call_list)
-
-            # multicast_user_id(sh, group_id, call_list, msg, '呼叫')
-
-            call_list = '%s，'*len(call_list) % tuple(call_list)  
-            reply_msg = '目前還有' + msg + '刀且此時段可以出刀的人為:\n' + call_list
-            # reply_msg += '\n已經呼叫他們前來支援！'
-        except ValueError:
-            reply_msg = user_name + '，輸入boss錯誤，查詢失敗！'
-
-
 
     return reply_msg
 

@@ -19,12 +19,12 @@ firebase_admin.initialize_app(cred, {
 db = firestore.client()
 
 
-def create_line_user(name, user_id):
+def create_line_user(name, group_id, user_id):
 
     initial_score = 5
     doc_ref = db.collection("line_user")
-    keys = ['name', 'user_id', 'data', 'score']
-    values =[name, user_id, [], initial_score]
+    keys = ['name', 'group_id', 'user_id', 'data', 'score']
+    values =[name, group_id, user_id, [], initial_score]
     records = dict(zip(keys, values))
     doc_ref.add(records)
 
@@ -87,10 +87,24 @@ def search_line_group(group_id):
 
 def update_line_group(group_id, user_id, user_name):
     
+    doc_ref = db.collection("line_user")
+    results = doc_ref.where('name', '==', user_name).stream()
+    
+    find = False
+    for item in results:
+        find = True
+        doc = doc_ref.document(item.id)
+        field_updates = {'group_id': group_id}
+        doc.update(field_updates)
+
+    if find == False:
+        create_line_user(user_name, group_id, user_id)
+
+    
     doc_ref = db.collection("line_group")
     results = doc_ref.where('group_id','==', group_id).stream()
     for item in results:
-        print(u'{} => {}'.format(item.id, item.to_dict()))
+        # print(u'{} => {}'.format(item.id, item.to_dict()))
         data_id = item.id
         data = item.to_dict()
 
@@ -106,6 +120,25 @@ def update_line_group(group_id, user_id, user_name):
     # print(reply_msg)
     return reply_msg
 
+def delete_line_group_member(group_id, user_id):
+
+    group_id = 'C1f08f2cc641df24f803b133691e46e92'
+    doc_ref = db.collection("line_group")
+    results = doc_ref.where('group_id','==', group_id).stream()
+    data = {}
+    for item in results:
+        data_id = item.id
+        data = item.to_dict()
+
+    for key,value in data['group_member'].items():
+        if user_id == value:
+            del data['group_member'][key]
+            break
+    
+    doc = doc_ref.document(data_id)
+    field_updates = {'group_member': data['group_member']}
+    doc.update(field_updates)
+
 
 def get_group_member(group_id):
     
@@ -119,10 +152,11 @@ def get_group_member(group_id):
     group_member = data['group_member']
     return group_member
 
-def get_user_member(user_name):
+def get_user_info(user_name):
     
     doc_ref = db.collection("line_user")
     results = doc_ref.where('name','==', user_name).stream()
+    data = {}
     for item in results:
         # print(u'{} => {}'.format(item.id, item.to_dict()))
         # data_id = item.id
@@ -131,6 +165,14 @@ def get_user_member(user_name):
     user_id = data['user_id']
     return user_id
 
+def get_user_info(user_id):
+    
+    doc_ref = db.collection("line_user")
+    results = doc_ref.where('user_id','==', user_id).stream()
+    data = {}
+    for item in results:
+        data = item.to_dict()
+    return data
 
 
 

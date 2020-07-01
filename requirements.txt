@@ -4,6 +4,7 @@ datetime
 python-dateutil
 firebase_admin
 flask
+folium
 imgurpython
 line-bot-sdk
 numpy

@@ -49,13 +49,20 @@ def handle_user_text_message(event):
     user_id = event.source.user_id
 
     msg = strQ2B(msg)
+    print('user_id = %s' %(user_id))
 
     if '#' in msg:
-        msg = msg.replace('#', '')
-        reply_msg = clan_user_str_processing(user_id, msg)
+        if clan_period():
+            info = get_user_info(user_id)
+            try:
+                msg = msg.replace('#', '')
+                reply_msg = clan_user_str_processing(user_id, msg)
+            except KeyError:
+                reply_msg = '你不屬於凱留水球噠噠噠成員，無法使用此指令。'
+        else:
+            reply_msg = '非戰隊戰期間，不開放指令輸入。'
     else:
         handle_key_message(event) 
-
 
     return reply_msg
 
@@ -69,9 +76,18 @@ def handle_group_text_message(event):
     user_id = event.source.user_id
     group_profile = line_bot_api.get_group_member_profile(group_id, user_id)
     user_name = group_profile.display_name
-    
-    msg = strQ2B(msg)
 
+    try:
+
+        karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92']
+        karyl_group.index(group_id)
+    except ValueError:
+        reply_msg = '此群組並非凱留水球噠噠噠群組，無法使用群組功能。'
+        reply_msg += '\n若想使用群組功能請聯絡開發者 Email: r22742557@gmail.com'
+        return reply_msg
+
+
+    msg = strQ2B(msg)
     if '!' == msg[0]:
         msg = msg[1:]
         reply_msg = clan_group_find_str_processing(group_id, user_id, user_name, msg)
