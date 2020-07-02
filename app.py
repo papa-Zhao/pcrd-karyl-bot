@@ -193,10 +193,6 @@ def handle_message(event):
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
 
-    with open('flex_message.json', newline='') as jsonfile:
-        data = json.load(jsonfile)
-        send_msg = FlexSendMessage(alt_text='振興三倍卷', contents=data)
-        line_bot_api.reply_message(event.reply_token, send_msg)
 
     # user_id = event.source.user_id
     # line_bot_api.link_rich_menu_to_user(user_id, 'richmenu-36d5000e0e2bd620a04a7ec9facfcf1d')
