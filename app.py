@@ -11,7 +11,7 @@ from linebot.exceptions import (
 from linebot.models import (
     MessageEvent, JoinEvent, LeaveEvent, MemberJoinedEvent, MemberLeftEvent, FollowEvent, UnfollowEvent, PostbackEvent,
     TextMessage, ImageMessage, LocationMessage, 
-    TextSendMessage, ImageSendMessage, TemplateSendMessage,
+    TextSendMessage, ImageSendMessage, TemplateSendMessage, FlexSendMessage, 
     MessageAction, DatetimePickerAction, PostbackAction, URIAction, CameraAction, CameraRollAction, LocationAction,
     QuickReply, QuickReplyButton, 
     ButtonsTemplate,
@@ -19,6 +19,7 @@ from linebot.models import (
 
 import configparser
 import os
+import json
 
 from cloud_firestore import *
 from text_message import *
@@ -91,6 +92,17 @@ def handle_follow(event):
 def handle_join(event):
 
     group_id = event.source.group_id
+
+    try:
+        karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92']
+        karyl_group.index(group_id)
+    except ValueError:
+        reply_msg = '此群組並非凱留水球噠噠噠群組，無法使用群組功能。'
+        reply_msg += '\n若想使用群組功能請聯絡開發者 Email: r22742557@gmail.com'
+        send_msg = TextSendMessage(text= reply_msg )
+        line_bot_api.reply_message(event.reply_token, send_msg)
+        line_bot_api.leave_group(group_id)
+
     headers = {"content-type": "application/json; charset=UTF-8",'Authorization':'Bearer {}'.format(config.get('line-bot', 'channel_access_token'))}
     url = 'https://api.line.me/v2/bot/group/' + group_id + '/summary'
     response = requests.get(url, headers=headers)
@@ -181,6 +193,11 @@ def handle_message(event):
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
 
+    with open('flex_message.json', newline='') as jsonfile:
+        data = json.load(jsonfile)
+        send_msg = FlexSendMessage(alt_text='振興三倍卷', contents=data)
+        line_bot_api.reply_message(event.reply_token, send_msg)
+
     # user_id = event.source.user_id
     # line_bot_api.link_rich_menu_to_user(user_id, 'richmenu-36d5000e0e2bd620a04a7ec9facfcf1d')
     reply_msg = ''
@@ -198,7 +215,7 @@ def handle_message(event):
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
-    # app.debug = True
-    # app.run()
+    # port = int(os.environ.get('PORT', 5000))
+    # app.run(host='0.0.0.0', port=port)
+    app.debug = True
+    app.run()

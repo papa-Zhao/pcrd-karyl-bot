@@ -68,10 +68,10 @@ def scrape_pcrd_sonet():
     if news:
         return msg
     else:
-        return ''
+        return '今日台服無新消息'
 
 
 if __name__ == "__main__":
     msg = scrape_pcrd_sonet()
-    if msg != '':
+    if msg != '今日台服無新消息':
         line_bot_api.push_message('C423cd7dee7263b3a2db0e06ae06d095e', TextSendMessage(text=msg))

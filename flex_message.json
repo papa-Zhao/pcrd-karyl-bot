@@ -1,0 +1,185 @@
+{
+  "type": "bubble",
+  "hero": {
+    "type": "image",
+    "url": "https://i.imgur.com/ggLtu3I.png",
+    "size": "full",
+    "aspectRatio": "20:7",
+    "action": {
+      "type": "uri",
+      "label": "action",
+      "uri": "https://3000.gov.tw/default.aspx"
+    }
+  },
+  "body": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "box",
+        "layout": "horizontal",
+        "contents": [
+          {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+              {
+                "type": "text",
+                "text": "行動支付",
+                "size": "xl",
+                "weight": "bold",
+                "align": "center",
+                "gravity": "top",
+                "color": "#FFFFFF"
+              },
+              {
+                "type": "text",
+                "text": "7/1 登記您常用的行動支付",
+                "wrap": true,
+                "align": "center",
+                "color": "#FFFFFF"
+              }
+            ]
+          },
+          {
+            "type": "image",
+            "url": "https://i.imgur.com/iIbo6Kf.png",
+            "align": "center",
+            "gravity": "top"
+          }
+        ],
+        "action": {
+          "type": "uri",
+          "label": "action",
+          "uri": "https://3000.gov.tw/News_Photo.aspx?n=26&sms=9056"
+        }
+      },
+      {
+        "type": "box",
+        "layout": "horizontal",
+        "contents": [
+          {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+              {
+                "type": "text",
+                "text": "電子票證",
+                "size": "xl",
+                "weight": "bold",
+                "gravity": "top",
+                "align": "center",
+                "color": "#FFFFFF"
+              },
+              {
+                "type": "text",
+                "text": "7/1 登記您常用的電子票證",
+                "wrap": true,
+                "align": "center",
+                "color": "#FFFFFF"
+              }
+            ]
+          },
+          {
+            "type": "image",
+            "url": "https://i.imgur.com/Hs84cFX.png"
+          }
+        ],
+        "action": {
+          "type": "uri",
+          "label": "action",
+          "uri": "https://3000.gov.tw/News_Photo.aspx?n=25&sms=9055"
+        }
+      },
+      {
+        "type": "box",
+        "layout": "horizontal",
+        "contents": [
+          {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+              {
+                "type": "text",
+                "text": "信用卡",
+                "weight": "bold",
+                "size": "xl",
+                "align": "center",
+                "gravity": "top",
+                "color": "#FFFFFF"
+              },
+              {
+                "type": "text",
+                "text": "7/1 登記您常用的信用卡或者簽帳金融卡",
+                "align": "center",
+                "wrap": true,
+                "color": "#FFFFFF"
+              }
+            ]
+          },
+          {
+            "type": "image",
+            "url": "https://i.imgur.com/Vzxi5qo.png"
+          }
+        ],
+        "action": {
+          "type": "uri",
+          "label": "action",
+          "uri": "https://3000.gov.tw/News_Photo.aspx?n=25&sms=9054"
+        }
+      },
+      {
+        "type": "box",
+        "layout": "horizontal",
+        "contents": [
+          {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+              {
+                "type": "text",
+                "text": "紙本卷",
+                "size": "xl",
+                "weight": "bold",
+                "align": "center",
+                "gravity": "top",
+                "color": "#FFFFFF"
+              },
+              {
+                "type": "text",
+                "text": "7/1-7/7 預定",
+                "align": "center",
+                "wrap": true,
+                "color": "#FFFFFF"
+              },
+              {
+                "type": "text",
+                "text": "7/15-7/31 領取",
+                "align": "center",
+                "wrap": true,
+                "color": "#FFFFFF"
+              }
+            ]
+          },
+          {
+            "type": "image",
+            "url": "https://i.imgur.com/9D6V4jh.png"
+          }
+        ],
+        "action": {
+          "type": "uri",
+          "label": "action",
+          "uri": "https://3000.gov.tw/News_Photo.aspx?n=25&sms=9053"
+        }
+      }
+    ]
+  },
+  "styles": {
+    "header": {
+      "backgroundColor": "#FFFFFF"
+    },
+    "body": {
+      "backgroundColor": "#000000"
+    }
+  }
+}
