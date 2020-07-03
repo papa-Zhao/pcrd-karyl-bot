@@ -59,7 +59,7 @@ def handle_user_text_message(event):
                 msg = msg.replace('#', '')
                 reply_msg = clan_user_str_processing(user_id, msg)
             except ValueError:
-                reply_msg = '你不屬於凱留水球噠噠噠成員，無法使用此指令。'
+                reply_msg = '你不屬於凱留水球啵啵啵成員，無法使用此指令。'
         else:
             reply_msg = '非戰隊戰期間，不開放指令輸入。'
     else:
@@ -83,7 +83,7 @@ def handle_group_text_message(event):
         karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92']
         karyl_group.index(group_id)
     except ValueError:
-        reply_msg = '此群組並非凱留水球噠噠噠群組，無法使用群組功能。'
+        reply_msg = '此群組並非凱留水球啵啵啵群組，無法使用群組功能。'
         reply_msg += '\n若想使用群組功能請聯絡開發者 Email: r22742557@gmail.com'
         return reply_msg
 
