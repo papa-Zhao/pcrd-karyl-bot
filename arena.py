@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+from collections import Counter
 
 # Character Image
 
@@ -191,14 +192,20 @@ def confirm_record_success(our, enemy, mode):
 
     try:
         if mode == 'upload':
+            count_our = Counter(our)
+            test1 = count_our.most_common()
             for i in range(len(our)):
                 character[our[i]]
-                # print(character[our[i]])
+                if test1[i][1] > 1:
+                    return False
 
+        count_enemy = Counter(enemy)
+        test2 = count_enemy.most_common()
         for i in range(len(enemy)):
             character[enemy[i]]
-            # print(character[enemy[i]])
-        # print(True)
+            if test2[i][1] > 1:
+                return False
+
         return True
     except KeyError:
         # print(False)
