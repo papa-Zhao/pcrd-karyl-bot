@@ -59,14 +59,17 @@ def get_id(img):
 # Output: Our Win or Lose
 def battle_result(img):
     result = None
-    template = cv2.imread('./icon/win.jpg', cv2.IMREAD_GRAYSCALE)
-    res = cv2.matchTemplate(template, img, 0)
-    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
-    if min_loc[0] < int(img.shape[1]/3):
+    win_template = cv2.imread('./icon/win.jpg', cv2.IMREAD_GRAYSCALE)
+    lose_template = cv2.imread('./icon/lose.jpg', cv2.IMREAD_GRAYSCALE)
+    win_res = cv2.matchTemplate(win_template, img, 0)
+    lose_res = cv2.matchTemplate(lose_template, img, 0)
+    min_val, max_val, win_min_loc, max_loc = cv2.minMaxLoc(win_res)
+    min_val, max_val, lose_min_loc, max_loc = cv2.minMaxLoc(lose_res)
+    if win_min_loc[0] < int(img.shape[1]/3):
         result = True
     else:
         result = False
-    return result
+    return win_min_loc, lose_min_loc, result
 
 
 # Image Preprocessing
@@ -116,12 +119,18 @@ def preprocessing(img):
 # Output: Battle Results
 def upload_battle_processing(img):
 
-    x = 35
+    # result = None
+    win_min_loc, lose_min_loc, result = battle_result(img)
+    # print(win_min_loc)
+    # print(lose_min_loc)
+    if result == True:
+        x = win_min_loc[0]+1
+    else:
+        x = lose_min_loc[0]+7
     y = 140
     # Width and Height of Cropped region
     w = 60
     h = 60
-    result = battle_result(img)
     
     # Our team Character
     team = []
@@ -132,7 +141,11 @@ def upload_battle_processing(img):
         x = x+w+7
 
     # Enemy team Character
-    x += 62
+    if result == True:
+        x = lose_min_loc[0]+7
+    else:
+        x = win_min_loc[0]+1
+    # x += 62
     enemy = []
     for i in range(5):
         crop_img = img[y:y+h, x:x+w]
@@ -198,6 +211,7 @@ def confirm_record_success(our, enemy, mode):
             test1 = count_our.most_common()
             for i in range(len(our)):
                 character[our[i]]
+                # print(character[our[i]])
                 if test1[i][1] > 1:
                     return False
 
@@ -207,6 +221,7 @@ def confirm_record_success(our, enemy, mode):
         test2 = count_enemy.most_common()
         for i in range(len(enemy)):
             character[enemy[i]]
+            # print(character[enemy[i]])
             if test2[i][1] > 1:
                 return False
 

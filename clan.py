@@ -227,7 +227,6 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
     find = False
     
     # if '開啟戰隊戰功能' in msg:
-        
     
     ############ Our Group function ############
     reply_msg = '指令錯誤，請再輸入一次！'
@@ -235,10 +234,10 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
     sh =initial_worksheet()
     ws = sh.worksheet_by_title('報刀')
 
-    if msg == '今日台服消息':
+    if msg == '今日台服消息' or msg == '今日台版消息':
         reply_msg = scrape_pcrd_sonet()
 
-    if msg == '今日日服消息':
+    if msg == '今日日服消息' or msg == '今日日服消息':
         reply_msg = scrape_pcrd_cygame()
 
     if msg == '報名查詢':
