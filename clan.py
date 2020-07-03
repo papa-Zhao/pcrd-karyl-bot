@@ -162,7 +162,7 @@ def clan_user_str_processing(user_id, msg):
     
     reply_msg = '指令錯誤，請再輸入一次！'
 
-    sh =initial_worksheet()
+    sh = initial_worksheet()
     profile = line_bot_api.get_profile(user_id)
     name = profile.display_name
 

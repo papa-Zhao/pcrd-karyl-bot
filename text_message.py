@@ -55,9 +55,11 @@ def handle_user_text_message(event):
         if clan_period():
             info = get_user_info(user_id)
             try:
+                karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92']
+                karyl_group.index(info['group_id'])
                 msg = msg.replace('#', '')
                 reply_msg = clan_user_str_processing(user_id, msg)
-            except KeyError:
+            except ValueError:
                 reply_msg = '你不屬於凱留水球噠噠噠成員，無法使用此指令。'
         else:
             reply_msg = '非戰隊戰期間，不開放指令輸入。'

@@ -57,15 +57,11 @@ def handle_user_image_message(event):
     if mode == 'not record':
         return reply_msg
 
-    print('圖片mode = ', mode)
     if mode == 'upload':
         our, enemy, win = upload_battle_processing(pre_img)
-        print('our = %s' %(our))
-        print('enemy = %s' %(enemy))
         status = confirm_record_success(our, enemy, mode)
         if status == True:
             find_status = find_arena_record(our, enemy, win, user_id)
-            # print('find_status = %s' %(find_status))
             if find_status == 'repeat':
                 reply_msg = '上傳失敗，此對戰紀錄你已上傳過。'
                 return reply_msg

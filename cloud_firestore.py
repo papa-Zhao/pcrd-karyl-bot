@@ -152,14 +152,12 @@ def get_group_member(group_id):
     group_member = data['group_member']
     return group_member
 
-def get_user_info(user_name):
+def get_user_id(user_name):
     
     doc_ref = db.collection("line_user")
     results = doc_ref.where('name','==', user_name).stream()
     data = {}
     for item in results:
-        # print(u'{} => {}'.format(item.id, item.to_dict()))
-        # data_id = item.id
         data = item.to_dict()
 
     user_id = data['user_id']
@@ -235,8 +233,6 @@ def find_arena_record(our, enemy, win, provider):
             status = 'repeat'
     
     return status
-    
-
 
 
 def search_arena_record(enemy):
