@@ -192,6 +192,8 @@ def confirm_record_success(our, enemy, mode):
 
     try:
         if mode == 'upload':
+            if len(our) == 0:
+                return False
             count_our = Counter(our)
             test1 = count_our.most_common()
             for i in range(len(our)):
@@ -199,6 +201,8 @@ def confirm_record_success(our, enemy, mode):
                 if test1[i][1] > 1:
                     return False
 
+        if len(enemy) == 0:
+            return False
         count_enemy = Counter(enemy)
         test2 = count_enemy.most_common()
         for i in range(len(enemy)):
