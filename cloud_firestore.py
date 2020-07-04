@@ -46,6 +46,15 @@ def delete_line_user(user_id):
     for doc in docs:
         doc.reference.delete()
 
+def update_user_database(user_id, status):
+    
+    doc_ref = db.collection("line_user")
+    results = doc_ref.where('user_id', '==', user_id).stream()
+    for item in results:
+        doc = doc_ref.document(item.id)
+        field_updates = {'search_self_record': status}
+        doc.update(field_updates)
+
 
 def update_line_user(user_id, data_id):
 
@@ -172,6 +181,16 @@ def get_user_info(user_id):
         data = item.to_dict()
     return data
 
+def get_user_database(user_id):
+
+    doc_ref = db.collection("line_user")
+    results = doc_ref.where('user_id','==', user_id).stream()
+    data = {}
+    for item in results:
+        data = item.to_dict()
+
+    status = data['search_self_record']
+    return status
 
 
 def insert_arena_record(our, enemy, win, provider):
@@ -235,11 +254,24 @@ def find_arena_record(our, enemy, win, provider):
     return status
 
 
-def search_arena_record(enemy):
+def search_arena_record(enemy, user_id):
     
+    way = 'global'
+
+    doc_ref = db.collection("line_user")
+    results = doc_ref.where('user_id','==', user_id).stream()
+    data = {}
+    for item in results:
+        data = item.to_dict()
+        if data['search_self_record'] == True:
+            way = 'local'
+
     doc_ref = db.collection('arena_record')
-    results = doc_ref.where('enemy', '==', enemy).where('win', '==', True).stream()
-    
+    if way == 'global':
+        results = doc_ref.where('enemy', '==', enemy).where('win', '==', True).stream()
+    else:
+        results = doc_ref.where('enemy', '==', enemy).where('win', '==', True).where('provider', 'array_contains', user_id).stream()
+
     record = []
     good = []
     bad = []

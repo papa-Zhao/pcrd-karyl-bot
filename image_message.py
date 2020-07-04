@@ -77,7 +77,7 @@ def handle_user_image_message(event):
         enemy = search_battle_processing(pre_img)
         status = confirm_record_success(enemy, enemy, mode)
         if status == True:
-            record, good, bad = search_arena_record(enemy)
+            record, good, bad = search_arena_record(enemy, user_id)
             record, good, bad = sort_arena_record(record, good, bad)
             if len(record) > 0:
                 reply_img = create_record_img(record, good, bad)

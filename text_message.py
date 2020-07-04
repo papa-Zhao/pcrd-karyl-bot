@@ -49,8 +49,10 @@ def handle_user_text_message(event):
     user_id = event.source.user_id
 
     msg = strQ2B(msg)
-
-    if '#' in msg:
+    if '!' == msg[0]:
+        msg = msg[1:]
+        reply_msg = user_set_str_processing(user_id, msg)
+    elif '#' in msg:
         if clan_period():
             info = get_user_info(user_id)
             try:

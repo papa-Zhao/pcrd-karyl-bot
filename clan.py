@@ -219,6 +219,39 @@ def myAlign(string, length=0):
 		slen += 1
 	return re
 
+def user_set_str_processing(user_id, msg):
+
+    reply_msg = '指令錯誤，請再輸入一次！'
+
+    if msg == '今日台服消息' or msg == '今日台版消息':
+        reply_msg = scrape_pcrd_sonet()
+
+    if msg == '今日日服消息' or msg == '今日日版消息':
+        reply_msg = scrape_pcrd_cygame()
+    
+    if '查詢方法' == msg:
+        status = get_user_database(user_id)
+        if status == True:
+            method = '個人資料庫'
+        else:
+            method = '全體資料庫'
+        reply_msg = '你目前作業查詢方法為: ' + method
+
+    if '設定查詢:' in msg :
+        msg = msg.replace('設定查詢:', '')
+        print(msg)
+        if msg == '個人':
+            status = True
+        elif msg == '全體':
+            status = False
+        else:
+            reply_msg = '輸入格式錯誤，請重新輸入。'
+            return reply_msg
+        update_user_database(user_id, status)
+        reply_msg = '已更改你的作業查詢方法為: ' + msg + '資料庫'
+
+    return reply_msg
+
 def clan_group_find_str_processing(group_id, user_id, user_name, msg):
     
 
