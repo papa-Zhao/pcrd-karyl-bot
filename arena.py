@@ -19,7 +19,7 @@ character = {100:'似似花',101:'日和',102:'茉莉',103:'真步',104:'香織'
              170:'亞里莎',171:'嘉夜',172:'優依',173:'克莉絲緹娜',174:'佩可(夏日)',175:'可可羅(夏日)',176:'鈴苺(夏日)',177:'凱留(夏日)',178:'綾音(聖誕節)',179:'真琴(夏日)',1710:'卯月',
              180:'日和(新年)',181:'優依(新年)',182:'怜(新年)',183:'惠理子(情人節)',184:'靜流(情人節)',185:'安',186:'露',187:'古蕾婭',188:'空花(大江戶)',189:'香織(夏日)',1810:'凜',
              190:'真步(夏日)',191:'碧(插班生)',192:'克羅伊',193:'琪愛兒',194:'優妮',195:'鏡華(萬聖節)',196:'禊(萬聖節)',197:'美美(萬聖節)',198:'露娜',199:'克(聖誕節)',1910:'本田',
-             1100:'鈴(巡者)',1101:'真陽(遊俠)',1102:'璃乃(奇幻)',1103:'步未(幻境)',1104:'佩可(公主型態)',1105:'可可羅(公主型態)',1106:'祈梨',1107:'優依(公主型態)',1108:'杏奈(夏日)',
+             11000:'鈴(巡者)',11001:'真陽(遊俠)',11002:'璃乃(奇幻)',11003:'步未(幻境)',11004:'佩可(公主型態)',11005:'可可羅(公主型態)',11006:'祈梨',11007:'優依(公主型態)',11008:'杏奈(夏日)',
              300:'優花梨(六星)',301:'日和(六星)',302:'璃乃(六星)',303:'美冬(六星)',
              310:'怜(六星)',311:'真布(六星)',312:'初音(六星)',313:'莉瑪(六星)',
              320:'伊緒(六星)',321:'優依(六星)',322:'朱希(六星)',323:'佩可(六星)',
@@ -50,7 +50,11 @@ def get_id(img):
         index = str(index+1)
     else:
         index = str(index)
-    id = int(index + row + column)
+    
+    if row == '10':
+        id = int(index + row + '0' + column)
+    else:
+        id = int(index + row + column)
     return id
 
 
@@ -265,7 +269,7 @@ def confirm_record_success(our, enemy, mode):
             test1 = count_our.most_common()
             for i in range(len(our)):
                 character[our[i]]
-                # print(character[our[i]])
+                print(character[our[i]])
                 if test1[i][1] > 1:
                     return False
 
@@ -275,7 +279,8 @@ def confirm_record_success(our, enemy, mode):
         test2 = count_enemy.most_common()
         for i in range(len(enemy)):
             character[enemy[i]]
-            # print(character[enemy[i]])
+            print(character[enemy[i]])
+            print(enemy[i])
             if test2[i][1] > 1:
                 return False
 
@@ -296,7 +301,9 @@ def create_record_img(record, good, bad):
         for j in range(len(record[0])):
             icon = record[i][j]
             division = 0
-            if icon > 1000:
+            if icon > 10000:
+                division = 10000
+            elif icon > 1000:
                 division = 1000
             else:
                 division = 100
@@ -304,7 +311,10 @@ def create_record_img(record, good, bad):
             index = int(icon/division)-1
             # print('index=%d' %(index))
             icon %= division
-            division = int(division/10)
+            if division == 10000:
+                division = int(division/100)
+            else:
+                division = int(division/10)
             pic_row = int(icon/division)*62
             pic_col = int(icon%division)*62
             charas = cv2.imread(charas_all[index])
