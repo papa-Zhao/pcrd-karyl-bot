@@ -58,7 +58,12 @@ def handle_user_image_message(event):
         return reply_msg
 
     if mode == 'upload':
-        our, enemy, win = upload_battle_processing(pre_img)
+        where = decide_where(pre_img)
+        if where == 'china':
+            our, enemy, win = upload_battle_processing_china(pre_img)
+        else:
+            our, enemy, win = upload_battle_processing(pre_img)
+
         status = confirm_record_success(our, enemy, mode)
         if status == True:
             find_status = find_arena_record(our, enemy, win, user_id)
@@ -73,6 +78,7 @@ def handle_user_image_message(event):
         status = confirm_record_success(enemy, enemy, mode)
         if status == True:
             record, good, bad = search_arena_record(enemy)
+            record, good, bad = sort_arena_record(record, good, bad)
             if len(record) > 0:
                 reply_img = create_record_img(record, good, bad)
                 url = upload_album_image(reply_img)

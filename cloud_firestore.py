@@ -252,3 +252,22 @@ def search_arena_record(enemy):
         bad.append(data['bad'])
         
     return record, good, bad
+
+
+def sort_arena_record(record, good, bad):
+    records = []
+    for i in range(len(record)):
+        score = int(good[i]) - 2*int(bad[i])
+        records.append([record[i], good[i], bad[i], score])
+
+    records= sorted(records, key = lambda s: s[3], reverse = True)
+
+    record = []
+    good = []
+    bad = []
+    for i in range(len(records)):
+        record.append(records[i][0])
+        good.append(records[i][1])
+        bad.append(records[i][2])
+
+    return record, good, bad

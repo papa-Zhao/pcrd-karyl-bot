@@ -98,7 +98,9 @@ def handle_join(event):
         karyl_group.index(group_id)
     except ValueError:
         reply_msg = '此群組並非凱留水球噠噠噠群組，無法使用群組功能。'
-        reply_msg += '\n若想使用群組功能請聯絡開發者 Email: r22742557@gmail.com'
+        reply_msg += '\n若想使用群組功能請聯絡開發者'
+        reply_msg += '\nEmail: r22742557@gmail.com'
+        reply_msg += '\nLine: robert122'
         send_msg = TextSendMessage(text= reply_msg )
         line_bot_api.reply_message(event.reply_token, send_msg)
         line_bot_api.leave_group(group_id)
@@ -186,6 +188,8 @@ def handle_message(event):
             send_msg = ImageSendMessage(original_content_url=reply_msg, preview_image_url=reply_msg)
             line_bot_api.reply_message(event.reply_token, send_msg)
         else:
+            #with open('_quick_reply.json', newline='') as jsonfile:
+            #    data = json.load(jsonfile)
             send_msg = TextSendMessage(text= reply_msg )
             line_bot_api.reply_message(event.reply_token, send_msg)
 

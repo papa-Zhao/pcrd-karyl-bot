@@ -71,6 +71,20 @@ def battle_result(img):
         result = False
     return win_min_loc, lose_min_loc, result
 
+def decide_where(img):
+    result = None
+    china_template = cv2.imread('./icon/china.png', cv2.IMREAD_GRAYSCALE)
+    taiwan_template = cv2.imread('./icon/taiwan.png', cv2.IMREAD_GRAYSCALE)
+    china_res = cv2.matchTemplate(china_template, img, 0)
+    taiwan_res = cv2.matchTemplate(taiwan_template, img, 0)
+    china_min_val, china_max_val, china_min_loc, max_loc = cv2.minMaxLoc(china_res)
+    taiwan_min_val, taiwan_max_val, taiwan_min_loc, max_loc = cv2.minMaxLoc(taiwan_res)
+    if china_min_val < taiwan_min_val:
+        return 'china'
+    else:
+        return 'taiwan'
+
+
 
 # Image Preprocessing
 # Input: Original Image
@@ -112,6 +126,46 @@ def preprocessing(img):
     
     record =  cv2.resize(record, (900, 300), interpolation=cv2.INTER_CUBIC)
     return status, record
+
+
+def upload_battle_processing_china(img):
+
+    
+    # result = None
+    win_min_loc, lose_min_loc, result = battle_result(img)
+    print(win_min_loc)
+    print(lose_min_loc)
+    if result == True:
+        x = win_min_loc[0]+1
+    else:
+        x = lose_min_loc[0]+8
+    x = 35
+    y = 130
+    # Width and Height of Cropped region
+    w = 60
+    h = 60
+    
+    # Our team Character
+    team = []
+    for i in range(5):
+        crop_img = img[y:y+h, x:x+w]
+        team.append(get_id(crop_img))
+        x = x+w+7
+
+    
+    # Enemy team Character
+    if result == True:
+        x = lose_min_loc[0]+8
+    else:
+        x = win_min_loc[0]+1
+    # x += 62
+    enemy = []
+    for i in range(5):
+        crop_img = img[y:y+h, x:x+w]
+        enemy.append(get_id(crop_img))
+        x = x+w+7
+        
+    return team,enemy,result
 
 
 # Image Preprocessing
