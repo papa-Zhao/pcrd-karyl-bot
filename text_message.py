@@ -118,7 +118,7 @@ def handle_key_message(event):
     key = ['街頭霸王', '開車', '表情包', '聯盟戰', '可愛', '抽卡', '吸貓']
     reply_msg = ''
 
-
+    
     ##########  Image reply  ##########
     for i in range(len(key)):
         if key[i] in msg:

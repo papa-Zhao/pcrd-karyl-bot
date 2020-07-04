@@ -228,7 +228,7 @@ def find_arena_record(our, enemy, win, provider):
         find = True
         data_id = item.id
         data = item.to_dict()
-        if(win == data['win']):
+        if win == data['win']:
             data['good'] += 1
         else:
             data['bad'] += 1
@@ -242,12 +242,8 @@ def find_arena_record(our, enemy, win, provider):
             update_line_user(provider, data_id)
             data['provider'].append(provider)
             field_updates = {'updated': nowTime, "good": data['good'], 'bad': data['bad'], 'provider': data['provider']}
-            update_arena_record(item.id, field_updates)
+            update_arena_record(data_id, field_updates)
             status = 'success'
-        elif win != data['win']:
-            field_updates = {'updated': nowTime, "good": data['good'], 'bad': data['bad'], 'provider': data['provider']}
-            update_arena_record(item.id, field_updates)
-            status = 'updated'
         else:
             status = 'repeat'
     
@@ -268,9 +264,9 @@ def search_arena_record(enemy, user_id):
 
     doc_ref = db.collection('arena_record')
     if way == 'global':
-        results = doc_ref.where('enemy', '==', enemy).where('win', '==', True).stream()
+        results = doc_ref.where('enemy', '==', enemy).stream()
     else:
-        results = doc_ref.where('enemy', '==', enemy).where('win', '==', True).where('provider', 'array_contains', user_id).stream()
+        results = doc_ref.where('enemy', '==', enemy).where('provider', 'array_contains', user_id).stream()
 
     record = []
     good = []

@@ -63,6 +63,7 @@ def callback():
 def root():
     return "Root Page"
 
+
 @handler.add(PostbackEvent)
 def handle_follow(event):
     print('msg = ', event.postback.data)
@@ -160,6 +161,7 @@ def handle_leave(event):
     print("leave Event =", event)
     print('群組踢除: ', event.source.group_id)
 
+
 @handler.add(MessageEvent, message=LocationMessage)
 def handle_message(event):
 
@@ -172,8 +174,6 @@ def handle_message(event):
     reply_msg += '\nlongitude = ' + str(longitude)
     send_msg = TextSendMessage(text= reply_msg )
     line_bot_api.reply_message(event.reply_token, send_msg)
-
-    
 
 
 @handler.add(MessageEvent, message=ImageMessage)
@@ -197,11 +197,7 @@ def handle_message(event):
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
 
-
-    # user_id = event.source.user_id
-    # line_bot_api.link_rich_menu_to_user(user_id, 'richmenu-36d5000e0e2bd620a04a7ec9facfcf1d')
     reply_msg = ''
-
     msg_source = event.source.type
 
     if msg_source == 'group':

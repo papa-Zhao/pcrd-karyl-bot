@@ -280,7 +280,7 @@ def confirm_record_success(our, enemy, mode):
         for i in range(len(enemy)):
             character[enemy[i]]
             # print(character[enemy[i]])
-            # print(enemy[i])
+            print(enemy[i])
             if test2[i][1] > 1:
                 return False
 
