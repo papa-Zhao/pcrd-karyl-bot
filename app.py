@@ -197,6 +197,7 @@ def handle_message(event):
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
 
+
     # user_id = event.source.user_id
     # line_bot_api.link_rich_menu_to_user(user_id, 'richmenu-36d5000e0e2bd620a04a7ec9facfcf1d')
     reply_msg = ''

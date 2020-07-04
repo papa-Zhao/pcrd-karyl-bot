@@ -23,8 +23,8 @@ def create_line_user(name, group_id, user_id):
 
     initial_score = 5
     doc_ref = db.collection("line_user")
-    keys = ['name', 'group_id', 'user_id', 'data', 'score']
-    values =[name, group_id, user_id, [], initial_score]
+    keys = ['name', 'group_id', 'user_id', 'data', 'score', 'search_self_record']
+    values =[name, group_id, user_id, [], initial_score, False]
     records = dict(zip(keys, values))
     doc_ref.add(records)
 
