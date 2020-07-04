@@ -137,8 +137,8 @@ def upload_battle_processing_china(img):
     
     # result = None
     win_min_loc, lose_min_loc, result = battle_result(img)
-    print(win_min_loc)
-    print(lose_min_loc)
+    # print(win_min_loc)
+    # print(lose_min_loc)
     if result == True:
         x = win_min_loc[0]+1
     else:
@@ -269,7 +269,7 @@ def confirm_record_success(our, enemy, mode):
             test1 = count_our.most_common()
             for i in range(len(our)):
                 character[our[i]]
-                print(character[our[i]])
+                # print(character[our[i]])
                 if test1[i][1] > 1:
                     return False
 
@@ -279,8 +279,8 @@ def confirm_record_success(our, enemy, mode):
         test2 = count_enemy.most_common()
         for i in range(len(enemy)):
             character[enemy[i]]
-            print(character[enemy[i]])
-            print(enemy[i])
+            # print(character[enemy[i]])
+            # print(enemy[i])
             if test2[i][1] > 1:
                 return False
 
