@@ -128,11 +128,9 @@ def handle_join(event):
     group_profile = line_bot_api.get_group_member_profile(group_id, user_id)
     name = group_profile.display_name
 
-    # update_line_group(name, user_id, group_id)
-
     reply_msg = name + "，你就是我新的身體嗎?"
     line_bot_api.reply_message(event.reply_token, TextMessage(text=reply_msg))
-    print("JoinEvent =", MemberJoinedEvent)
+
 
 
 @handler.add(MemberLeftEvent)
@@ -180,18 +178,20 @@ def handle_message(event):
 def handle_message(event):
 
     msg_source = event.source.type
-
     reply_msg = ''
     if msg_source == 'user':
         reply_msg = handle_user_image_message(event)
-        if 'https:' in reply_msg:
-            send_msg = ImageSendMessage(original_content_url=reply_msg, preview_image_url=reply_msg)
-            line_bot_api.reply_message(event.reply_token, send_msg)
-        else:
-            #with open('_quick_reply.json', newline='') as jsonfile:
-            #    data = json.load(jsonfile)
-            send_msg = TextSendMessage(text= reply_msg )
-            line_bot_api.reply_message(event.reply_token, send_msg)
+    else:
+        reply_msg = handle_group_image_message(event)
+
+    if 'https:' in reply_msg:
+        send_msg = ImageSendMessage(original_content_url=reply_msg, preview_image_url=reply_msg)
+        line_bot_api.reply_message(event.reply_token, send_msg)
+    elif reply_msg != '':
+        #with open('_quick_reply.json', newline='') as jsonfile:
+        #    data = json.load(jsonfile)
+        send_msg = TextSendMessage(text= reply_msg )
+        line_bot_api.reply_message(event.reply_token, send_msg)
 
 
 @handler.add(MessageEvent, message=TextMessage)
@@ -211,7 +211,7 @@ def handle_message(event):
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
-    # app.debug = True
-    # app.run()
+    # port = int(os.environ.get('PORT', 5000))
+    # app.run(host='0.0.0.0', port=port)
+    app.debug = True
+    app.run()

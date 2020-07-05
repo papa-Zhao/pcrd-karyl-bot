@@ -256,7 +256,6 @@ def find_arena_record(our, enemy, win, provider):
 def search_arena_record(enemy, user_id):
     
     way = 'global'
-
     doc_ref = db.collection("line_user")
     results = doc_ref.where('user_id','==', user_id).stream()
     data = {}

@@ -30,19 +30,22 @@ character = {100:'似似花',101:'日和',102:'茉莉',103:'真步',104:'香織'
 # Output: Character ID
 def get_id(img):
     charas_all = ['./icon/charas_a_gray.png', './icon/charas_gray.png', './icon/charas6x_gray.png']
-    
+
     min = 1e10
     loc = None
     index = None
     
     for i in range(len(charas_all)):
         charas = cv2.imread(charas_all[i], cv2.IMREAD_GRAYSCALE)
-        res = cv2.matchTemplate(charas,img,0)
+        res = cv2.matchTemplate(charas,img, cv2.TM_SQDIFF)
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
         if(min_val < min):
             index = i
             min = min_val
             loc = min_loc
+
+    if min > 3e6:
+        return 0
 
     row = str(int(loc[1]/60))
     column = str(int(loc[0]/60))
@@ -143,16 +146,16 @@ def upload_battle_processing_china(img):
         x = win_min_loc[0]+1
     else:
         x = lose_min_loc[0]+8
-    x = 35
-    y = 130
+    y = 140
     # Width and Height of Cropped region
     w = 60
-    h = 60
+    h = 40
+    border = 5
     
     # Our team Character
     team = []
     for i in range(5):
-        crop_img = img[y:y+h, x:x+w]
+        crop_img = img[y:y+h, x+border:x+w-border]
         team.append(get_id(crop_img))
         x = x+w+7
 
@@ -165,7 +168,7 @@ def upload_battle_processing_china(img):
     # x += 62
     enemy = []
     for i in range(5):
-        crop_img = img[y:y+h, x:x+w]
+        crop_img = img[y:y+h, x+border:x+w-border]
         enemy.append(get_id(crop_img))
         x = x+w+7
         
@@ -177,6 +180,7 @@ def upload_battle_processing_china(img):
 # Output: Battle Results
 def upload_battle_processing(img):
 
+    
     # result = None
     win_min_loc, lose_min_loc, result = battle_result(img)
     # print(win_min_loc)
@@ -185,19 +189,21 @@ def upload_battle_processing(img):
         x = win_min_loc[0]+1
     else:
         x = lose_min_loc[0]+7
-    y = 140
+    y = 150
     # Width and Height of Cropped region
     w = 60
-    h = 60
+    h = 40
+    border = 5
+    
     
     # Our team Character
     team = []
     for i in range(5):
-        crop_img = img[y:y+h, x:x+w]
+        crop_img = img[y:y+h, x+border:x+w-border]
         team.append(get_id(crop_img))
-        # cv2.imwrite('./test/our_' + str(i) +'.jpg', crop_img)
         x = x+w+7
 
+    
     # Enemy team Character
     if result == True:
         x = lose_min_loc[0]+7
@@ -206,12 +212,11 @@ def upload_battle_processing(img):
     # x += 62
     enemy = []
     for i in range(5):
-        crop_img = img[y:y+h, x:x+w]
+        crop_img = img[y:y+h, x+border:x+w-border]
         enemy.append(get_id(crop_img))
-        # cv2.imwrite('./test/enemy_' + str(i) +'.jpg', crop_img)
         x = x+w+7
         
-    return team, enemy, result
+    return team,enemy,result
 
 
 # Image Preprocessing
@@ -269,7 +274,7 @@ def confirm_record_success(our, enemy, mode):
             test1 = count_our.most_common()
             for i in range(len(our)):
                 character[our[i]]
-                # print(character[our[i]])
+                print(character[our[i]])
                 if test1[i][1] > 1:
                     return False
 
@@ -279,7 +284,7 @@ def confirm_record_success(our, enemy, mode):
         test2 = count_enemy.most_common()
         for i in range(len(enemy)):
             character[enemy[i]]
-            # print(character[enemy[i]])
+            print(character[enemy[i]])
             # print(enemy[i])
             if test2[i][1] > 1:
                 return False

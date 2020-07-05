@@ -39,6 +39,18 @@ def content_to_image(content):
 
     return img
 
+def handle_group_image_message(event):
+
+    reply_msg = ''
+
+    return reply_msg
+
+def determine_arena_img(img):
+
+    if img.shape[0] > img.shape[1]:
+        return False
+    else:
+        return True
 
 
 def handle_user_image_message(event):
@@ -52,18 +64,23 @@ def handle_user_image_message(event):
     message_content = line_bot_api.get_message_content(msg_id)
     content = message_content.content
     img = content_to_image(content)
+    
+    corrtect = determine_arena_img(img)
+    if corrtect == False:
+        reply_msg = ''
+        return reply_msg
+
     mode, pre_img = preprocessing(img)
     
     if mode == 'not record':
         return reply_msg
 
     if mode == 'upload':
-        where = decide_where(pre_img)
-        if where == 'china':
+        region = decide_where(pre_img)
+        if region == 'china':
             our, enemy, win = upload_battle_processing_china(pre_img)
         else:
             our, enemy, win = upload_battle_processing(pre_img)
-
         status = confirm_record_success(our, enemy, mode)
         if status == True:
             find_status = find_arena_record(our, enemy, win, user_id)
@@ -75,7 +92,7 @@ def handle_user_image_message(event):
             reply_msg = '上傳失敗，圖片讀取錯誤。'
     else:
         enemy = search_battle_processing(pre_img)
-        status = confirm_record_success(enemy, enemy, mode)
+        status = confirm_record_success([], enemy, mode)
         if status == True:
             record, good, bad = search_arena_record(enemy, user_id)
             record, good, bad = sort_arena_record(record, good, bad)
