@@ -200,7 +200,10 @@ def insert_arena_record(our, enemy, win, provider):
     nowTime = datetime.now().strftime(ISOTIMEFORMAT)
 
     keys = ['our', 'enemy', 'win', 'updated', 'good', 'bad', 'provider']
-    values =[our , enemy , win, nowTime, 1, 0, [provider]]
+    if win == True:
+        values =[our , enemy , win, nowTime, 1, 0, [provider]]
+    else:
+        values =[our , enemy , win, nowTime, 0, 1, [provider]]
     records = dict(zip(keys, values))
 
     return doc_ref.add(records)
@@ -228,7 +231,7 @@ def find_arena_record(our, enemy, win, provider):
         find = True
         data_id = item.id
         data = item.to_dict()
-        if win == data['win']:
+        if win == True:
             data['good'] += 1
         else:
             data['bad'] += 1
