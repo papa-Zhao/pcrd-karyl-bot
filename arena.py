@@ -44,6 +44,7 @@ def get_id(img):
             min = min_val
             loc = min_loc
 
+    # print('min = ', min)
     if min > 3e6:
         return 0
 
@@ -228,17 +229,17 @@ def search_battle_processing(img):
     y = 27
     # Width and Height of Cropped region
     w = 60
-    h = 39
-
+    h = 37
+    
     # Enemy team Character
     enemy = []
     for i in range(5):
         crop_img = img[y:y+h, x:x+w]
         crop_img = cv2.resize(crop_img, (60, 60), interpolation=cv2.INTER_CUBIC)
+        crop_img = crop_img[15:50, 10:50]
         enemy.append(get_id(crop_img))
-        # cv2.imwrite('./test/enemy_' + str(i) +'.jpg', crop_img)
         x = x+w+7
-        
+    
     return enemy
 
 
