@@ -28,10 +28,8 @@ def lineNotifyMessage(token, msg):
         "Authorization": "Bearer " + token,
         "Content-Type": "application/x-www-form-urlencoded"
     }
-
-    payload = {'message': msg}
     
-    # Post 封包出去給 Line Notify
+    payload = {'message': msg}
     r = requests.post(
         "https://notify-api.line.me/api/notify",
         headers=headers, 

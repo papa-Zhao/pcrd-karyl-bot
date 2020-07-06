@@ -179,10 +179,10 @@ def handle_message(event):
 
     msg_source = event.source.type
     reply_msg = ''
-    if msg_source == 'user':
-        reply_msg = handle_user_image_message(event)
-    else:
+    if msg_source == 'group':
         reply_msg = handle_group_image_message(event)
+    else:
+        reply_msg = handle_user_image_message(event)
 
     if 'https:' in reply_msg:
         send_msg = ImageSendMessage(original_content_url=reply_msg, preview_image_url=reply_msg)

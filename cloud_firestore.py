@@ -46,17 +46,8 @@ def delete_line_user(user_id):
     for doc in docs:
         doc.reference.delete()
 
-def update_user_database(user_id, status):
-    
-    doc_ref = db.collection("line_user")
-    results = doc_ref.where('user_id', '==', user_id).stream()
-    for item in results:
-        doc = doc_ref.document(item.id)
-        field_updates = {'search_self_record': status}
-        doc.update(field_updates)
 
-
-def update_line_user(user_id, data_id):
+def update_line_user_data(user_id, data_id):
 
     doc_ref = db.collection("line_user")
     results = doc_ref.where('user_id', '==', user_id).stream()
@@ -67,6 +58,16 @@ def update_line_user(user_id, data_id):
             data['data'].append(data_id)
             field_updates = {'data': data['data'], 'score': data['score']+5}
             doc.update(field_updates)
+
+
+def update_user_database(user_id, status):
+    
+    doc_ref = db.collection("line_user")
+    results = doc_ref.where('user_id', '==', user_id).stream()
+    for item in results:
+        doc = doc_ref.document(item.id)
+        field_updates = {'search_self_record': status}
+        doc.update(field_updates)
 
 
 def create_line_group(group_name, group_id):
@@ -238,11 +239,11 @@ def find_arena_record(our, enemy, win, provider):
 
     if find == False:
         data_ref = insert_arena_record(our, enemy, win, provider)
-        update_line_user(provider, data_ref[1].id)
+        update_line_user_data(provider, data_ref[1].id)
         status = 'success'
     else:
         if provider not in data['provider']:
-            update_line_user(provider, data_id)
+            update_line_user_data(provider, data_id)
             data['provider'].append(provider)
             field_updates = {'updated': nowTime, "good": data['good'], 'bad': data['bad'], 'provider': data['provider']}
             update_arena_record(data_id, field_updates)
@@ -256,6 +257,7 @@ def find_arena_record(our, enemy, win, provider):
 def search_arena_record(enemy, user_id):
     
     way = 'global'
+
     doc_ref = db.collection("line_user")
     results = doc_ref.where('user_id','==', user_id).stream()
     data = {}
@@ -300,4 +302,96 @@ def sort_arena_record(record, good, bad):
         good.append(records[i][1])
         bad.append(records[i][2])
 
+    return record, good, bad
+
+
+def insert_group_arena_record(our, enemy, win, group_id):
+
+    doc_ref = db.collection("group_arena_record")
+    ISOTIMEFORMAT = '%Y-%m-%d %H:%M:%S'
+    nowTime = datetime.now().strftime(ISOTIMEFORMAT)
+
+    keys = ['our', 'enemy', 'updated', 'good', 'bad', 'group_id', 'notes']
+    if win == True:
+        values =[our, enemy, nowTime, 1, 0, group_id, []]
+    else:
+        values =[our, enemy, nowTime, 0, 1, group_id, []]
+
+    records = dict(zip(keys, values))
+    return doc_ref.add(records)
+
+
+def update_line_group_data(group_id, data_id):
+
+    doc_ref = db.collection("line_group")
+    results = doc_ref.where('group_id', '==', group_id).stream()
+    for item in results:
+        doc = doc_ref.document(item.id)
+        data = item.to_dict()
+        try:
+            if data_id not in data['data']:
+                data['data'].append(data_id)
+                field_updates = {'data': data['data']}
+                doc.update(field_updates)
+        except KeyError:
+            field_updates = {'data': [data_id]}
+            doc.update(field_updates)
+
+
+def update_group_arena_record(data_id, data):
+    
+    doc_ref = db.collection('group_arena_record')
+    doc = doc_ref.document(data_id)
+    doc.update(data)
+
+
+def find_group_arena_record(our, enemy, win, group_id):
+    
+    status = ''
+    ISOTIMEFORMAT = '%Y-%m-%d %H:%M:%S'
+    nowTime = datetime.now().strftime(ISOTIMEFORMAT)
+    
+    doc_ref = db.collection('group_arena_record')
+    results = doc_ref.where('our', '==', our).where('enemy', '==', enemy).where('group_id', '==', group_id).stream()
+    
+    data_id = None
+    find = False
+    for item in results:
+        find = True
+        print(find)
+        data_id = item.id
+        data = item.to_dict()
+        if win == True:
+            data['good'] += 1
+        else:
+            data['bad'] += 1
+
+    if find == False:
+        data_ref = insert_group_arena_record(our, enemy, win, group_id)
+        update_line_group_data(group_id, data_ref[1].id)
+        status = 'success'
+    else:
+        field_updates = {'updated': nowTime, "good": data['good'], 'bad': data['bad']}
+        update_group_arena_record(data_id, field_updates)
+        status = 'success'
+    
+    return status
+
+
+def search_group_arena_record(enemy, group_id):
+    
+    doc_ref = db.collection('group_arena_record')
+    results = doc_ref.where('enemy', '==', enemy).where('group_id', '==', group_id).stream()
+
+    record = []
+    good = []
+    bad = []
+    find = False
+    for item in results:
+        find = True
+        data = item.to_dict()
+        record.append(data['our'])
+        good.append(data['good'])
+        bad.append(data['bad'])
+        
     return record, good, bad

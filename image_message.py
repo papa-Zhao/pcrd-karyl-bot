@@ -42,8 +42,48 @@ def content_to_image(content):
 def handle_group_image_message(event):
 
     reply_msg = ''
+    msg_id = event.message.id
+    group_id = event.source.group_id
+    print('group_id = ', group_id)
+
+    message_content = line_bot_api.get_message_content(msg_id)
+    content = message_content.content
+    img = content_to_image(content)
+    corrtect = determine_arena_img(img)
+
+    if corrtect == False:
+        return reply_msg
+
+    mode, pre_img = preprocessing(img)
+    if mode == 'not record':
+        return reply_msg
+
+    if mode == 'upload':
+        region = decide_where(pre_img)
+        if region == 'china':
+            our, enemy, win = upload_battle_processing_china(pre_img)
+        else:
+            our, enemy, win = upload_battle_processing(pre_img)
+        status = confirm_record_success(our, enemy, mode)
+        if status == True:
+            find_status = find_group_arena_record(our, enemy, win, group_id)
+            reply_msg = '紀錄已為你儲存'
+    else:
+        enemy = search_battle_processing(pre_img)
+        status = confirm_record_success([], enemy, mode)
+        if status == True:
+            record, good, bad = search_group_arena_record(enemy, group_id)
+            record, good, bad = sort_arena_record(record, good, bad)
+            if len(record) > 0:
+                reply_img = create_record_img(record, good, bad)
+                url = upload_album_image(reply_img)
+                return url
+            else:
+                reply_msg = '此對戰紀錄不存在'
+                return reply_msg
 
     return reply_msg
+
 
 def determine_arena_img(img):
 
