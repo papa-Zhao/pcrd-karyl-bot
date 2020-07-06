@@ -93,9 +93,9 @@ def handle_follow(event):
 def handle_join(event):
 
     group_id = event.source.group_id
-
+    print('group_id = ', group_id)
     try:
-        karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92']
+        karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92', 'C8c5635612e8d8b6856f805b7522a56f0']
         karyl_group.index(group_id)
     except ValueError:
         reply_msg = '此群組並非凱留水球噠噠噠群組，無法使用群組功能。'
@@ -211,7 +211,7 @@ def handle_message(event):
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
-    # app.debug = True
-    # app.run()
+    # port = int(os.environ.get('PORT', 5000))
+    # app.run(host='0.0.0.0', port=port)
+    app.debug = True
+    app.run()

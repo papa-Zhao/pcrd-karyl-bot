@@ -23,6 +23,21 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 
+def lineNotifyMessage(token, msg):
+    headers = {
+        "Authorization": "Bearer " + token,
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+
+    payload = {'message': msg}
+    
+    # Post 封包出去給 Line Notify
+    r = requests.post(
+        "https://notify-api.line.me/api/notify",
+        headers=headers, 
+        params=payload)
+    return r.status_code
+
 def scrape_pcrd_sonet():
 
     sonet_url = "http://www.princessconnect.so-net.tw"
@@ -74,4 +89,7 @@ def scrape_pcrd_sonet():
 if __name__ == "__main__":
     msg = scrape_pcrd_sonet()
     if msg != '今日台服無新消息':
-        line_bot_api.push_message('C423cd7dee7263b3a2db0e06ae06d095e', TextSendMessage(text=msg))
+        token = '211xTS8smpx11S7tO8TpDwWR9BIzlfnEdYWJMUCX26o'
+        result = lineNotifyMessage(token, msg)
+        print(result)
+        # line_bot_api.push_message('C423cd7dee7263b3a2db0e06ae06d095e', TextSendMessage(text=msg))

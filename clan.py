@@ -270,7 +270,7 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
     if msg == '今日台服消息' or msg == '今日台版消息':
         reply_msg = scrape_pcrd_sonet()
 
-    if msg == '今日日服消息' or msg == '今日日服消息':
+    if msg == '今日日服消息' or msg == '今日日版消息':
         reply_msg = scrape_pcrd_cygame()
 
     if msg == '報名查詢':

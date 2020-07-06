@@ -23,6 +23,22 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 
+def lineNotifyMessage(token, msg):
+    headers = {
+        "Authorization": "Bearer " + token, # 權杖，Bearer 的空格不要刪掉呦
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+
+    payload = {'message': msg}
+    
+    # Post 封包出去給 Line Notify
+    r = requests.post(
+        "https://notify-api.line.me/api/notify",
+        headers=headers, 
+        params=payload)
+    return r.status_code
+
+
 def scrape_pcrd_cygame():
     cygame_url = "https://priconne-redive.jp"
     response = requests.get(cygame_url + '/news')
@@ -68,4 +84,7 @@ def scrape_pcrd_cygame():
 if __name__ == "__main__":
     msg = scrape_pcrd_cygame()
     if msg != '今日日服無新消息':
-        line_bot_api.push_message('C423cd7dee7263b3a2db0e06ae06d095e', TextSendMessage(text=msg))
+        token = '211xTS8smpx11S7tO8TpDwWR9BIzlfnEdYWJMUCX26o'
+        result = lineNotifyMessage(token, msg)
+        print(result)
+        # line_bot_api.push_message('C423cd7dee7263b3a2db0e06ae06d095e', TextSendMessage(text=msg))

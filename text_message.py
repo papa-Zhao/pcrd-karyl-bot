@@ -82,7 +82,7 @@ def handle_group_text_message(event):
 
     try:
 
-        karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92']
+        karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92', 'C8c5635612e8d8b6856f805b7522a56f0']
         karyl_group.index(group_id)
     except ValueError:
         reply_msg = '此群組並非凱留水球啵啵啵群組，無法使用群組功能。'
@@ -92,9 +92,23 @@ def handle_group_text_message(event):
 
     msg = strQ2B(msg)
     if '!' == msg[0]:
+        try:
+            karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92']
+            karyl_group.index(group_id)
+        except ValueError:
+            reply_msg = '此群組並非凱留水球啵啵啵群組，無法使用群組功能。'
+        return reply_msg
+
         msg = msg[1:]
         reply_msg = clan_group_find_str_processing(group_id, user_id, user_name, msg)
     elif '#' == msg[0]:
+        try:
+            karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92']
+            karyl_group.index(group_id)
+        except ValueError:
+            reply_msg = '此群組並非凱留水球啵啵啵群組，無法使用群組功能。'
+        return reply_msg
+
         group_member = get_group_member(group_id)
         try:
             group_member[user_name]
