@@ -20,6 +20,8 @@ from linebot.models import (
 import configparser
 import os
 import json
+import redis
+
 
 from cloud_firestore import *
 from text_message import *
@@ -187,6 +189,7 @@ def handle_message(event):
     if 'https:' in reply_msg:
         send_msg = ImageSendMessage(original_content_url=reply_msg, preview_image_url=reply_msg)
         line_bot_api.reply_message(event.reply_token, send_msg)
+
     elif reply_msg != '':
         #with open('_quick_reply.json', newline='') as jsonfile:
         #    data = json.load(jsonfile)
@@ -199,6 +202,8 @@ def handle_message(event):
 
     reply_msg = ''
     msg_source = event.source.type
+    user_id = event.source.user_id
+
 
     if msg_source == 'group':
         reply_msg = handle_group_text_message(event)

@@ -12,10 +12,11 @@ from clan_sheet import *
 from cloud_firestore import *
 from keyword_reply import *
 from imgur import *
+from scrape_sonet import *
 
 import sys
 sys.path.append('./bin')
-from scrape_sonet import *
+import redis
 
 
 config = configparser.ConfigParser()
@@ -25,6 +26,7 @@ config.read('config.ini')
 line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
+
 
 def strQ2B(text):
     ss = []
@@ -49,6 +51,70 @@ def handle_user_text_message(event):
     user_id = event.source.user_id
 
     msg = strQ2B(msg)
+
+    r = redis.StrictRedis(decode_responses=True)
+
+    if event.message.text == '防守':
+        key = user_id
+
+        our = r.lrange(key + "our", 0, -1)
+        for i in range(len(our)):
+            our[i] = int(our[i])
+
+        enemy = r.lrange(key + "enemy", 0, -1)
+        for i in range(len(enemy)):
+            enemy[i] = int(enemy[i])
+
+        win = r.get(key + 'win')
+        if win == 'True':
+            win = False
+        else:
+            win = True
+
+        reply_msg = 'atk:' + str(enemy)
+        reply_msg += '\ndef:' + str(our)
+        reply_msg += '\nwin:' + str(win)
+        print('reply_msg = ', reply_msg)
+        if our == [] or enemy == []:
+            reply_msg = '時效已到期'
+        else:
+            find_status = find_arena_record(enemy, our, win, user_id)
+            if find_status == 'repeated':
+                reply_msg = '上傳失敗，此對戰紀錄您已上傳過。'
+            else:
+                reply_msg = get_record_msg(enemy, our, win, find_status)
+
+    elif event.message.text == '進攻':
+        print('進攻')
+        key = user_id
+
+        our = r.lrange(key + 'our', 0, -1)
+        for i in range(len(our)):
+            our[i] = int(our[i])
+
+        enemy = r.lrange(key + 'enemy', 0, -1)
+        for i in range(len(enemy)):
+            enemy[i] = int(enemy[i])
+
+        win = r.get(key + 'win')
+        if win == 'True':
+            win = True
+        else:
+            win = False
+
+        reply_msg = 'atk:' + str(our)
+        reply_msg += '\ndef:' + str(enemy)
+        reply_msg += '\nwin:' + str(win)
+        print('reply_msg = ', reply_msg)
+        if our == [] or enemy == []:
+            reply_msg = '時效已到期'
+        else:
+            find_status = find_arena_record(our, enemy, win, user_id)
+            if find_status == 'repeated':
+                reply_msg = '上傳失敗，此對戰紀錄您已上傳過。'
+            else:
+                reply_msg = get_record_msg(our, enemy, win, find_status)
+
     if '!' == msg[0]:
         msg = msg[1:]
         reply_msg = user_set_str_processing(user_id, msg)

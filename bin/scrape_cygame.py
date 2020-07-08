@@ -82,7 +82,8 @@ def scrape_pcrd_cygame():
 if __name__ == "__main__":
     msg = scrape_pcrd_cygame()
     if msg != '今日日服無新消息':
-        token = '211xTS8smpx11S7tO8TpDwWR9BIzlfnEdYWJMUCX26o'
-        result = lineNotifyMessage(token, msg)
-        print(result)
+        token = ['211xTS8smpx11S7tO8TpDwWR9BIzlfnEdYWJMUCX26o', 'kSFuRjHawKk4EOZyYjhsJAgDrkNNDmRjUPRVzmKGjAC']
+        for i in range(len(token)):
+            result = lineNotifyMessage(token[i], msg)
+            print(result)
         # line_bot_api.push_message('C423cd7dee7263b3a2db0e06ae06d095e', TextSendMessage(text=msg))

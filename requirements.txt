@@ -13,5 +13,6 @@ pandas
 pybase64
 pygsheets
 random2
+redis
 requests
 setuptools==40.3.0
