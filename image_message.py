@@ -123,7 +123,7 @@ def handle_user_image_message(event):
         return reply_msg
 
     if mode == 'upload':
-        print('upload')
+        # print('upload')
         region = decide_where(pre_img)
         if region == 'china':
             our, enemy, win = upload_battle_processing_china(pre_img)
@@ -140,7 +140,7 @@ def handle_user_image_message(event):
             r.delete(key + "enemy")
             r.delete(key + "win")
             
-            print('win = ', str(win))
+            # print('win = ', str(win))
             for i in range(len(our)):
                 r.rpush(key + "our", our[i])
             for i in range(len(our)):
@@ -163,7 +163,7 @@ def handle_user_image_message(event):
         #else:
         #    reply_msg = '上傳失敗，圖片讀取錯誤。'
     else:
-        print('search')
+        # print('search')
         enemy = search_battle_processing(pre_img)
         status = confirm_record_success([], enemy, mode)
         if status == True:

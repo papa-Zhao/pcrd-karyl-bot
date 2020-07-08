@@ -75,7 +75,7 @@ def handle_user_text_message(event):
         reply_msg = 'atk:' + str(enemy)
         reply_msg += '\ndef:' + str(our)
         reply_msg += '\nwin:' + str(win)
-        print('reply_msg = ', reply_msg)
+        # print('reply_msg = ', reply_msg)
         if our == [] or enemy == []:
             reply_msg = '時效已到期'
         else:
@@ -86,7 +86,7 @@ def handle_user_text_message(event):
                 reply_msg = get_record_msg(enemy, our, win, find_status)
 
     elif event.message.text == '進攻':
-        print('進攻')
+        # print('進攻')
         key = user_id
 
         our = r.lrange(key + 'our', 0, -1)
@@ -106,7 +106,7 @@ def handle_user_text_message(event):
         reply_msg = 'atk:' + str(our)
         reply_msg += '\ndef:' + str(enemy)
         reply_msg += '\nwin:' + str(win)
-        print('reply_msg = ', reply_msg)
+        # print('reply_msg = ', reply_msg)
         if our == [] or enemy == []:
             reply_msg = '時效已到期'
         else:

@@ -298,7 +298,7 @@ def search_arena_record(enemy, user_id):
         if data['search_self_record'] == True:
             way = 'local'
 
-    print('way = ', way)
+    # print('way = ', way)
     doc_ref = db.collection('arena_record')
     results = doc_ref.where('def', '==', enemy).stream()
 
@@ -309,7 +309,7 @@ def search_arena_record(enemy, user_id):
     for item in results:
         find = True
         data = item.to_dict()
-        print('data =', data)
+        # print('data =', data)
         try:
             if way == 'global':
                 record.append(data['atk'])
