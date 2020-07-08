@@ -132,7 +132,7 @@ def handle_user_image_message(event):
         status = confirm_record_success(our, enemy, mode)
         if status == True:
 
-            r=redis.from_url(os.environ['redis-shallow-26782'], decode_responses=True)
+            r=redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
             # r = redis.StrictRedis(decode_responses=True)
             key = user_id
 
