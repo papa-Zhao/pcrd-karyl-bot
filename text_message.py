@@ -52,7 +52,8 @@ def handle_user_text_message(event):
 
     msg = strQ2B(msg)
 
-    r = redis.StrictRedis(decode_responses=True)
+    r=redis.from_url(os.environ['redis-shallow-26782'], decode_responses=True)
+    # r = redis.StrictRedis(decode_responses=True)
 
     if event.message.text == '防守':
         key = user_id
