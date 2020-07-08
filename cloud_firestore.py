@@ -18,7 +18,7 @@ firebase_admin.initialize_app(cred, {
 db = firestore.client()
 
 def create_line_user(name, group_id, user_id):
-    print('create_line_user')
+    # print('create_line_user')
     initial_score = 5
     
     doc_ref = db.collection("line_user")
@@ -29,7 +29,7 @@ def create_line_user(name, group_id, user_id):
 
 
 def delete_line_user(user_id):
-    print('delete_line_user')
+    # print('delete_line_user')
 
     doc_ref = db.collection("arena_record")
     results = doc_ref.where('provider','array_contains', user_id).stream()
@@ -47,7 +47,7 @@ def delete_line_user(user_id):
         doc.reference.delete()
 
 def update_line_user_data(user_id, data_id, win):
-    print('update_line_user_data')
+    # print('update_line_user_data')
     
     status = ''
     doc_ref = db.collection("line_user")
@@ -60,20 +60,20 @@ def update_line_user_data(user_id, data_id, win):
         data = item.to_dict()
         try:
             if data['data'][data_id] != win:
-                print('change')
+                # print('change')
                 status = 'change'
                 data['data'][data_id] = win
                 field_updates = {'data': data['data']}
                 doc.update(field_updates)
                 return status
         except KeyError:
-            print('KeyError')
+            # print('KeyError')
             try:
                 data['data'][data_id] = win
                 field_updates = {'data': data['data'], 'score': data['score']+5}
                 doc.update(field_updates)
             except KeyError:
-                print('Double KeyError')
+                # print('Double KeyError')
                 field_updates = {'data': {data_id: win}, 'score': data['score']+5}
                 doc.update(field_updates)
             status = 'success'
@@ -272,9 +272,9 @@ def find_arena_record(our, enemy, win, provider):
             update_arena_record(data_id, field_updates)
         else:
             status = update_line_user_data(provider, data_id, win)
-            print('status = ', status)
+            # print('status = ', status)
             if status == 'change':
-                print('find_arena_record change')
+                # print('find_arena_record change')
                 data['provider'][provider] = win
                 if win == True:
                     data['bad'] -= 1
@@ -399,7 +399,7 @@ def find_group_arena_record(our, enemy, win, group_id):
     find = False
     for item in results:
         find = True
-        print(find)
+        # print(find)
         data_id = item.id
         data = item.to_dict()
         if win == True:
