@@ -22,6 +22,8 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 
+r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
+# r = redis.StrictRedis(decode_responses=True)
 
 def get_image():
     image = None
@@ -67,11 +69,9 @@ def handle_group_image_message(event):
             our, enemy, win = upload_battle_processing(pre_img)
         status = confirm_record_success(our, enemy, mode)
         if status == True:
-            find_status = find_arena_record(our, enemy, win, user_id)
-            if find_status == 'repeated':
-                reply_msg = '上傳失敗，此對戰紀錄您已上傳過。'
-                return reply_msg
-            reply_msg = get_record_msg(our, enemy, win, find_status)
+            find_status = find_group_arena_record(our, enemy, win, group_id)
+            if status == 'success':
+                reply_msg = get_record_msg(our, enemy, win, find_status)
         else:
             reply_msg = '上傳失敗，圖片讀取錯誤。'
 
@@ -132,8 +132,6 @@ def handle_user_image_message(event):
         status = confirm_record_success(our, enemy, mode)
         if status == True:
 
-            r=redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
-            # r = redis.StrictRedis(decode_responses=True)
             key = user_id
 
             r.delete(key + "our")

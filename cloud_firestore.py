@@ -348,11 +348,11 @@ def sort_arena_record(record, good, bad):
 
 def insert_group_arena_record(our, enemy, win, group_id):
 
-    doc_ref = db.collection("group_arena_record")
+    doc_ref = db.collection("test_group_arena_record")
     ISOTIMEFORMAT = '%Y-%m-%d %H:%M:%S'
     nowTime = datetime.now().strftime(ISOTIMEFORMAT)
 
-    keys = ['atk', 'enemy', 'updated', 'good', 'bad', 'group_id', 'notes']
+    keys = ['atk', 'def', 'updated', 'good', 'bad', 'group_id', 'notes']
     if win == True:
         values =[our, enemy, nowTime, 1, 0, group_id, []]
     else:
@@ -381,7 +381,7 @@ def update_line_group_data(group_id, data_id):
 
 def update_group_arena_record(data_id, data):
     
-    doc_ref = db.collection('group_arena_record')
+    doc_ref = db.collection('test_group_arena_record')
     doc = doc_ref.document(data_id)
     doc.update(data)
 
@@ -392,14 +392,14 @@ def find_group_arena_record(our, enemy, win, group_id):
     ISOTIMEFORMAT = '%Y-%m-%d %H:%M:%S'
     nowTime = datetime.now().strftime(ISOTIMEFORMAT)
     
-    doc_ref = db.collection('group_arena_record')
+    doc_ref = db.collection('test_group_arena_record')
     results = doc_ref.where('atk', '==', our).where('def', '==', enemy).where('group_id', '==', group_id).stream()
     
     data_id = None
     find = False
     for item in results:
         find = True
-        # print(find)
+        print('find =', find)
         data_id = item.id
         data = item.to_dict()
         if win == True:
@@ -421,7 +421,7 @@ def find_group_arena_record(our, enemy, win, group_id):
 
 def search_group_arena_record(enemy, group_id):
     
-    doc_ref = db.collection('group_arena_record')
+    doc_ref = db.collection('test_group_arena_record')
     results = doc_ref.where('enemy', '==', enemy).where('group_id', '==', group_id).stream()
 
     record = []

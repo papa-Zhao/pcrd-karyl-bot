@@ -27,6 +27,8 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 
+r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
+# r = redis.StrictRedis(decode_responses=True)
 
 def strQ2B(text):
     ss = []
@@ -43,19 +45,9 @@ def strQ2B(text):
     return ''.join(ss)
 
 
-def handle_user_text_message(event):
+def handle_user_arena_text_message(user_id, msg):
 
-    reply_msg = ''
-
-    msg = event.message.text
-    user_id = event.source.user_id
-
-    msg = strQ2B(msg)
-
-    r=redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
-    # r = redis.StrictRedis(decode_responses=True)
-
-    if event.message.text == '防守':
+    if msg == '防守' or msg == '0':
         key = user_id
 
         our = r.lrange(key + "our", 0, -1)
@@ -85,7 +77,7 @@ def handle_user_text_message(event):
             else:
                 reply_msg = get_record_msg(enemy, our, win, find_status)
 
-    elif event.message.text == '進攻':
+    elif msg == '進攻' or msg == '1':
         # print('進攻')
         key = user_id
 
@@ -115,6 +107,23 @@ def handle_user_text_message(event):
                 reply_msg = '上傳失敗，此對戰紀錄您已上傳過。'
             else:
                 reply_msg = get_record_msg(our, enemy, win, find_status)
+    
+    return reply_msg
+
+
+
+def handle_user_text_message(event):
+
+    reply_msg = ''
+
+    msg = event.message.text
+    user_id = event.source.user_id
+
+    msg = strQ2B(msg)
+
+    if msg == '進攻' or msg == '1' or msg == '防守' or msg == '0':
+        reply_msg = handle_user_arena_text_message(user_id, msg)
+        return reply_msg
 
     if '!' == msg[0]:
         msg = msg[1:]
