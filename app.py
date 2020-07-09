@@ -61,10 +61,6 @@ def callback():
     return 'OK'
 
 
-@app.route("/")
-def root():
-    return "Root Page"
-
 
 @handler.add(PostbackEvent)
 def handle_follow(event):
