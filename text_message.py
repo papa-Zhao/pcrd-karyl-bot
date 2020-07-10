@@ -13,6 +13,7 @@ from cloud_firestore import *
 from keyword_reply import *
 from imgur import *
 from scrape_sonet import *
+from subscribe import *
 
 import sys
 sys.path.append('./bin')
@@ -140,13 +141,79 @@ def handle_user_text_message(event):
                 reply_msg = '你不屬於凱留水球啵啵啵成員，無法使用此指令。'
         else:
             reply_msg = '非戰隊戰期間，不開放指令輸入。'
+    elif '@' in msg:
+        msg = msg[1:]
+        reply_msg = subscribe_str_processing(msg)
     else:
         handle_key_message(event) 
 
     return reply_msg
 
 
+def handle_group_arena_text_message(group_id, user_id, msg):
+    
+    if msg == '防守' or msg == '0':
+        key = group_id + user_id
+
+        our = r.lrange(key + "our", 0, -1)
+        for i in range(len(our)):
+            our[i] = int(our[i])
+
+        enemy = r.lrange(key + "enemy", 0, -1)
+        for i in range(len(enemy)):
+            enemy[i] = int(enemy[i])
+
+        win = r.get(key + 'win')
+        if win == 'True':
+            win = False
+        else:
+            win = True
+
+        reply_msg = 'atk:' + str(enemy)
+        reply_msg += '\ndef:' + str(our)
+        reply_msg += '\nwin:' + str(win)
+        # print('reply_msg = ', reply_msg)
+        if our == [] or enemy == []:
+            reply_msg = '時效已到期'
+        else:
+            find_status = find_group_arena_record(enemy, our, win, group_id)
+            if find_status == 'success':
+                reply_msg = get_record_msg(enemy, our, win, find_status)
+
+    elif msg == '進攻' or msg == '1':
+        # print('進攻')
+        key = group_id + user_id
+
+        our = r.lrange(key + 'our', 0, -1)
+        for i in range(len(our)):
+            our[i] = int(our[i])
+
+        enemy = r.lrange(key + 'enemy', 0, -1)
+        for i in range(len(enemy)):
+            enemy[i] = int(enemy[i])
+
+        win = r.get(key + 'win')
+        if win == 'True':
+            win = True
+        else:
+            win = False
+
+        reply_msg = 'atk:' + str(our)
+        reply_msg += '\ndef:' + str(enemy)
+        reply_msg += '\nwin:' + str(win)
+        # print('reply_msg = ', reply_msg)
+        if our == [] or enemy == []:
+            reply_msg = '時效已到期'
+        else:
+            find_status = find_group_arena_record(our, enemy, win, group_id)
+            if find_status == 'success':
+                reply_msg = get_record_msg(our, enemy, win, find_status)
+    
+    return reply_msg
+
+
 def handle_group_text_message(event):
+    print('handle_group_text_message')
 
     reply_msg = ''
 
@@ -167,13 +234,18 @@ def handle_group_text_message(event):
 
 
     msg = strQ2B(msg)
+
+    if msg == '進攻' or msg == '1' or msg == '防守' or msg == '0':
+        reply_msg = handle_group_arena_text_message(group_id, user_id, msg)
+        return reply_msg
+
+
     if '!' == msg[0]:
         try:
             karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92']
             karyl_group.index(group_id)
         except ValueError:
             reply_msg = '此群組並非凱留水球啵啵啵群組，無法使用群組功能。'
-        return reply_msg
 
         msg = msg[1:]
         reply_msg = clan_group_find_str_processing(group_id, user_id, user_name, msg)

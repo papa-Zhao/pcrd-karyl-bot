@@ -91,4 +91,8 @@ if __name__ == "__main__":
         for i in range(len(token)):
             result = lineNotifyMessage(token[i], msg)
             print(result)
+        token = ['QWRCZoy0SupMMEipQIFrOW6e3Enccf20Op3cvyvFaNK']
+        for i in range(len(token)):
+            result = lineNotifyMessage(token[i], msg)
+            print(result)
         # line_bot_api.push_message('C423cd7dee7263b3a2db0e06ae06d095e', TextSendMessage(text=msg))

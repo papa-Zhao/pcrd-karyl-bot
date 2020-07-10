@@ -387,6 +387,7 @@ def update_group_arena_record(data_id, data):
 
 
 def find_group_arena_record(our, enemy, win, group_id):
+    print('find_group_arena_record')
     
     status = ''
     ISOTIMEFORMAT = '%Y-%m-%d %H:%M:%S'
@@ -422,7 +423,7 @@ def find_group_arena_record(our, enemy, win, group_id):
 def search_group_arena_record(enemy, group_id):
     
     doc_ref = db.collection('test_group_arena_record')
-    results = doc_ref.where('enemy', '==', enemy).where('group_id', '==', group_id).stream()
+    results = doc_ref.where('def', '==', enemy).where('group_id', '==', group_id).stream()
 
     record = []
     good = []
@@ -436,3 +437,14 @@ def search_group_arena_record(enemy, group_id):
         bad.append(data['bad'])
         
     return record, good, bad
+
+
+def insert_line_notify_subscriber(token):
+
+    doc_ref = db.collection("news_subscriber")
+
+    keys = ['token']
+    values =[token]
+
+    records = dict(zip(keys, values))
+    return doc_ref.add(records)

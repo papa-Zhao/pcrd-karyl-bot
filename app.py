@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*
 from flask import Flask, request, abort
+from flask import jsonify
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -61,9 +62,15 @@ def callback():
     return 'OK'
 
 
-@app.route("/notify")
-def home():
-    return 'success'
+
+@app.route('/notify', methods=['GET'])
+def notify():
+    code = request.args.get('code')
+
+    req = get_line_notify_token(code)
+    print(req)
+
+    return jsonify({'t': [code, str(code)]})
 
 
 @handler.add(PostbackEvent)

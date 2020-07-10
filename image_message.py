@@ -69,11 +69,28 @@ def handle_group_image_message(event):
             our, enemy, win = upload_battle_processing(pre_img)
         status = confirm_record_success(our, enemy, mode)
         if status == True:
-            find_status = find_group_arena_record(our, enemy, win, group_id)
-            if status == 'success':
-                reply_msg = get_record_msg(our, enemy, win, find_status)
-        else:
-            reply_msg = '上傳失敗，圖片讀取錯誤。'
+
+            key = group_id + user_id
+            r.delete(key + "our")
+            r.delete(key + "enemy")
+            r.delete(key + "win")
+            
+            for i in range(len(our)):
+                r.rpush(key + "our", our[i])
+            for i in range(len(our)):
+                r.rpush(key + "enemy", enemy[i])
+            r.expire(key + "our", time=10)
+            r.expire(key + "enemy", time=10)
+            r.set(key + 'win', str(win), ex=10)
+
+            text_message = TextSendMessage(text= '請問您是哪一方？1(進攻)，0(防守)')
+            line_bot_api.reply_message(event.reply_token, text_message)
+
+
+            # find_status = find_group_arena_record(our, enemy, win, group_id)
+            # if find_status == 'success':
+            #     reply_msg = get_record_msg(our, enemy, win, find_status)
+            #     print('reply_msg = ', reply_msg)
 
     else:
         enemy = search_battle_processing(pre_img)
@@ -149,7 +166,7 @@ def handle_user_image_message(event):
 
             with open('./reply_template/atk_quick_reply.json', newline='') as jsonfile:
                 data = json.load(jsonfile)
-            text_message = TextSendMessage(text= '請問您是哪一方？' , quick_reply = data)
+            text_message = TextSendMessage(text= '請問您是哪一方？1(進攻)，0(防守)' , quick_reply = data)
             line_bot_api.reply_message(event.reply_token, text_message)
 
         #if status == True:
