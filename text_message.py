@@ -213,7 +213,7 @@ def handle_group_arena_text_message(group_id, user_id, msg):
 
 
 def handle_group_text_message(event):
-    print('handle_group_text_message')
+    # print('handle_group_text_message')
 
     reply_msg = ''
 
@@ -268,8 +268,7 @@ def handle_group_text_message(event):
         else:
             reply_msg = '非戰隊戰期間，不開放此功能'
     else:
-        print('')
-        # handle_key_message(event) 
+        handle_key_message(event) 
 
     return reply_msg
 
