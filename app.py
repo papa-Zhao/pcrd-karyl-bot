@@ -68,7 +68,7 @@ def notify():
     token = request.args.get('code')
     user_id = request.args.get('state')
 
-    req = get_line_notify_token(token)
+    req = get_line_notify_token(token, user_id)
     print(req)
 
     return jsonify({'t': [token, str(token)]})
