@@ -270,7 +270,7 @@ def handle_group_text_message(event):
     else:
         try:
             karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92']
-            karyl_group.index(info['group_id'])
+            karyl_group.index(group_id)
             handle_key_message(event) 
         except ValueError:
             print('')
