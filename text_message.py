@@ -268,7 +268,8 @@ def handle_group_text_message(event):
         else:
             reply_msg = '非戰隊戰期間，不開放此功能'
     else:
-        handle_key_message(event) 
+        print('')
+        # handle_key_message(event) 
 
     return reply_msg
 

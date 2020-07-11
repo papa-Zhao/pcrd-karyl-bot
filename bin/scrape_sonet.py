@@ -11,6 +11,8 @@ from bs4 import BeautifulSoup
 import requests
 import configparser
 
+from cloud_firestore import *
+
 
 import sys
 sys.path.append('../')
@@ -87,12 +89,7 @@ def scrape_pcrd_sonet():
 if __name__ == "__main__":
     msg = scrape_pcrd_sonet()
     if msg != '今日日服無新消息':
-        token = ['211xTS8smpx11S7tO8TpDwWR9BIzlfnEdYWJMUCX26o', 'kSFuRjHawKk4EOZyYjhsJAgDrkNNDmRjUPRVzmKGjAC']
-        for i in range(len(token)):
-            result = lineNotifyMessage(token[i], msg)
-            print(result)
-        token = ['QWRCZoy0SupMMEipQIFrOW6e3Enccf20Op3cvyvFaNK']
-        for i in range(len(token)):
-            result = lineNotifyMessage(token[i], msg)
-            print(result)
+        user = get_all_subscriber()
+        for i in range(len(user)):
+            result = lineNotifyMessage(user[i], msg)
         # line_bot_api.push_message('C423cd7dee7263b3a2db0e06ae06d095e', TextSendMessage(text=msg))

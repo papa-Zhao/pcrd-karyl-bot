@@ -82,6 +82,17 @@ def update_line_user_data(user_id, data_id, win):
         status = 'repeated'
         return status
     
+def get_all_subscriber():
+    user = []
+    doc_ref = db.collection('news_subscriber')
+    results = doc_ref.stream()
+    for item in results:
+        find = True
+        data_id = item.id
+        data = item.to_dict()
+        user = data['token']
+    
+    return user
 
 
 def update_user_database(user_id, status):
@@ -348,7 +359,7 @@ def sort_arena_record(record, good, bad):
 
 def insert_group_arena_record(our, enemy, win, group_id):
 
-    doc_ref = db.collection("test_group_arena_record")
+    doc_ref = db.collection("group_arena_record")
     ISOTIMEFORMAT = '%Y-%m-%d %H:%M:%S'
     nowTime = datetime.now().strftime(ISOTIMEFORMAT)
 
@@ -362,7 +373,7 @@ def insert_group_arena_record(our, enemy, win, group_id):
     return doc_ref.add(records)
 
 
-def update_line_group_data(group_id, data_id):
+def update_line_group_data(group_id, data_id, win):
 
     doc_ref = db.collection("line_group")
     results = doc_ref.where('group_id', '==', group_id).stream()
@@ -370,30 +381,30 @@ def update_line_group_data(group_id, data_id):
         doc = doc_ref.document(item.id)
         data = item.to_dict()
         try:
-            if data_id not in data['data']:
-                data['data'].append(data_id)
+            if data['data'][data_id] == win:
+                data['data'][data_id] = win
                 field_updates = {'data': data['data']}
                 doc.update(field_updates)
         except KeyError:
-            field_updates = {'data': [data_id]}
+            field_updates = {'data': {data_id: win}}
             doc.update(field_updates)
 
 
 def update_group_arena_record(data_id, data):
     
-    doc_ref = db.collection('test_group_arena_record')
+    doc_ref = db.collection('group_arena_record')
     doc = doc_ref.document(data_id)
     doc.update(data)
 
 
 def find_group_arena_record(our, enemy, win, group_id):
-    print('find_group_arena_record')
+    # print('find_group_arena_record')
     
     status = ''
     ISOTIMEFORMAT = '%Y-%m-%d %H:%M:%S'
     nowTime = datetime.now().strftime(ISOTIMEFORMAT)
     
-    doc_ref = db.collection('test_group_arena_record')
+    doc_ref = db.collection('group_arena_record')
     results = doc_ref.where('atk', '==', our).where('def', '==', enemy).where('group_id', '==', group_id).stream()
     
     data_id = None
@@ -410,7 +421,7 @@ def find_group_arena_record(our, enemy, win, group_id):
 
     if find == False:
         data_ref = insert_group_arena_record(our, enemy, win, group_id)
-        update_line_group_data(group_id, data_ref[1].id)
+        update_line_group_data(group_id, data_ref[1].id, win)
         status = 'success'
     else:
         field_updates = {'updated': nowTime, "good": data['good'], 'bad': data['bad']}
@@ -422,7 +433,7 @@ def find_group_arena_record(our, enemy, win, group_id):
 
 def search_group_arena_record(enemy, group_id):
     
-    doc_ref = db.collection('test_group_arena_record')
+    doc_ref = db.collection('group_arena_record')
     results = doc_ref.where('def', '==', enemy).where('group_id', '==', group_id).stream()
 
     record = []
@@ -442,9 +453,13 @@ def search_group_arena_record(enemy, group_id):
 def insert_line_notify_subscriber(token):
 
     doc_ref = db.collection("news_subscriber")
-
-    keys = ['token']
-    values =[token]
-
-    records = dict(zip(keys, values))
-    return doc_ref.add(records)
+    results = doc_ref.stream()
+    for item in results:
+        find = True
+        data_id = item.id
+        data = item.to_dict()
+        doc = doc_ref.document(data_id)
+        user = data['token']
+        user.append(token)
+        field_updates = {'token': user}
+        doc.update(field_updates)
