@@ -450,7 +450,7 @@ def search_group_arena_record(enemy, group_id):
     return record, good, bad
 
 
-def insert_line_notify_subscriber(token):
+def insert_line_notify_subscriber(token, user_id):
 
     doc_ref = db.collection("news_subscriber")
     results = doc_ref.stream()
@@ -459,7 +459,10 @@ def insert_line_notify_subscriber(token):
         data_id = item.id
         data = item.to_dict()
         doc = doc_ref.document(data_id)
-        user = data['token']
-        user.append(token)
-        field_updates = {'token': user}
-        doc.update(field_updates)
+        try:
+            data['token'][user_id] = token
+            field_updates = {'token': data['token']}
+            doc.update(field_updates)
+        except KeyError:
+            field_updates = {'token': {user_id: token}}
+            doc.update(field_updates)

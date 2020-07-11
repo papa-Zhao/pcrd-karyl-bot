@@ -65,12 +65,13 @@ def callback():
 
 @app.route('/notify', methods=['GET'])
 def notify():
-    code = request.args.get('code')
+    token = request.args.get('code')
+    user_id = request.args.get('state')
 
-    req = get_line_notify_token(code)
+    req = get_line_notify_token(token)
     print(req)
 
-    return jsonify({'t': [code, str(code)]})
+    return jsonify({'t': [token, str(token)]})
 
 
 @handler.add(PostbackEvent)

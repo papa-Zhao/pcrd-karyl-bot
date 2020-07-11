@@ -143,7 +143,7 @@ def handle_user_text_message(event):
             reply_msg = '非戰隊戰期間，不開放指令輸入。'
     elif '@' in msg:
         msg = msg[1:]
-        reply_msg = subscribe_str_processing(msg)
+        reply_msg = subscribe_str_processing(msg, user_id)
     else:
         handle_key_message(event) 
 

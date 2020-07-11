@@ -25,7 +25,7 @@ line_notify_client_secret = config.get('line-notify', 'client_secret')
 line_notify_redirect_uri = config.get('line-notify', 'redirect_uri')
 
 
-def subscribe_str_processing(msg):
+def subscribe_str_processing(msg, user_id):
 
     reply_msg = ''
 
@@ -34,12 +34,13 @@ def subscribe_str_processing(msg):
         reply_msg += '?response_type=code'
         reply_msg += '&client_id=' + line_notify_client_id
         reply_msg += '&redirect_uri=' + line_notify_redirect_uri
-        reply_msg += '&scope=notify&state=1234'
+        reply_msg += '&scope=notify'
+        reply_msg += '&state=' + user_id
 
     return reply_msg
 
 
-def get_line_notify_token(code):
+def get_line_notify_token(code, user_id):
 
     print('type = ', type(code))
     client = {'grant_type': 'authorization_code', 'code': code, 'redirect_uri': line_notify_redirect_uri,
@@ -49,6 +50,6 @@ def get_line_notify_token(code):
 
     req = json.loads(r.text)
     print('access_token = ', req['access_token'])
-    insert_line_notify_subscriber(req['access_token'])
+    insert_line_notify_subscriber(req['access_token'], user_id)
 
     return req
