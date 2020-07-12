@@ -85,8 +85,8 @@ def scrape_pcrd_cygame():
 if __name__ == "__main__":
     msg = scrape_pcrd_cygame()
     if msg != '今日日服無新消息':
-        user = get_all_subscriber()
-        for i in range(len(user)):
-            result = lineNotifyMessage(user[i], msg)
+        users = get_all_subscriber()
+        for user in users.values():
+            result = lineNotifyMessage(user, msg)
 
         # line_bot_api.push_message('C423cd7dee7263b3a2db0e06ae06d095e', TextSendMessage(text=msg))
