@@ -66,8 +66,10 @@ def notify():
 
     req = get_line_notify_token(token, user_id)
     print(req)
-
-    return jsonify({'id': user_id, 'token': token})
+    if req['status'] == 200:
+        return jsonify({'id': user_id, 'token': req['access_token']})
+    else:
+        return jsonify({'message': req['message']})
 
 
 @handler.add(PostbackEvent)
