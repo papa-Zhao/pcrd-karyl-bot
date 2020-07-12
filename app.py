@@ -5,7 +5,6 @@ from flask import jsonify
 from linebot import (
     LineBotApi, WebhookHandler
 )
-
 from linebot.exceptions import (
     InvalidSignatureError
 )
@@ -19,15 +18,15 @@ from linebot.models import (
 )
 
 import configparser
-import os
 import json
+import os
 import redis
+import requests
 
 
 from cloud_firestore import *
 from text_message import *
 from image_message import *
-import requests
 from imgur import *
 
 
@@ -35,7 +34,6 @@ app = Flask(__name__)
 
 config = configparser.ConfigParser()
 config.read('config.ini')
-# config.read('test_config.ini')
 # Channel Access Token
 line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
@@ -51,7 +49,6 @@ def callback():
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
 
-    # print(body)
     # handle webhook body
     try:
         handler.handle(body, signature)
@@ -62,7 +59,6 @@ def callback():
     return 'OK'
 
 
-
 @app.route('/notify', methods=['GET'])
 def notify():
     token = request.args.get('code')
@@ -71,7 +67,7 @@ def notify():
     req = get_line_notify_token(token, user_id)
     print(req)
 
-    return jsonify({'t': [token, str(token)]})
+    return jsonify({'id': user_id, 'token': token})
 
 
 @handler.add(PostbackEvent)
@@ -197,10 +193,7 @@ def handle_message(event):
     if 'https:' in reply_msg:
         send_msg = ImageSendMessage(original_content_url=reply_msg, preview_image_url=reply_msg)
         line_bot_api.reply_message(event.reply_token, send_msg)
-
     elif reply_msg != '':
-        #with open('_quick_reply.json', newline='') as jsonfile:
-        #    data = json.load(jsonfile)
         send_msg = TextSendMessage(text= reply_msg )
         line_bot_api.reply_message(event.reply_token, send_msg)
 
