@@ -26,9 +26,6 @@ handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
 # r = redis.StrictRedis(decode_responses=True)
 
-def get_image():
-    image = None
-    return image
 
 def content_to_image(content):
 
@@ -41,6 +38,95 @@ def content_to_image(content):
     img = cv2.imdecode(img_as_np, flags=1)
 
     return img
+
+
+def determine_arena_img(img):
+
+    if img.shape[0] > img.shape[1]:
+        return False
+    else:
+        return True
+
+
+def handle_user_image_message(event):
+
+    reply_msg = ''
+    msg_id = event.message.id
+    user_id = event.source.user_id
+    profile = line_bot_api.get_profile(user_id)
+    name = profile.display_name
+
+    message_content = line_bot_api.get_message_content(msg_id)
+    content = message_content.content
+    img = content_to_image(content)
+    
+    corrtect = determine_arena_img(img)
+    if corrtect == False:
+        reply_msg = ''
+        return reply_msg
+
+    mode, pre_img = preprocessing(img)
+    if mode == 'not record':
+        return reply_msg
+
+    if mode == 'upload':
+        # print('upload')
+        region = decide_where(pre_img)
+        if region == 'china':
+            our, enemy, win = upload_battle_processing_china(pre_img)
+        else:
+            our, enemy, win = upload_battle_processing(pre_img)
+        status = confirm_record_success(our, enemy, mode)
+        if status == True:
+
+            key = user_id
+
+            r.delete(key + "our")
+            r.delete(key + "enemy")
+            r.delete(key + "win")
+            
+            # print('win = ', str(win))
+            for i in range(len(our)):
+                r.rpush(key + "our", our[i])
+            for i in range(len(our)):
+                r.rpush(key + "enemy", enemy[i])
+            r.expire(key + "our", time=10)
+            r.expire(key + "enemy", time=10)
+            r.set(key + 'win', str(win), ex=10)
+            r.set(key + 'status', 'True', ex=10)
+
+            with open('./reply_template/atk_quick_reply.json', newline='') as jsonfile:
+                data = json.load(jsonfile)
+            text_message = TextSendMessage(text= '請問您是哪一方？1(進攻)，0(防守)' , quick_reply = data)
+            line_bot_api.reply_message(event.reply_token, text_message)
+
+        #if status == True:
+        #    find_status = find_arena_record(our, enemy, win, user_id)
+        #    if find_status == 'repeated':
+        #        reply_msg = '上傳失敗，此對戰紀錄您已上傳過。'
+        #        return reply_msg
+        #    reply_msg = get_record_msg(our, enemy, win, find_status)
+        #else:
+        #    reply_msg = '上傳失敗，圖片讀取錯誤。'
+    else:
+        # print('search')
+        enemy = search_battle_processing(pre_img)
+        status = confirm_record_success([], enemy, mode)
+        if status == True:
+            record, good, bad = search_arena_record(enemy, user_id)
+            record, good, bad = sort_arena_record(record, good, bad)
+            if len(record) > 0:
+                reply_img = create_record_img(record, good, bad)
+                url = upload_album_image(reply_img)
+                return url
+            else:
+                reply_msg = '此對戰紀錄不存在'
+                return reply_msg
+        else:
+            reply_msg = '查詢失敗，圖片讀取錯誤。'
+
+    return reply_msg
+
 
 def handle_group_image_message(event):
 
@@ -106,93 +192,5 @@ def handle_group_image_message(event):
             else:
                 reply_msg = '此對戰紀錄不存在'
                 return reply_msg
-
-    return reply_msg
-
-
-def determine_arena_img(img):
-
-    if img.shape[0] > img.shape[1]:
-        return False
-    else:
-        return True
-
-
-def handle_user_image_message(event):
-
-    reply_msg = ''
-    msg_id = event.message.id
-    user_id = event.source.user_id
-    profile = line_bot_api.get_profile(user_id)
-    name = profile.display_name
-
-    message_content = line_bot_api.get_message_content(msg_id)
-    content = message_content.content
-    img = content_to_image(content)
-    
-    corrtect = determine_arena_img(img)
-    if corrtect == False:
-        reply_msg = ''
-        return reply_msg
-
-    mode, pre_img = preprocessing(img)
-    
-    if mode == 'not record':
-        return reply_msg
-
-    if mode == 'upload':
-        # print('upload')
-        region = decide_where(pre_img)
-        if region == 'china':
-            our, enemy, win = upload_battle_processing_china(pre_img)
-        else:
-            our, enemy, win = upload_battle_processing(pre_img)
-        status = confirm_record_success(our, enemy, mode)
-        if status == True:
-
-            key = user_id
-
-            r.delete(key + "our")
-            r.delete(key + "enemy")
-            r.delete(key + "win")
-            
-            # print('win = ', str(win))
-            for i in range(len(our)):
-                r.rpush(key + "our", our[i])
-            for i in range(len(our)):
-                r.rpush(key + "enemy", enemy[i])
-            r.expire(key + "our", time=10)
-            r.expire(key + "enemy", time=10)
-            r.set(key + 'win', str(win), ex=10)
-
-            with open('./reply_template/atk_quick_reply.json', newline='') as jsonfile:
-                data = json.load(jsonfile)
-            text_message = TextSendMessage(text= '請問您是哪一方？1(進攻)，0(防守)' , quick_reply = data)
-            line_bot_api.reply_message(event.reply_token, text_message)
-
-        #if status == True:
-        #    find_status = find_arena_record(our, enemy, win, user_id)
-        #    if find_status == 'repeated':
-        #        reply_msg = '上傳失敗，此對戰紀錄您已上傳過。'
-        #        return reply_msg
-        #    reply_msg = get_record_msg(our, enemy, win, find_status)
-        #else:
-        #    reply_msg = '上傳失敗，圖片讀取錯誤。'
-    else:
-        # print('search')
-        enemy = search_battle_processing(pre_img)
-        status = confirm_record_success([], enemy, mode)
-        if status == True:
-            record, good, bad = search_arena_record(enemy, user_id)
-            record, good, bad = sort_arena_record(record, good, bad)
-            if len(record) > 0:
-                reply_img = create_record_img(record, good, bad)
-                url = upload_album_image(reply_img)
-                return url
-            else:
-                reply_msg = '此對戰紀錄不存在'
-                return reply_msg
-        else:
-            reply_msg = '查詢失敗，圖片讀取錯誤。'
 
     return reply_msg

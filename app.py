@@ -47,6 +47,7 @@ def callback():
 
     # get request body as text
     body = request.get_data(as_text=True)
+    app.logger.info("Request body: " + body)
 
     # handle webhook body
     try:
@@ -65,9 +66,11 @@ def notify():
     response = get_line_notify_token(token, user_id)
 
     if response['status'] == 200:
-        return jsonify({'id': user_id, 'token': response['access_token']})
+        reply_msg = jsonify({'id': user_id, 'token': response['access_token']})
     else:
-        return jsonify({'message': response['message']})
+        reply_msg = jsonify({'message': response['message']})
+
+    return reply_msg
 
 
 @handler.add(PostbackEvent)
@@ -182,6 +185,7 @@ def handle_message(event):
     reply_msg = 'address = ' + address
     reply_msg += '\nlatitude = ' + str(latitude)
     reply_msg += '\nlongitude = ' + str(longitude)
+
     send_msg = TextSendMessage(text= reply_msg )
     line_bot_api.reply_message(event.reply_token, send_msg)
 
@@ -210,8 +214,6 @@ def handle_message(event):
     reply_msg = ''
     msg_source = event.source.type
     user_id = event.source.user_id
-    print('msg_source = ', msg_source)
-
 
     if msg_source == 'group':
         reply_msg = handle_group_text_message(event)
