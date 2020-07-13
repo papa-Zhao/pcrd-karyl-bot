@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*
-from flask import Flask, request, abort
-from flask import jsonify
-
 from linebot import (
     LineBotApi, WebhookHandler
 )
@@ -17,20 +14,23 @@ from linebot.models import (
     ButtonsTemplate,
 )
 
+
 import configparser
 import json
 import os
 import redis
 import requests
+from flask import abort, Flask, jsonify, request
 
 
 from cloud_firestore import *
-from text_message import *
 from image_message import *
 from imgur import *
+from text_message import *
 
 
 app = Flask(__name__)
+
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -47,7 +47,6 @@ def callback():
 
     # get request body as text
     body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
 
     # handle webhook body
     try:
@@ -63,13 +62,12 @@ def callback():
 def notify():
     token = request.args.get('code')
     user_id = request.args.get('state')
+    response = get_line_notify_token(token, user_id)
 
-    req = get_line_notify_token(token, user_id)
-    print(req)
-    if req['status'] == 200:
-        return jsonify({'id': user_id, 'token': req['access_token']})
+    if response['status'] == 200:
+        return jsonify({'id': user_id, 'token': response['access_token']})
     else:
-        return jsonify({'message': req['message']})
+        return jsonify({'message': response['message']})
 
 
 @handler.add(PostbackEvent)
@@ -83,10 +81,12 @@ def handle_follow(event):
     user_id = event.source.user_id
     profile = line_bot_api.get_profile(user_id)
     name = profile.display_name
-    print('新加入者: %s , user_id: %s' % (name, user_id))
+
     create_line_user(name, '', user_id)
+
     reply_msg = name + '你啊，不要若無其事地向我搭話啦!畢竟又不是朋友，什麼都不是啊！'
     line_bot_api.reply_message(event.reply_token, TextMessage(text=reply_msg))
+    print('新加入者: %s , user_id: %s' % (name, user_id))
 
 
 @handler.add(UnfollowEvent)
@@ -97,11 +97,22 @@ def handle_follow(event):
     delete_line_user(user_id)
 
 
+def get_group_summary(group_id):
+    headers = {"content-type": "application/json; charset=UTF-8",'Authorization':'Bearer {}'.format(config.get('line-bot', 'channel_access_token'))}
+    url = 'https://api.line.me/v2/bot/group/' + group_id + '/summary'
+    response = requests.get(url, headers=headers)
+    response = response.json()
+
+    return response # Get groupId, groupName, pictureUrl
+
+
 @handler.add(JoinEvent)
 def handle_join(event):
 
     group_id = event.source.group_id
+    response = get_group_summary(group_id)
     print('group_id = ', group_id)
+
     try:
         karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92', 'C8c5635612e8d8b6856f805b7522a56f0', 'C6c42bc1911917f460609c6bfe5b2c6ff']
         karyl_group.index(group_id)
@@ -113,12 +124,6 @@ def handle_join(event):
         send_msg = TextSendMessage(text= reply_msg )
         line_bot_api.reply_message(event.reply_token, send_msg)
         line_bot_api.leave_group(group_id)
-
-    headers = {"content-type": "application/json; charset=UTF-8",'Authorization':'Bearer {}'.format(config.get('line-bot', 'channel_access_token'))}
-    url = 'https://api.line.me/v2/bot/group/' + group_id + '/summary'
-    response = requests.get(url, headers=headers)
-    response = response.json()
-    # print('response = %s' %(response))
 
     group_name = response['groupName']
     create_line_group(group_name, group_id)
@@ -150,7 +155,6 @@ def handle_join(event):
         user_id_list.append(event.left.members[i].user_id)
     for i in range(len(user_id_list)):
         delete_line_group_member(group_id, user_id_list[i])
-        # print('name_list = ', user_id_list[i])
 
     # print('group = ', event.source.group_id)
     # print('left member = ', event.left.members[0])
@@ -189,7 +193,7 @@ def handle_message(event):
     reply_msg = ''
     if msg_source == 'group':
         reply_msg = handle_group_image_message(event)
-    else:
+    elif msg_source == 'user':
         reply_msg = handle_user_image_message(event)
 
     if 'https:' in reply_msg:
@@ -206,11 +210,12 @@ def handle_message(event):
     reply_msg = ''
     msg_source = event.source.type
     user_id = event.source.user_id
+    print('msg_source = ', msg_source)
 
 
     if msg_source == 'group':
         reply_msg = handle_group_text_message(event)
-    else:
+    elif msg_source == 'user':
         reply_msg = handle_user_text_message(event)
    
     if reply_msg != '':

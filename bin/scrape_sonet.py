@@ -88,7 +88,7 @@ def scrape_pcrd_sonet():
 
 if __name__ == "__main__":
     msg = scrape_pcrd_sonet()
-    if msg != '今日日服無新消息':
+    if msg != '今日台服無新消息':
         users = get_all_subscriber()
         for user in users.values():
             result = lineNotifyMessage(user, msg)

@@ -2,27 +2,25 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage, ImageSendMessage
 )
 
+
 import configparser
 import random
+import redis
+import sys
+sys.path.append('./bin')
 
 
 from clan import *
 from clan_sheet import *
-
 from cloud_firestore import *
-from keyword_reply import *
 from imgur import *
+from keyword_reply import *
 from scrape_sonet import *
 from subscribe import *
-
-import sys
-sys.path.append('./bin')
-import redis
 
 
 config = configparser.ConfigParser()
 config.read('config.ini')
-# config.read('test_config.ini')
 # Channel Access Token
 line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
@@ -37,9 +35,9 @@ def strQ2B(text):
         string = ""
         for uchar in s:
             inside_code = ord(uchar)
-            if inside_code == 12288:  # transfer fullwidth space to halfwidth space
+            if inside_code == 12288:  # Transfer fullwidth space to halfwidth space
                 inside_code = 32
-            elif (inside_code >= 65281 and inside_code <= 65374):  # transfer fullwidth string to halfwidth string except space
+            elif (inside_code >= 65281 and inside_code <= 65374):  # Transfer fullwidth string to halfwidth string except space
                 inside_code -= 65248
             string += chr(inside_code)
         ss.append(string)
@@ -111,6 +109,14 @@ def handle_user_arena_text_message(user_id, msg):
     
     return reply_msg
 
+
+def get_user_msg_info(event):
+
+    msg = event.message.text
+    user_id = event.source.user_id
+    user_name = group_profile.display_name
+
+    return msg, group_id, user_id, user_name 
 
 
 def handle_user_text_message(event):
@@ -211,17 +217,20 @@ def handle_group_arena_text_message(group_id, user_id, msg):
     
     return reply_msg
 
-
-def handle_group_text_message(event):
-    # print('handle_group_text_message')
-
-    reply_msg = ''
+def get_group_msg_info(event):
 
     msg = event.message.text
     group_id = event.source.group_id
     user_id = event.source.user_id
     group_profile = line_bot_api.get_group_member_profile(group_id, user_id)
     user_name = group_profile.display_name
+
+    return msg, group_id, user_id, user_name 
+
+def handle_group_text_message(event):
+
+    reply_msg = ''
+    msg, group_id, user_id, user_name = get_group_msg_info(event)
 
     try:
 
