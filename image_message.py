@@ -146,7 +146,7 @@ def handle_group_image_message(event):
         return reply_msg
 
     mode, pre_img = preprocessing(img)
-    print('mode=', mode)
+    # print('mode=', mode)
     if mode == 'not record':
         return reply_msg
 
