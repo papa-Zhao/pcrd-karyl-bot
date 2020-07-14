@@ -38,10 +38,11 @@ class MsgType(StrEnum):
     Atk = '1'
     Def = '0'
 
+
 def strQ2B(text):
     ss = []
     for s in text:
-        string = ""
+        string = ''
         for uchar in s:
             inside_code = ord(uchar)
             if inside_code == 12288:  # Transfer fullwidth space to halfwidth space
@@ -102,24 +103,22 @@ def handle_user_arena_text_message(user_id, msg):
     return reply_msg
 
 
-def get_user_msg_info(event):
+def get_user_text_msg_info(event):
 
     msg = event.message.text
     user_id = event.source.user_id
-    user_name = group_profile.display_name
+    profile = line_bot_api.get_profile(user_id)
+    user_name = profile.display_name
 
-    return msg, group_id, user_id, user_name 
+    return msg, user_id, user_name 
 
 
 def handle_user_text_message(event):
 
     reply_msg = ''
-
-    msg = event.message.text
-    user_id = event.source.user_id
+    msg, user_id, user_name = get_user_text_msg_info(event)
 
     msg = strQ2B(msg)
-
     if msg == '進攻' or msg == MsgType.Atk or msg == '防守' or msg == MsgType.Def:
         reply_msg = handle_user_arena_text_message(user_id, msg)
         return reply_msg
@@ -133,7 +132,7 @@ def handle_user_text_message(event):
             try:
                 karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92']
                 karyl_group.index(info['group_id'])
-                msg = msg.replace('#', '')
+                msg = msg[1:]
                 reply_msg = clan_user_str_processing(user_id, msg)
             except ValueError:
                 reply_msg = '你不屬於凱留水球啵啵啵成員，無法使用此指令。'
@@ -150,7 +149,13 @@ def handle_user_text_message(event):
 
 def handle_group_arena_text_message(group_id, user_id, msg):
     
-    if msg == '防守' or msg == '0':
+    key = group_id + user_id
+    status = r.get(key + 'status')
+    if status != 'True':
+        reply_msg = ''
+        return reply_msg
+
+    if msg == '防守' or msg == MsgType.Def:
         key = group_id + user_id
 
         our = r.lrange(key + "our", 0, -1)
@@ -178,8 +183,7 @@ def handle_group_arena_text_message(group_id, user_id, msg):
             if find_status == 'success':
                 reply_msg = get_record_msg(enemy, our, win, find_status)
 
-    elif msg == '進攻' or msg == '1':
-        # print('進攻')
+    elif msg == '進攻' or msg == MsgType.Atk:
         key = group_id + user_id
 
         our = r.lrange(key + 'our', 0, -1)

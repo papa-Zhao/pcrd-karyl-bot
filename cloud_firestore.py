@@ -411,7 +411,7 @@ def find_group_arena_record(our, enemy, win, group_id):
     find = False
     for item in results:
         find = True
-        print('find =', find)
+        # print('find =', find)
         data_id = item.id
         data = item.to_dict()
         if win == True:
