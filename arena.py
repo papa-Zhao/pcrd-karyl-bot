@@ -174,7 +174,7 @@ def preprocessing(img):
 
     status = 'upload'
     h_threshold = int(2*img.shape[0]/3)
-    w_threshold = int(img.shape[1]/2)
+    w_threshold = int(2*img.shape[1]/3)
     for i in range(len(contours)):
         w_min, h_min = contours[i].min(0)[0,0], contours[i].min(0)[0,1]
         w_max, h_max = contours[i].max(0)[0,0], contours[i].max(0)[0,1]
