@@ -1,29 +1,27 @@
 from linebot import (
     LineBotApi, WebhookHandler
 )
-
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage, ImageSendMessage
 )
 
-from datetime import datetime
-from bs4 import BeautifulSoup
 import requests
 import configparser
-
-from cloud_firestore import *
-
-
 import sys
 sys.path.append('../')
 
+from datetime import datetime
+from bs4 import BeautifulSoup
+
+from cloud_firestore import *
+
 config = configparser.ConfigParser()
 config.read('config.ini')
-# config.read('test_config.ini')
 # Channel Access Token
 line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
+
 
 def lineNotifyMessage(token, msg):
     headers = {
@@ -37,6 +35,7 @@ def lineNotifyMessage(token, msg):
         headers=headers, 
         params=payload)
     return r.status_code
+
 
 def scrape_pcrd_sonet():
 
@@ -55,14 +54,10 @@ def scrape_pcrd_sonet():
     for i in new_info.findAll('dt'):
         info.append(i.text.strip())
         status.append(i.span.text)
-    # print(info)
-    # print(status)
 
     for i in new_info.findAll('dd'):
         content.append(i.text.strip())
         url.append(i.a['href'])
-    # print(content)
-    #print(url)
 
     num = len(info)
 
@@ -78,7 +73,6 @@ def scrape_pcrd_sonet():
             news = True
             msg += content[i] + '\n'
             msg += sonet_url + url[i] + '\n'
-            # print(content[i])
     
     if news:
         return msg

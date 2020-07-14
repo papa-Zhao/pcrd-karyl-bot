@@ -1,20 +1,18 @@
-from cloud_firestore import *
-
-from dateutil import tz
-from dateutil.tz import tzlocal
-from datetime import datetime, timedelta
-
 from linebot import (
     LineBotApi, WebhookHandler
 )
 
 from app import *
+from cloud_firestore import *
+from dateutil import tz
+from dateutil.tz import tzlocal
+from datetime import datetime, timedelta
+from scrape_cygame import *
+from scrape_sonet import *
 
 import configparser
 import sys
 sys.path.append('./bin')
-from scrape_sonet import *
-from scrape_cygame import *
 
 config = configparser.ConfigParser()
 config.read('config.ini')

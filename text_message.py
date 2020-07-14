@@ -2,14 +2,12 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage, ImageSendMessage
 )
 
-
 import configparser
 import enum
 import random
 import redis
 import sys
 sys.path.append('./bin')
-
 
 from arena import *
 from clan import *
@@ -20,7 +18,6 @@ from keyword_reply import *
 from scrape_sonet import *
 from subscribe import *
 
-
 config = configparser.ConfigParser()
 config.read('config.ini')
 # Channel Access Token
@@ -28,8 +25,8 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 
-r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
-# r = redis.StrictRedis(decode_responses=True)
+# r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
+r = redis.StrictRedis(decode_responses=True)
 
 
 class StrEnum(str, enum.Enum):
@@ -175,7 +172,6 @@ def handle_group_arena_text_message(group_id, user_id, msg):
         reply_msg = 'atk:' + str(enemy)
         reply_msg += '\ndef:' + str(our)
         reply_msg += '\nwin:' + str(win)
-        # print('reply_msg = ', reply_msg)
         if our == [] or enemy == []:
             reply_msg = '時效已到期'
         else:
@@ -237,13 +233,11 @@ def handle_group_text_message(event):
         reply_msg += '\n若想使用群組功能請聯絡開發者 Email: r22742557@gmail.com'
         return reply_msg
 
-
     msg = strQ2B(msg)
 
     if msg == '進攻' or msg == '1' or msg == '防守' or msg == '0':
         reply_msg = handle_group_arena_text_message(group_id, user_id, msg)
         return reply_msg
-
 
     if '!' == msg[0]:
         try:
@@ -290,7 +284,6 @@ def handle_key_message(event):
     key = ['街頭霸王', '開車', '表情包', '聯盟戰', '可愛', '抽卡', '吸貓']
     reply_msg = ''
 
-    
     ##########  Image reply  ##########
     for i in range(len(key)):
         if key[i] in msg:
@@ -307,7 +300,6 @@ def handle_key_message(event):
         reply_msg = get_key_msg(msg, name)
         send_msg = TextSendMessage(text= reply_msg )
         line_bot_api.reply_message(event.reply_token, send_msg)
-
 
     sticker_key = ['讚', '呼呼', '愛你', '哈哈', '早安', '失望', '累了', '餓', 
             '主人', '謝謝', '不愧是', '嗯?', '晚安', '不行唷!', '知道了', '請看',

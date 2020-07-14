@@ -1,25 +1,22 @@
 from linebot import (
     LineBotApi, WebhookHandler
 )
-
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage, ImageSendMessage
 )
 
-from datetime import datetime
-from bs4 import BeautifulSoup
-import requests
 import configparser
-
-from cloud_firestore import *
-
-
+import requests
 import sys
 sys.path.append('../')
 
+from datetime import datetime
+from bs4 import BeautifulSoup
+
+from cloud_firestore import *
+
 config = configparser.ConfigParser()
 config.read('config.ini')
-# config.read('test_config.ini')
 # Channel Access Token
 line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
@@ -52,16 +49,10 @@ def scrape_pcrd_cygame():
     content = []
     
     num = len(new_info)
-    # print(new_info)
     for i in range(num):
-        # print(new_info[i].time)
         time.append(new_info[i].time.text)
-        # print(new_info[i].a['href'])
         url.append(new_info[i].a['href'])
-        # print(new_info[i].h4)
         content.append(new_info[i].h4.text)
-        
-    # print(url)
 
     ISOTIMEFORMAT = '%Y-%m-%d'
     todayTime = datetime.now()
@@ -74,7 +65,6 @@ def scrape_pcrd_cygame():
             news = True
             msg += content[i] + '\n'
             msg += url[i] + '\n'
-            # print(content[i])
             
     if news:
         return msg

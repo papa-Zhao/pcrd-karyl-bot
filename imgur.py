@@ -1,11 +1,11 @@
 import configparser
-from imgurpython import ImgurClient
-import random2 as random
 import cv2
+import random2 as random
+
+from imgurpython import ImgurClient
 
 config = configparser.ConfigParser()
 config.read('config.ini')
-# config.read('test_config.ini')
 client_id = config.get('imgur', 'client_id')
 client_secret = config.get('imgur', 'client_secret')
 access_token = config.get('imgur', 'access_token')
@@ -13,11 +13,8 @@ refresh_token = config.get('imgur', 'refresh_token')
 
 client = ImgurClient(client_id, client_secret, access_token, refresh_token)
 
-
-
 album = {'開車':'RlsqLO5', '表情包':'pLG8EmZ', '聯盟戰':'Ft0fvCO',
          '街頭霸王':'7ZXTizY', '可愛':'Bj9sXk4', '抽卡':'mMhngog', '吸貓':'j8bEjwz'}
-
 
 def get_album_image(key):
 

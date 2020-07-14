@@ -16,6 +16,8 @@ def get_key_msg(str, name):
         num = random.randint(0,len(msg)-1)
 
         return msg[num]
+
+        
 def get_key_sticker(index):
     
         key_url = ['https://i.imgur.com/gqQChYE.png', 'https://i.imgur.com/If10Ro6.png', 'https://i.imgur.com/Fiv2GrA.png', 'https://i.imgur.com/LtVXZk8.png',

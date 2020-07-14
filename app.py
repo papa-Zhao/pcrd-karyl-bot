@@ -14,7 +14,6 @@ from linebot.models import (
     ButtonsTemplate,
 )
 
-
 import configparser
 import json
 import os
@@ -22,15 +21,12 @@ import redis
 import requests
 from flask import abort, Flask, jsonify, request
 
-
 from cloud_firestore import *
 from image_message import *
 from imgur import *
 from text_message import *
 
-
 app = Flask(__name__)
-
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -148,7 +144,6 @@ def handle_join(event):
     line_bot_api.reply_message(event.reply_token, TextMessage(text=reply_msg))
 
 
-
 @handler.add(MemberLeftEvent)
 def handle_join(event):
 
@@ -226,7 +221,7 @@ def handle_message(event):
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
-    # app.debug = True
-    # app.run()
+    # port = int(os.environ.get('PORT', 5000))
+    # app.run(host='0.0.0.0', port=port)
+    app.debug = True
+    app.run()
