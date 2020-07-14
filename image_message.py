@@ -20,8 +20,8 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 
-# r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
-r = redis.StrictRedis(decode_responses=True)
+r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
+# r = redis.StrictRedis(decode_responses=True)
 
 
 def content_to_image(content):
@@ -146,12 +146,14 @@ def handle_group_image_message(event):
         return reply_msg
 
     mode, pre_img = preprocessing(img)
+    print('mode=', mode)
     if mode == 'not record':
         return reply_msg
 
     if mode == 'upload' or mode == 'friend_upload':
         region = decide_where(pre_img)
         our, enemy, win = upload_battle_processing(pre_img, region, mode)
+
         if mode == 'friend_upload':
             our, enemy = sort_character_loc(our, enemy)
 
@@ -175,6 +177,7 @@ def handle_group_image_message(event):
                 r.expire(key + "our", time=10)
                 r.expire(key + "enemy", time=10)
                 r.set(key + 'win', str(win), ex=10)
+                r.set(key + 'status', 'True', ex=10)
 
                 text_message = TextSendMessage(text= '請問您是哪一方？1(進攻)，0(防守)')
                 line_bot_api.reply_message(event.reply_token, text_message)

@@ -140,18 +140,24 @@ def battle_result(img, mode):
 
 
 def decide_where(img):
+    
     result = None
-    china_template = cv2.imread('./icon/china.png', cv2.IMREAD_GRAYSCALE)
-    taiwan_template = cv2.imread('./icon/taiwan.png', cv2.IMREAD_GRAYSCALE)
-    china_res = cv2.matchTemplate(china_template, img, 0)
-    taiwan_res = cv2.matchTemplate(taiwan_template, img, 0)
-    china_min_val, china_max_val, china_min_loc, max_loc = cv2.minMaxLoc(china_res)
-    taiwan_min_val, taiwan_max_val, taiwan_min_loc, max_loc = cv2.minMaxLoc(taiwan_res)
-    if china_min_val < taiwan_min_val:
-        return 'china'
-    else:
-        return 'taiwan'
+    region_all = ['./icon/taiwan.png', './icon/china.png', './icon/japan.png']
+    min = sys.maxsize
+    loc = None
+    index = None
+    
+    for i in range(len(region_all)):
+        template = cv2.imread(region_all[i], cv2.IMREAD_GRAYSCALE)
+        res = cv2.matchTemplate(template, img, 0)
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+        # print('min_val = ', min_val)
+        if(min_val < min):
+            index = i
+            min = min_val
 
+    region = ['taiwan', 'china', 'japan']
+    return region[index]
 
 
 # Image Preprocessing
@@ -330,7 +336,7 @@ def get_record_msg(our, enemy, win, status):
 def confirm_record_success(our, enemy, mode):
 
     try:
-        if mode == 'upload':
+        if mode == 'upload' or mode == 'friend_upload':
             if len(our) == 0:
                 return False
             count_our = Counter(our)
@@ -348,7 +354,7 @@ def confirm_record_success(our, enemy, mode):
         for i in range(len(enemy)):
             character[enemy[i]]
             # print(character[enemy[i]])
-            # print(enemy[i])
+            print(enemy[i])
             if test2[i][1] > 1:
                 return False
 
