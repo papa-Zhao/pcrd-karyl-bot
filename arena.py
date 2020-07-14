@@ -178,17 +178,17 @@ def preprocessing(img):
     for i in range(len(contours)):
         w_min, h_min = contours[i].min(0)[0,0], contours[i].min(0)[0,1]
         w_max, h_max = contours[i].max(0)[0,0], contours[i].max(0)[0,1]
-
-        if h_max - h_min > h_threshold:
-            goal_index = i
-            status = 'friend_upload'
-            break
         
         if w_max - w_min > w_threshold:
             goal_index = i
             if h_max - h_min > h_threshold:
                 status = 'search'
             break  
+
+        if h_max - h_min > h_threshold:
+            goal_index = i
+            status = 'friend_upload'
+            break
     
     w_min, h_min = contours[goal_index].min(0)[0,0], contours[goal_index].min(0)[0,1]
     w_max, h_max = contours[goal_index].max(0)[0,0], contours[goal_index].max(0)[0,1]
