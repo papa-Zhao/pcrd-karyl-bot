@@ -215,7 +215,10 @@ def handle_message(event):
     elif msg_source == 'user':
         reply_msg = handle_user_text_message(event)
    
-    if reply_msg != '':
+    if 'https:' in reply_msg:
+        send_msg = ImageSendMessage(original_content_url=reply_msg, preview_image_url=reply_msg)
+        line_bot_api.reply_message(event.reply_token, send_msg)
+    elif reply_msg != '':
         send_msg = TextSendMessage(text= reply_msg )
         line_bot_api.reply_message(event.reply_token, send_msg)
 

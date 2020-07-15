@@ -63,6 +63,7 @@ def handle_user_image_message(event):
     message_content = line_bot_api.get_message_content(msg_id)
     content = message_content.content
     img = content_to_image(content)
+
     
     corrtect = determine_arena_img(img)
     if corrtect == False:
@@ -70,7 +71,7 @@ def handle_user_image_message(event):
         return reply_msg
 
     mode, pre_img = preprocessing(img)
-    # print('mode=', mode)
+    print('mode=', mode)
     if mode == 'not record':
         return reply_msg
 
@@ -78,7 +79,8 @@ def handle_user_image_message(event):
         region = decide_where(pre_img)
         our, enemy, win = upload_battle_processing(pre_img, region, mode)
         if mode == 'friend_upload':
-            our, enemy = sort_character_loc(our, enemy)
+            our = sort_character_loc(our)
+            enemy = sort_character_loc(enemy)
 
         status = confirm_record_success(our, enemy, mode)
         if status == True:
@@ -114,6 +116,7 @@ def handle_user_image_message(event):
         enemy = search_battle_processing(pre_img)
         status = confirm_record_success([], enemy, mode)
         if status == True:
+            print('enemy = ', enemy)
             record, good, bad = search_arena_record(enemy, user_id)
             record, good, bad = sort_arena_record(record, good, bad)
             if len(record) > 0:
@@ -155,7 +158,8 @@ def handle_group_image_message(event):
         our, enemy, win = upload_battle_processing(pre_img, region, mode)
 
         if mode == 'friend_upload':
-            our, enemy = sort_character_loc(our, enemy)
+            our = sort_character_loc(our)
+            enemy = sort_character_loc(enemy)
 
         status = confirm_record_success(our, enemy, mode)
         if status == True:
