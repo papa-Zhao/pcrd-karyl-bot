@@ -209,6 +209,9 @@ def handle_user_text_message(event):
     elif '@' in msg:
         msg = msg[1:]
         reply_msg = subscribe_str_processing(msg, user_id)
+        send_msg = TextSendMessage(text= reply_msg )
+        line_bot_api.reply_message(event.reply_token, send_msg)
+        reply_msg = ''
     else:
         handle_key_message(event) 
 
