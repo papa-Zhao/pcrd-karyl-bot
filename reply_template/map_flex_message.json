@@ -1,0 +1,85 @@
+{
+    "type": "carousel",
+    "contents": [
+      {
+        "type": "bubble",
+        "body": {
+          "type": "box",
+          "layout": "vertical",
+          "spacing": "sm",
+          "contents": [
+            {
+              "type": "text",
+              "text": " 郵局",
+              "wrap": true,
+              "weight": "bold",
+              "size": "xxl",
+              "align": "center"
+            },
+            {
+              "type": "text",
+              "text": "幾支",
+              "size": "md",
+              "align": "center",
+              "gravity": "center"
+            },
+            {
+              "type": "box",
+              "layout": "vertical",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": "郵局地址",
+                  "wrap": true,
+                  "weight": "bold",
+                  "size": "xl",
+                  "flex": 0,
+                  "align": "start",
+                  "style": "italic",
+                  "offsetTop": "5px"
+                },
+                {
+                  "type": "text",
+                  "text": "營業時間",
+                  "wrap": true,
+                  "weight": "bold",
+                  "size": "xl",
+                  "flex": 0,
+                  "align": "start",
+                  "style": "italic",
+                  "offsetTop": "5px"
+                },
+                {
+                  "type": "text",
+                  "text": "剩餘數量",
+                  "align": "start",
+                  "size": "xl",
+                  "weight": "bold",
+                  "style": "italic",
+                  "offsetBottom": "10px",
+                  "color": "#FF0000"
+                }
+              ],
+              "offsetTop": "5px"
+            }
+          ]
+        },
+        "footer": {
+          "type": "box",
+          "layout": "vertical",
+          "spacing": "sm",
+          "contents": [
+            {
+              "type": "button",
+              "style": "primary",
+              "action": {
+                "type": "uri",
+                "label": "地圖導覽",
+                "uri": "https://google.com"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }

@@ -15,6 +15,7 @@ from linebot.models import (
 )
 
 import configparser
+import copy
 import json
 import os
 import redis
@@ -24,7 +25,9 @@ from flask import abort, Flask, jsonify, request
 from cloud_firestore import *
 from image_message import *
 from imgur import *
+from paper import *
 from text_message import *
+
 
 app = Flask(__name__)
 
@@ -177,12 +180,36 @@ def handle_message(event):
     latitude = event.message.latitude
     longitude = event.message.longitude
 
-    reply_msg = 'address = ' + address
-    reply_msg += '\nlatitude = ' + str(latitude)
-    reply_msg += '\nlongitude = ' + str(longitude)
+    bank_info = get_bank_info(latitude, longitude)    
+    data = {}
+    with open('./reply_template/map_flex_message.json', newline='') as jsonfile:
+        data = json.load(jsonfile)
 
-    send_msg = TextSendMessage(text= reply_msg )
+    template = data.pop('contents')[0]
+    data['contents'] = []
+    for i in range(5):
+        bank = copy.deepcopy(template)
+        info = bank['body']['contents']
+        index = bank_info[i][0].index('(')
+        info[0]['text'] = bank_info[i][0][:index] # Name
+        info[1]['text'] = bank_info[i][0][index:]
+        info[2]['contents'][0]['text'] = '郵局地址: ' + bank_info[i][1] # Address
+        info[2]['contents'][1]['text'] = '營業時間: ' + bank_info[i][2] # Time
+        info[2]['contents'][2]['text'] = '剩餘數量: ' + bank_info[i][4] # Count
+
+        index = bank_info[i][0].index('(')
+        print(bank_info[i][0][:index])
+        url = 'https://www.google.com/maps/dir/' + str(latitude) + ',+' + str(longitude) + '/' + str(bank_info[i][5]) + ',+' + str(bank_info[i][6])
+        # url = 'https://www.google.com/maps/dir/' + str(latitude) + ',+' + str(longitude) + '/' + bank_info[i][0][:index]
+        # print(url)
+        bank['footer']['contents'][0]['action']['uri'] = url
+        data['contents'].append(bank)
+
+    send_msg = FlexSendMessage(alt_text='振興三倍卷', contents=data)
     line_bot_api.reply_message(event.reply_token, send_msg)
+
+    # send_msg = TextSendMessage(text= reply_msg )
+    # line_bot_api.reply_message(event.reply_token, send_msg)
 
 
 @handler.add(MessageEvent, message=ImageMessage)
