@@ -38,6 +38,7 @@ def lineNotifyMessage(token, msg):
 
 
 def scrape_pcrd_cygame():
+    
     cygame_url = "https://priconne-redive.jp"
     response = requests.get(cygame_url + '/news')
     soup = BeautifulSoup(response.text, "html.parser")

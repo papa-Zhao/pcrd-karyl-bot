@@ -241,6 +241,8 @@ def handle_message(event):
         reply_msg = handle_group_text_message(event)
     elif msg_source == 'user':
         reply_msg = handle_user_text_message(event)
+    
+    print('reply_msg= ', reply_msg)
    
     if 'https:' in reply_msg:
         send_msg = ImageSendMessage(original_content_url=reply_msg, preview_image_url=reply_msg)
