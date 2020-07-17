@@ -133,10 +133,10 @@ def user_set_str_processing(user_id, msg):
 
     reply_msg = '指令錯誤，請再輸入一次！'
 
-    if msg == '今日台服消息' or msg == '今日台版消息':
+    if msg == '台聞':
         reply_msg = scrape_pcrd_sonet()
 
-    if msg == '今日日服消息' or msg == '今日日版消息':
+    if msg == '日聞':
         reply_msg = scrape_pcrd_cygame()
 
     if '陣容: ' in msg:

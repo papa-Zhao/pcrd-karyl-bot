@@ -78,13 +78,12 @@ def handle_user_image_message(event):
     if mode == 'upload' or mode == 'friend_upload':
         region = decide_where(pre_img)
         our, enemy, win = upload_battle_processing(pre_img, region, mode)
-        if mode == 'friend_upload':
-            our = sort_character_loc(our)
-            enemy = sort_character_loc(enemy)
 
         status = confirm_record_success(our, enemy, mode)
         if status == True:
             if mode == 'friend_upload':
+                our = sort_character_loc(our)
+                enemy = sort_character_loc(enemy)
                 find_status = find_arena_record(our, enemy, win, user_id)
                 if find_status == 'repeated':
                     reply_msg = '上傳失敗，此對戰紀錄您已上傳過。'
@@ -158,13 +157,11 @@ def handle_group_image_message(event):
         region = decide_where(pre_img)
         our, enemy, win = upload_battle_processing(pre_img, region, mode)
 
-        if mode == 'friend_upload':
-            our = sort_character_loc(our)
-            enemy = sort_character_loc(enemy)
-
         status = confirm_record_success(our, enemy, mode)
         if status == True:
             if mode == 'friend_upload':
+                our = sort_character_loc(our)
+                enemy = sort_character_loc(enemy)
                 find_status = find_group_arena_record(our, enemy, win, group_id)
                 if find_status == 'success':
                     reply_msg = get_record_msg(our, enemy, win, find_status)
