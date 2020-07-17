@@ -205,7 +205,7 @@ def handle_message(event):
         bank['footer']['contents'][0]['action']['uri'] = url
         data['contents'].append(bank)
 
-    send_msg = FlexSendMessage(alt_text='振興三倍卷', contents=data)
+    send_msg = FlexSendMessage(alt_text='振興三倍券', contents=data)
     line_bot_api.reply_message(event.reply_token, send_msg)
 
     # send_msg = TextSendMessage(text= reply_msg )

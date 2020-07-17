@@ -3,6 +3,8 @@ import cv2
 import random2 as random
 
 from imgurpython import ImgurClient
+import base64
+import requests
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -29,4 +31,22 @@ def upload_album_image(image):
     path = './image/search.jpg'
     cv2.imwrite(path,image)
     url = client.upload_from_path(path)['link']
+    return url
+
+
+def get_arena_solutions_image(image):
+
+    path = './image/search.jpg'
+    cv2.imwrite(path, image)
+
+    with open(path, "rb") as file:
+        url = 'https://api.imgbb.com/1/upload'
+        payload = {
+            'key': config.get('imgbb', 'key'),
+            'image': base64.b64encode(file.read()),
+        }
+        res = requests.post(url, payload)
+
+    # print(res)
+    url = res.json()['data']['image'].get('url')
     return url
