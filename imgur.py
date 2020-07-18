@@ -49,5 +49,6 @@ def get_arena_solutions_image(image):
 
     # print(res)
     # url = res.json()['data']['image'].get('url')
-    url = res.json()['data'].get('display_url')
+    # url = res.json()['data'].get('display_url')
+    url = res.json()['data'].get('url_viewer')
     return url
