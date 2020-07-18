@@ -120,23 +120,56 @@ def battle_result(img, mode):
     result = None
     if mode == 'upload':
         win_template = cv2.imread('./icon/win.jpg', cv2.IMREAD_GRAYSCALE)
-    else:
+    elif mode == 'friend_upload':
         win_template = cv2.imread('./icon/friend_win.jpg', cv2.IMREAD_GRAYSCALE)
+    elif mode == '3v3':
+        win_template = cv2.imread('./icon/3v3_win.jpg', cv2.IMREAD_GRAYSCALE)
+    
     win_res = cv2.matchTemplate(win_template, img, cv2.TM_SQDIFF)
-    min_val, max_val, win_min_loc, max_loc = cv2.minMaxLoc(win_res)
-
+    win_min_val, max_val, win_min_loc, max_loc = cv2.minMaxLoc(win_res)
+    
     if mode == 'upload':
         lose_template = cv2.imread('./icon/lose.jpg', cv2.IMREAD_GRAYSCALE)
-    else:
+    elif mode == 'friend_upload':
         lose_template = cv2.imread('./icon/friend_lose.jpg', cv2.IMREAD_GRAYSCALE)
+    elif mode == '3v3':
+        lose_template = cv2.imread('./icon/3v3_lose.jpg', cv2.IMREAD_GRAYSCALE)
+        
     lose_res = cv2.matchTemplate(lose_template, img, cv2.TM_SQDIFF)
-    min_val, max_val, lose_min_loc, max_loc = cv2.minMaxLoc(lose_res)
-
+    lose_min_val, max_val, lose_min_loc, max_loc = cv2.minMaxLoc(lose_res)
+    
+    if win_min_val > 2e6:
+        return (0, 0), lose_min_loc, result
+    
     if win_min_loc[0] < int(img.shape[1]/3):
         result = True
     else:
         result = False
+
     return win_min_loc, lose_min_loc, result
+
+
+def decide_search_or_3v3(img):
+    
+    img =  cv2.resize(img, (900, 300), interpolation=cv2.INTER_CUBIC)
+    result = None
+    state_all = ['./icon/3v3.jpg', './icon/search.jpg']
+    
+    min = 1e10
+    loc = None
+    index = None
+    
+    for i in range(len(state_all)):
+        template = cv2.imread(state_all[i], cv2.IMREAD_GRAYSCALE)
+        res = cv2.matchTemplate(template, img, cv2.TM_SQDIFF)
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+        print('min_val = ', min_val)
+        if(min_val < min):
+            index = i
+            min = min_val
+
+    state = ['3v3', 'search']
+    return state[index]
 
 
 def decide_where(img):
@@ -164,41 +197,48 @@ def decide_where(img):
 # Input: Original Image
 # Output: Record Image
 def preprocessing(img):
-    
+
     # BGR to Binary
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) # BGR to Gray
-    ret, binary = cv2.threshold(gray,127,255,cv2.THRESH_TOZERO) # Gray to Binary
-     
-    # Capture Record
-    contours, hierarchy = cv2.findContours(binary,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+    ret, binary = cv2.threshold(gray, 127, 255, cv2.THRESH_TOZERO) # Gray to Binary
 
-    status = 'upload'
+    # Capture Record
+    contours, hierarchy = cv2.findContours(binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    
+    status = ''
     h_threshold = int(2*img.shape[0]/3)
     w_threshold = int(2*img.shape[1]/3)
     for i in range(len(contours)):
         w_min, h_min = contours[i].min(0)[0,0], contours[i].min(0)[0,1]
         w_max, h_max = contours[i].max(0)[0,0], contours[i].max(0)[0,1]
-        
+
         if w_max - w_min > w_threshold:
             goal_index = i
+            status = 'upload'
+            
             if h_max - h_min > h_threshold:
-                status = 'search'
+                status = 'search_or_3v3'
             break  
-
+   
         if h_max - h_min > h_threshold:
             goal_index = i
             status = 'friend_upload'
             break
-    
+
     w_min, h_min = contours[goal_index].min(0)[0,0], contours[goal_index].min(0)[0,1]
     w_max, h_max = contours[goal_index].max(0)[0,0], contours[goal_index].max(0)[0,1]
     record = gray[h_min:h_max, w_min:w_max]
+
+    if status == 'search_or_3v3':
+        status = decide_search_or_3v3(record)
     
     if status == 'friend_upload':
         record =  cv2.resize(record, (630, 630), interpolation=cv2.INTER_CUBIC)
-    else:
+    elif status == 'upload' or status == 'search':
         record =  cv2.resize(record, (900, 300), interpolation=cv2.INTER_CUBIC)
-    
+    else:
+        record =  cv2.resize(record, (950, 500), interpolation=cv2.INTER_CUBIC)
+
     return status, record
 
 
@@ -258,6 +298,78 @@ def upload_battle_processing(img, region, mode):
             x = x+w+7
         
     return team, enemy, result
+
+
+# Image Preprocessing
+# Input: Record Image
+# Output: Battle Results
+def upload_3v3_battle_processing(img):
+    
+    team_3v3 = []
+    enemy_3v3 = []
+    result_3v3 = []
+    
+    for num in range(3):
+        
+        team = []
+        enemy = []
+        result = []
+        # result = None
+        win_min_loc, lose_min_loc, result = battle_result(img, '3v3')
+        
+        if win_min_loc == (0, 0):
+            break
+        
+        result_3v3.append(result)
+        half = int(img.shape[0]/2)
+        if win_min_loc[0] < half:
+            lose_min_loc = (win_min_loc[0] + 416, win_min_loc[1])
+        else:
+            lose_min_loc = (win_min_loc[0] - 424, win_min_loc[1])
+
+        win_des = 1
+        lose_des = 7
+        y = win_min_loc[1] + 47
+
+        # Width and Height of Cropped region
+        w = 60
+        h = 35
+        border = 5
+
+        # Our team Character
+        if result == True:
+            x = win_min_loc[0] + win_des
+        else:
+            x = lose_min_loc[0] + lose_des
+
+        team = []
+        for i in range(5):
+            crop_img = img[y:y+h, x+border:x+w-border]
+            team.append(get_id(crop_img))
+            # cv2.imwrite('./test/our_' + str(num) + '_' + str(i) +'.jpg', crop_img)
+            x = x+w+10
+        team_3v3.append(team)
+
+        if result == True:
+            x = lose_min_loc[0] + lose_des
+        else:
+            x = win_min_loc[0] + win_des
+
+        enemy = []
+        for i in range(5):
+            crop_img = img[y:y+h, x+border:x+w-border]
+            enemy.append(get_id(crop_img))
+            # cv2.imwrite('./test/enemy_' + str(num) + '_' + str(i) +'.jpg', crop_img)
+            x = x+w+10
+        enemy_3v3.append(enemy)
+        
+        loc = win_min_loc[1]
+        pic1 = img[:loc-5,]
+        pic2 = img[loc+105:,]
+        img = np.concatenate((pic1, pic2))
+        # cv2.imwrite('/3v3' + str(num) +'.jpg', img)
+        
+    return team_3v3, enemy_3v3, result_3v3
 
 
 def sort_character_loc(team):
@@ -324,6 +436,37 @@ def get_record_msg(our, enemy, win, status):
     # reply_msg = '競技場紀錄已為您儲存'
 
     return reply_msg
+
+
+def get_3v3_record_msg(our, enemy, win):
+
+    msg = '我方隊伍:'
+    for i in range(len(our)):
+        msg += '\n' + str(i+1) + '. '
+        for j in range(len(our[0])):
+            msg += character[our[i][j]] + ', '
+
+    msg += '\n\n敵方隊伍:'
+    for i in range(len(enemy)):
+        msg += '\n' + str(i+1) + '. '
+        for j in range(len(enemy[0])):
+            msg += character[enemy[i][j]] + ', '
+
+    msg += '\n\n勝利者:'
+    for i in range(len(win)):
+        if win[i] == True:
+            msg += '\n' + str(i+1) + '. 我方'
+        else:
+            msg += '\n' + str(i+1) + '. 敵方'
+
+    tmp = Counter(win)
+    msg += '\n最終勝利者: '
+    if tmp[True] > tmp[False]:
+        msg += '我方'
+    else:
+        msg += '敵方'
+            
+    return msg
 
 def confirm_record_success(our, enemy, mode):
 
