@@ -48,5 +48,6 @@ def get_arena_solutions_image(image):
         res = requests.post(url, payload)
 
     # print(res)
-    url = res.json()['data']['image'].get('url')
+    # url = res.json()['data']['image'].get('url')
+    url = res.json()['data'].get('display_url')
     return url
