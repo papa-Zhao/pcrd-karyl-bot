@@ -125,6 +125,7 @@ def handle_user_image_message(event):
                 reply_img = create_record_img(record, good, bad)
                 # url = upload_album_image(reply_img)
                 url = get_arena_solutions_image(reply_img)
+                # url = test_kraken_image(reply_img)
                 return url
             else:
                 reply_msg = '此對戰紀錄不存在'

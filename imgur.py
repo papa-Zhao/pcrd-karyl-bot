@@ -52,3 +52,24 @@ def get_arena_solutions_image(image):
     # url = res.json()['data'].get('display_url')
     # url = res.json()['data']['thumb'].get('url')
     return url
+
+
+from krakenio import Client
+
+
+def test_kraken_image(image):
+
+    path = './image/search.jpg'
+    cv2.imwrite(path, image)
+
+    api = Client('bd3b81ddac4b9cce4cb1e54e148fca1f', '386e40656e9207f53c379cf6c793e5449d71c1e6')
+
+    data = {
+        'wait': True
+    }
+
+    result = api.upload(path, data);
+
+    if result.get('success'):
+        print(result.get('kraked_url'))
+        return result.get('kraked_url')

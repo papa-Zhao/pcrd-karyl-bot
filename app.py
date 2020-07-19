@@ -116,7 +116,8 @@ def handle_join(event):
     print('group_id = ', group_id)
 
     try:
-        karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92', 'C8c5635612e8d8b6856f805b7522a56f0', 'C6c42bc1911917f460609c6bfe5b2c6ff']
+        karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92', 'C8c5635612e8d8b6856f805b7522a56f0', 'C6c42bc1911917f460609c6bfe5b2c6ff'
+                        ,'Cdf1027c25ba50ddd3f71fef81ed5fb59']
         karyl_group.index(group_id)
     except ValueError:
         reply_msg = '此群組並非凱留水球噠噠噠群組，無法使用群組功能。'

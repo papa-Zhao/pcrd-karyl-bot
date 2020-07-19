@@ -163,7 +163,7 @@ def decide_search_or_3v3(img):
         template = cv2.imread(state_all[i], cv2.IMREAD_GRAYSCALE)
         res = cv2.matchTemplate(template, img, cv2.TM_SQDIFF)
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
-        print('min_val = ', min_val)
+        # print('min_val = ', min_val)
         if(min_val < min):
             index = i
             min = min_val
