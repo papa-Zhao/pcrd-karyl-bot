@@ -251,7 +251,7 @@ def handle_group_arena_text_message(group_id, user_id, msg):
         else:
             find_status = find_group_arena_record(enemy, our, win, group_id)
             if find_status == 'success':
-                reply_msg = get_record_msg(enemy, our, win, find_status)
+                reply_msg = get_group_record_msg(enemy, our, win, find_status)
 
     elif msg == '進攻' or msg == MsgType.Atk:
         key = group_id + user_id
