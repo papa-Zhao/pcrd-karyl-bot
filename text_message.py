@@ -279,7 +279,7 @@ def handle_group_arena_text_message(group_id, user_id, msg):
         else:
             find_status = find_group_arena_record(our, enemy, win, group_id)
             if find_status == 'success':
-                reply_msg = get_record_msg(our, enemy, win, find_status)
+                reply_msg = get_group_record_msg(our, enemy, win, find_status)
     
     return reply_msg
 
