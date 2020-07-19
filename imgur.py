@@ -54,9 +54,6 @@ def get_arena_solutions_image(image):
     return url
 
 
-from krakenio import Client
-
-
 def test_kraken_image(image):
 
     path = './image/search.jpg'
