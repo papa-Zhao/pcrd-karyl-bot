@@ -441,9 +441,9 @@ def get_group_record_msg(our, enemy, win, status):
 
     reply_msg = ''
     if status == 'success':
-        reply_msg += '\n紀錄已為您儲存'
+        reply_msg += '紀錄已為您儲存'
     else:
-        reply_msg += '\n紀錄已為您更改'
+        reply_msg += '紀錄已為您更改'
     # reply_msg = '競技場紀錄已為您儲存'
 
     return reply_msg

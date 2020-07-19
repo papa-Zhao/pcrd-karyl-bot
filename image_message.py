@@ -168,7 +168,7 @@ def handle_group_image_message(event):
                 enemy = sort_character_loc(enemy)
                 find_status = find_group_arena_record(our, enemy, win, group_id)
                 if find_status == 'success':
-                    reply_msg = get_record_msg(our, enemy, win, find_status)
+                    reply_msg = get_group_record_msg(our, enemy, win, find_status)
                     return reply_msg
             else:
                 key = group_id + user_id
