@@ -54,19 +54,15 @@ def get_arena_solutions_image(image):
     return url
 
 
-def test_kraken_image(image):
+def test_nacx_image(image):
 
     path = './image/search.jpg'
     cv2.imwrite(path, image)
 
-    api = Client('bd3b81ddac4b9cce4cb1e54e148fca1f', '386e40656e9207f53c379cf6c793e5449d71c1e6')
+    file = {'image':('image.jpg', open(path, 'rb'), "multipart/form-data")}
+    request = requests.post('https://api.na.cx/upload', files=file)
+    
+    res = request.json()
 
-    data = {
-        'wait': True
-    }
-
-    result = api.upload(path, data);
-
-    if result.get('success'):
-        print(result.get('kraked_url'))
-        return result.get('kraked_url')
+    if res.get('status') == 200:
+        return res.get('url')
