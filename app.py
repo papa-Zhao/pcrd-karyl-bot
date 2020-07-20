@@ -242,6 +242,8 @@ def handle_message(event):
         reply_msg = handle_group_text_message(event)
     elif msg_source == 'user':
         reply_msg = handle_user_text_message(event)
+    else:
+        reply_msg = handle_room_text_message(event)
    
     if 'https:' == reply_msg[0:6]:
         send_msg = ImageSendMessage(original_content_url=reply_msg, preview_image_url=reply_msg)

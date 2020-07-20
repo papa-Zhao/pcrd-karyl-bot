@@ -305,7 +305,7 @@ def handle_group_text_message(event):
         karyl_group.index(group_id)
     except ValueError:
         reply_msg = '此群組並非凱留水球啵啵啵群組，無法使用群組功能。'
-        reply_msg += '\n若想使用群組功能請聯絡開發者 Email: r22742557@gmail.com'
+        reply_msg += '\n若想使用群組功能請聯絡開發者 Email: rr06922013@gmail.com'
         return reply_msg
 
     msg = strQ2B(msg)
@@ -350,6 +350,12 @@ def handle_group_text_message(event):
             print('')
 
     return reply_msg
+
+
+def handle_room_text_message(event):
+
+    handle_key_message(event)
+
 
 
 def handle_key_message(event):
