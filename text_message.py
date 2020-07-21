@@ -317,6 +317,25 @@ def handle_group_text_message(event):
 
 
     if '!' == msg[0]:
+
+        if '陣容: ' in msg:
+            msg = msg.replace('陣容: ', '')
+            reply_msg , enemy = nickname_search_arena_record(msg)
+            if reply_msg == 'True':
+                enemy = sort_character_loc(enemy)
+
+                record, good, bad = search_group_arena_record(enemy, group_id)
+                record, good, bad = sort_arena_record(record, good, bad)
+                if len(record) > 0:
+                    reply_img = create_record_img(record, good, bad)
+                    url = test_nacx_image(reply_img)
+                    return url
+                else:
+                    reply_msg = '此對戰紀錄不存在'
+                    return reply_msg
+            else:
+                return reply_msg
+
         try:
             karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92']
             karyl_group.index(group_id)
