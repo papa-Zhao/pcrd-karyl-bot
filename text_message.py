@@ -319,6 +319,7 @@ def handle_group_text_message(event):
     if '!' == msg[0]:
 
         if '陣容: ' in msg:
+            msg = msg[1:]
             msg = msg.replace('陣容: ', '')
             reply_msg , enemy = nickname_search_arena_record(msg)
             if reply_msg == 'True':
