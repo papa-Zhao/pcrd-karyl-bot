@@ -200,7 +200,7 @@ def preprocessing(img):
 
     # BGR to Binary
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) # BGR to Gray
-    ret, binary = cv2.threshold(gray, 127, 255, cv2.THRESH_TOZERO) # Gray to Binary
+    ret, binary = cv2.threshold(gray, 150, 255, cv2.THRESH_TOZERO) # Gray to Binary
 
     # Capture Record
     contours, hierarchy = cv2.findContours(binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -490,6 +490,7 @@ def confirm_record_success(our, enemy, mode):
             for i in range(len(our)):
                 character[our[i]]
                 # print(character[our[i]])
+                print(our[i])
                 if test1[i][1] > 1:
                     return False
 
@@ -500,7 +501,7 @@ def confirm_record_success(our, enemy, mode):
         for i in range(len(enemy)):
             character[enemy[i]]
             # print(character[enemy[i]])
-            # print(enemy[i])
+            print(enemy[i])
             if test2[i][1] > 1:
                 return False
 

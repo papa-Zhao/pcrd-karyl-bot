@@ -154,7 +154,7 @@ def handle_group_image_message(event):
         return reply_msg
 
     mode, pre_img = preprocessing(img)
-    # print('mode=', mode)
+    print('mode=', mode)
     if mode == 'not record':
         return reply_msg
 
@@ -163,6 +163,7 @@ def handle_group_image_message(event):
         our, enemy, win = upload_battle_processing(pre_img, region, mode)
 
         status = confirm_record_success(our, enemy, mode)
+        print('status=', status)
         if status == True:
             if mode == 'friend_upload':
                 our = sort_character_loc(our)

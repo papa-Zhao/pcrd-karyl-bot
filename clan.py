@@ -20,14 +20,14 @@ from scrape_cygame import *
 def clan_time_start():
 
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
-    start = datetime.strptime("2020-06-30 21:00:00", ISOTIMEFORMAT)
+    start = datetime.strptime("2020-07-20 21:00:00", ISOTIMEFORMAT)
 
     return start
 
 def clan_time_end():
 
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
-    end = datetime.strptime("2020-07-31 16:00:00", ISOTIMEFORMAT)
+    end = datetime.strptime("2020-07-30 16:00:00", ISOTIMEFORMAT)
 
     return end
 
@@ -285,9 +285,9 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
     if msg == '指令':
         reply_msg = '指令查詢網址:https://docs.google.com/document/d/1Ba6H2ppgacKxicyB7y9xEaYRktuAuIPyI0mbW5wutsA/edit#'
 
-    # if msg == 'URL' or msg == 'url':
-    #     url = sh.url
-    #     reply_msg = '戰隊表格網址: ' + url
+    if msg == 'URL' or msg == 'url':
+        url = sh.url
+        reply_msg = '戰隊表格網址: ' + url
 
     if msg == '周目':
         cycle = ws.get_value('B1')
@@ -380,7 +380,7 @@ def search_user_permission(user):
 
 
 def clan_group_set_str_processing(group_id, user_id, user_name, msg):
-
+    print('clan_group_set_str_processing')
     reply_msg = '指令錯誤，請再輸入一次！'
 
     sh =initial_worksheet()

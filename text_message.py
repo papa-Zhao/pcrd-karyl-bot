@@ -293,6 +293,7 @@ def get_group_msg_info(event):
 
     return msg, group_id, user_id, user_name 
 
+
 def handle_group_text_message(event):
 
     reply_msg = ''
@@ -314,6 +315,7 @@ def handle_group_text_message(event):
         reply_msg = handle_group_arena_text_message(group_id, user_id, msg)
         return reply_msg
 
+
     if '!' == msg[0]:
         try:
             karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92']
@@ -329,7 +331,6 @@ def handle_group_text_message(event):
             karyl_group.index(group_id)
         except ValueError:
             reply_msg = '此群組並非凱留水球啵啵啵群組，無法使用群組功能。'
-        return reply_msg
 
         group_member = get_group_member(group_id)
         try:
