@@ -12,6 +12,7 @@ opencv-python
 pandas
 pybase64
 pygsheets
+python-redis-lock
 random2
 redis
 requests

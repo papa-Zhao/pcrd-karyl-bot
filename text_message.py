@@ -6,8 +6,10 @@ import configparser
 import enum
 import random
 import redis
+import redis_lock
 import sys
 sys.path.append('./bin')
+import time
 from scrape_sonet import *
 from scrape_cygame import *
 
@@ -30,7 +32,6 @@ handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 
 r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
 # r = redis.StrictRedis(decode_responses=True)
-
 
 class StrEnum(str, enum.Enum):
      pass
@@ -129,7 +130,7 @@ character = {10000:'似似花',10001:'日和',10002:'茉莉',10003:'真步',1000
              30200:'伊緒(六星)',30201:'優依(六星)',30202:'珠希(六星)',30203:'佩可(六星)',
              30300:'可可蘿(六星)',30301:'凱留(六星)', 30302:'靜流(六星)'}
 
-def user_set_str_processing(user_id, msg):
+def user_find_str_processing(user_id, msg):
 
     reply_msg = '指令錯誤，請再輸入一次！'
 
@@ -193,7 +194,7 @@ def handle_user_text_message(event):
 
     if '!' == msg[0]:
         msg = msg[1:]
-        reply_msg = user_set_str_processing(user_id, msg)
+        reply_msg = user_find_str_processing(user_id, msg)
     elif '#' in msg:
         if clan_period():
             info = get_user_info(user_id)
@@ -218,6 +219,110 @@ def handle_user_text_message(event):
     return reply_msg
 
 
+def handle_group_upload(group_id, user_id, msg):
+
+    key = group_id + user_id
+    redis_our = r.lrange(key + "our", 0, -1)
+    redis_enemy = r.lrange(key + "enemy", 0, -1)
+    win = r.get(key + 'win')
+
+    our = [0] * len(redis_our)
+    enemy = [0] * len(redis_enemy)
+    if msg == '防守' or msg == MsgType.Def:
+
+        for i in range(len(redis_our)):
+            enemy[i] = int(redis_our[i])
+        for i in range(len(redis_enemy)):
+            our[i] = int(redis_enemy[i])
+
+        if win == 'True':
+            win = False
+        else:
+            win = True
+
+    elif msg == '進攻' or msg == MsgType.Atk:
+
+        for i in range(len(redis_our)):
+            our[i] = int(redis_our[i])
+        for i in range(len(redis_enemy)):
+            enemy[i] = int(redis_enemy[i])
+
+        if win == 'True':
+            win = True
+        else:
+            win = False
+
+    reply_msg = 'atk:' + str(our)
+    reply_msg += '\ndef:' + str(enemy)
+    reply_msg += '\nwin:' + str(win)
+    # print('reply_msg = ', reply_msg)
+    if our == [] or enemy == []:
+        reply_msg = '時效已到期'
+    else:
+        find_status = find_group_arena_record(our, enemy, win, group_id)
+        if find_status == 'success':
+            reply_msg = get_group_record_msg(our, enemy, win, find_status)
+
+    return reply_msg
+
+
+def handle_group_3v3_upload(group_id, user_id, msg):
+    
+    key = group_id + user_id
+    count = r.get(key + 'count')
+    print('count=', count)
+    
+    for record in range(int(count)):
+        print('record=', record)
+        redis_our = r.lrange(key + 'our' + str(record), 0, -1)
+        redis_enemy = r.lrange(key + 'enemy' + str(record), 0, -1)
+        win = r.get(key + 'win' + str(record))
+        print(redis_our)
+        print(redis_enemy)
+        print(win)
+        
+        our = [0] * len(redis_our)
+        enemy = [0] * len(redis_enemy)
+        if msg == '防守' or msg == MsgType.Def:
+
+            for i in range(len(redis_our)):
+                enemy[i] = int(redis_our[i])
+            for i in range(len(redis_enemy)):
+                our[i] = int(redis_enemy[i])
+
+            if win == 'True':
+                win = False
+            else:
+                win = True
+
+        elif msg == '進攻' or msg == MsgType.Atk:
+
+            for i in range(len(redis_our)):
+                our[i] = int(redis_our[i])
+            for i in range(len(redis_enemy)):
+                enemy[i] = int(redis_enemy[i])
+
+            if win == 'True':
+                win = True
+            else:
+                win = False
+
+        reply_msg = '\natk:' + str(our)
+        reply_msg += '\ndef:' + str(enemy)
+        reply_msg += '\nwin:' + str(win)
+        print('reply_msg = ', reply_msg)
+        if our == [] or enemy == []:
+            reply_msg = '時效已到期'
+        else:
+            find_status = find_group_arena_record(our, enemy, win, group_id)
+            if find_status == 'success':
+                reply_msg = get_group_record_msg(our, enemy, win, find_status)
+
+
+    return reply_msg
+    
+
+
 def handle_group_arena_text_message(group_id, user_id, msg):
     
     key = group_id + user_id
@@ -226,60 +331,19 @@ def handle_group_arena_text_message(group_id, user_id, msg):
         reply_msg = ''
         return reply_msg
 
-    if msg == '防守' or msg == MsgType.Def:
-        key = group_id + user_id
+    reply_msg = ''
+    mode = r.get(key + 'mode')
+    print('mode=',mode)
+    if mode == 'Upload':
+        reply_msg = handle_group_upload(group_id, user_id, msg)
+    
+    if mode == '3v3':
+        reply_msg = handle_group_3v3_upload(group_id, user_id, msg)
 
-        our = r.lrange(key + "our", 0, -1)
-        for i in range(len(our)):
-            our[i] = int(our[i])
 
-        enemy = r.lrange(key + "enemy", 0, -1)
-        for i in range(len(enemy)):
-            enemy[i] = int(enemy[i])
 
-        win = r.get(key + 'win')
-        if win == 'True':
-            win = False
-        else:
-            win = True
 
-        reply_msg = 'atk:' + str(enemy)
-        reply_msg += '\ndef:' + str(our)
-        reply_msg += '\nwin:' + str(win)
-        if our == [] or enemy == []:
-            reply_msg = '時效已到期'
-        else:
-            find_status = find_group_arena_record(enemy, our, win, group_id)
-            if find_status == 'success':
-                reply_msg = get_group_record_msg(enemy, our, win, find_status)
-
-    elif msg == '進攻' or msg == MsgType.Atk:
-        key = group_id + user_id
-
-        our = r.lrange(key + 'our', 0, -1)
-        for i in range(len(our)):
-            our[i] = int(our[i])
-
-        enemy = r.lrange(key + 'enemy', 0, -1)
-        for i in range(len(enemy)):
-            enemy[i] = int(enemy[i])
-
-        win = r.get(key + 'win')
-        if win == 'True':
-            win = True
-        else:
-            win = False
-
-        reply_msg = 'atk:' + str(our)
-        reply_msg += '\ndef:' + str(enemy)
-        reply_msg += '\nwin:' + str(win)
-        # print('reply_msg = ', reply_msg)
-        if our == [] or enemy == []:
-            reply_msg = '時效已到期'
-        else:
-            find_status = find_group_arena_record(our, enemy, win, group_id)
-            if find_status == 'success':
-                reply_msg = get_group_record_msg(our, enemy, win, find_status)
+    
     
     return reply_msg
 
@@ -294,13 +358,32 @@ def get_group_msg_info(event):
     return msg, group_id, user_id, user_name 
 
 
+def handle_group_text_search(group_id, msg):
+
+    msg = msg.replace('陣容: ', '')
+    reply_msg , enemy = nickname_search_arena_record(msg)
+    if reply_msg == 'True':
+        enemy = sort_character_loc(enemy)
+
+        record, good, bad = search_group_arena_record(enemy, group_id)
+        record, good, bad = sort_arena_record(record, good, bad)
+        if len(record) > 0:
+            reply_img = create_record_img(record, good, bad)
+            url = test_nacx_image(reply_img)
+            return url
+        else:
+            reply_msg = '此對戰紀錄不存在'
+            return reply_msg
+    else:
+        return reply_msg
+
+
 def handle_group_text_message(event):
 
     reply_msg = ''
     msg, group_id, user_id, user_name = get_group_msg_info(event)
 
     try:
-
         karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92', 'C8c5635612e8d8b6856f805b7522a56f0', 'C6c42bc1911917f460609c6bfe5b2c6ff'
                     ,'Cdf1027c25ba50ddd3f71fef81ed5fb59']
         karyl_group.index(group_id)
@@ -315,36 +398,18 @@ def handle_group_text_message(event):
         reply_msg = handle_group_arena_text_message(group_id, user_id, msg)
         return reply_msg
 
-
     if '!' == msg[0]:
-
-        if '陣容: ' in msg:
-            msg = msg[1:]
-            msg = msg.replace('陣容: ', '')
-            reply_msg , enemy = nickname_search_arena_record(msg)
-            if reply_msg == 'True':
-                enemy = sort_character_loc(enemy)
-
-                record, good, bad = search_group_arena_record(enemy, group_id)
-                record, good, bad = sort_arena_record(record, good, bad)
-                if len(record) > 0:
-                    reply_img = create_record_img(record, good, bad)
-                    url = test_nacx_image(reply_img)
-                    return url
-                else:
-                    reply_msg = '此對戰紀錄不存在'
-                    return reply_msg
-            else:
-                return reply_msg
-
-        try:
-            karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92']
-            karyl_group.index(group_id)
-        except ValueError:
-            reply_msg = '此群組並非凱留水球啵啵啵群組，無法使用群組功能。'
-
         msg = msg[1:]
-        reply_msg = clan_group_find_str_processing(group_id, user_id, user_name, msg)
+        if '陣容: ' in msg:
+            reply_msg = handle_group_text_search(group_id, msg)
+        else:
+            try:
+                karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92']
+                karyl_group.index(group_id)
+            except ValueError:
+                reply_msg = '此群組並非凱留水球啵啵啵群組，無法使用群組功能。'
+            reply_msg = clan_group_find_str_processing(group_id, user_id, user_name, msg)
+
     elif '#' == msg[0]:
         try:
             karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92']
@@ -355,13 +420,26 @@ def handle_group_text_message(event):
         group_member = get_group_member(group_id)
         try:
             group_member[user_name]
+            redis_lock.reset_all(r)
+            if clan_period():
+                msg = msg[1:]
+                lock = redis_lock.Lock(r, "clan_sheet", id = user_id)
+                if lock.acquire(blocking = False):
+                    print("Got the lock.", user_id)
+                    reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
+                    lock.release()
+                else:
+                    if lock.get_owner_id() == user_id:
+                        print("I already acquired this in another process.")
+                    else:
+                        print("The lock is held on another machine.")
+                # lock.acquire(blocking=False)
+                # reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
+                # lock.release()
+            else:
+                reply_msg = '非戰隊戰期間，不開放此功能'
         except KeyError:
             reply_msg = user_name + '，你非戰隊成員，請先加入戰隊戰。'
-        if clan_period():
-            msg = msg[1:]
-            reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
-        else:
-            reply_msg = '非戰隊戰期間，不開放此功能'
     else:
         try:
             karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92', 'Cdf1027c25ba50ddd3f71fef81ed5fb59']

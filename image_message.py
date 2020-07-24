@@ -3,10 +3,12 @@ from linebot.models import (
 )
 
 import configparser
-import random2 as random
-import pybase64 as base64
 import cv2
 import numpy as np
+import pybase64 as base64
+import random2 as random
+import redis
+import redis_lock
 
 from imgur import *
 from app import *
@@ -186,13 +188,48 @@ def handle_group_image_message(event):
                 r.expire(key + "enemy", time=10)
                 r.set(key + 'win', str(win), ex=10)
                 r.set(key + 'status', 'True', ex=10)
+                r.set(key + 'mode', 'Upload', ex=10)
 
                 text_message = TextSendMessage(text= '請問您是哪一方？1(進攻)，0(防守)')
                 line_bot_api.reply_message(event.reply_token, text_message)
-    elif mode == '3v3':
+    
+    if mode == '3v3':
         our, enemy, win = upload_3v3_battle_processing(pre_img)
         reply_msg = get_3v3_record_msg(our, enemy, win)
-    else:
+        return reply_msg
+
+        status = False
+        for num in range(len(our)):
+            status = confirm_record_success(our[num], enemy[num], mode)
+            if status == False:
+                break
+        
+        if status == True:
+            key = group_id + user_id
+            r.delete(key + 'our')
+            r.delete(key + 'enemy')
+            r.delete(key + 'win')
+            
+            for record in range(len(our)):
+                for character in range(len(our[record])):
+                    r.rpush(key + "our" + str(record), our[record][character])
+                    r.expire(key + "our" + str(record), time = 30)
+            for record in range(len(enemy)):
+                for character in range(len(enemy[record])):
+                    r.rpush(key + "enemy" + str(record), enemy[record][character])
+                    r.expire(key + "enemy" + str(record), time = 30)
+            for record in range(len(win)):
+                r.set(key + 'win' + str(record), str(win[record]), ex=10)
+
+            print('win=', win)
+            r.set(key + 'status', 'True', ex = 30)
+            r.set(key + 'mode', '3v3', ex = 30)
+            r.set(key + 'count', str(len(win)), ex = 30)
+
+            text_message = TextSendMessage(text= '請問您是哪一方？1(進攻)，0(防守)')
+            line_bot_api.reply_message(event.reply_token, text_message)
+    
+    if mode == 'search':
         enemy = search_battle_processing(pre_img)
         status = confirm_record_success([], enemy, mode)
         if status == True:

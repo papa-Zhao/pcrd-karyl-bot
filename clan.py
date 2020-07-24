@@ -1,20 +1,27 @@
-from clan_sheet import *
-from cloud_firestore import *
-
-from dateutil import tz
-from dateutil.tz import tzlocal
-from datetime import datetime, timedelta
-
 from linebot import (
     LineBotApi, WebhookHandler
 )
 
 from app import *
-
-import sys
-sys.path.append('./bin')
+from clan_sheet import *
+from cloud_firestore import *
 from scrape_sonet import *
 from scrape_cygame import *
+
+from dateutil import tz
+from dateutil.tz import tzlocal
+from datetime import datetime, timedelta
+
+import redis
+import sys
+sys.path.append('./bin')
+
+r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
+# r = redis.StrictRedis(decode_responses=True)
+
+
+boss_blood_list = [[600, 600, 700, 1500], [800, 800, 900, 1600], [1000, 1000, 1300, 1800], [1200, 1200, 1500, 1900], [1500, 1500, 2000, 2000]]
+boss_cycle_list = [1, 4, 11, 35]
 
 
 def clan_time_start():
@@ -174,6 +181,7 @@ def clan_user_str_processing(user_id, msg):
 
     return reply_msg
 
+
 def get_clan_atk_times(sh, status):
 
     ws = sh.worksheet_by_title('出刀次數')
@@ -241,7 +249,7 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
     if msg == '日聞':
         reply_msg = scrape_pcrd_cygame()
 
-    if msg == '報名查詢':
+    if msg == '報名查詢            ': ###### Depreciated ######
         try:
             tplt = '{0:{5}^6}\t{1:^6}\t{2:{5}^6}\t{3:{5}^6}\t{4:{5}^6}'
             reply_msg = tplt.format("報名者", "周目", "boss", '傷害', '刀種', chr(12288))
@@ -297,14 +305,13 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
         boss = ws.get_value('B2')
         boss_blood = ws.get_value('B3')
         reply_msg = '當前boss為: ' + boss
-        reply_msg += '\nboss血量: ' + boss_blood 
+        reply_msg += '\nboss血量: ' + boss_blood
 
     if msg == '完整刀':
         reply_msg = get_clan_atk_times(sh, '完整刀')
 
     if msg == '補償刀':
         reply_msg = get_clan_atk_times(sh, '補償刀')
-    
 
     if msg == '剩刀':
         remainder = ws.get_value('E1')
@@ -383,7 +390,7 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
     print('clan_group_set_str_processing')
     reply_msg = '指令錯誤，請再輸入一次！'
 
-    sh =initial_worksheet()
+    sh = initial_worksheet()
     
     permission = search_user_permission(user_id)
     
@@ -615,15 +622,13 @@ def update_boss_status(sh, cycle, boss, complete):
 
     ########## Updated Boss Blood ##########
 
-    boss_blood_list = [ [600, 600, 700], [800, 800, 900], [1000, 1000, 1300], [1200, 1200, 1500], [1500, 1500, 2000]]
-    boss_cycle_list = [1, 4, 11]
     stages_index = 0
 
     for i in range(len(boss_cycle_list)):
         if int(cycle) >= boss_cycle_list[i]:
             stages_index = i
 
-    ws.update_value('B3', boss_blood_list[boss_index][stages_index]*10000)
+    ws.update_value('B3', boss_blood_list[boss_index][stages_index] * 1e4)
 
 
     ########## Updated ATK Remainder ##########

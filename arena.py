@@ -482,7 +482,7 @@ def get_3v3_record_msg(our, enemy, win):
 def confirm_record_success(our, enemy, mode):
 
     try:
-        if mode == 'upload' or mode == 'friend_upload':
+        if mode == 'upload' or mode == 'friend_upload' or mode == '3v3':
             if len(our) == 0:
                 return False
             count_our = Counter(our)
@@ -490,7 +490,7 @@ def confirm_record_success(our, enemy, mode):
             for i in range(len(our)):
                 character[our[i]]
                 # print(character[our[i]])
-                print(our[i])
+                # print(our[i])
                 if test1[i][1] > 1:
                     return False
 
@@ -501,7 +501,7 @@ def confirm_record_success(our, enemy, mode):
         for i in range(len(enemy)):
             character[enemy[i]]
             # print(character[enemy[i]])
-            print(enemy[i])
+            # print(enemy[i])
             if test2[i][1] > 1:
                 return False
 
