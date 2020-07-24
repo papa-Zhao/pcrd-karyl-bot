@@ -408,6 +408,8 @@ def handle_group_text_message(event):
                 karyl_group.index(group_id)
             except ValueError:
                 reply_msg = '此群組並非凱留水球啵啵啵群組，無法使用群組功能。'
+                return reply_msg
+
             reply_msg = clan_group_find_str_processing(group_id, user_id, user_name, msg)
 
     elif '#' == msg[0]:
@@ -416,7 +418,8 @@ def handle_group_text_message(event):
             karyl_group.index(group_id)
         except ValueError:
             reply_msg = '此群組並非凱留水球啵啵啵群組，無法使用群組功能。'
-
+            return reply_msg
+        
         group_member = get_group_member(group_id)
         try:
             group_member[user_name]
