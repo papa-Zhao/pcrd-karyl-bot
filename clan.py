@@ -29,7 +29,7 @@ boss_cycle_list = [1, 4, 11, 35]
 def clan_time_start():
 
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
-    start = datetime.strptime("2020-07-24 09:00:00", ISOTIMEFORMAT)
+    start = datetime.strptime("2020-07-24 21:00:00", ISOTIMEFORMAT)
 
     return start
 
@@ -231,7 +231,7 @@ def myAlign(string, length=0):
 
 
 def clan_group_find_str_processing(group_id, user_id, user_name, msg):
-    print('clan_group_find_str_processing')
+    # print('clan_group_find_str_processing')
 
     ############ Other Group function ############
 
@@ -260,7 +260,7 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
             rows = ws.rows
             for row in range(5, rows):
                 user_info = ws.get_row(row)
-                print(user_info)
+                # print(user_info)
                 reply_msg += '\n'
                 reply_msg += tplt.format(user_info[0], user_info[2], user_info[3], user_info[4], user_info[5], chr(12288))
         except IndexError:
@@ -271,7 +271,7 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
             ws = sh.worksheet_by_title('報刀')
             index = ws.find(user_name, matchCase=True)[0].row
             user_info = ws.get_row(index)
-            print(user_info)
+            # print(user_info)
             reply_msg = user_name + '，你的報名紀錄:'
             reply_msg += '\n報名時間: ' + str(user_info[1]) 
             reply_msg += '\n報名周目: ' + str(user_info[2]) 
@@ -389,7 +389,7 @@ def search_user_permission(user):
 
 
 def clan_group_set_str_processing(group_id, user_id, user_name, msg):
-    print('clan_group_set_str_processing')
+    # print('clan_group_set_str_processing')
     reply_msg = '指令錯誤，請再輸入一次！'
 
     sh = initial_worksheet()
@@ -505,7 +505,7 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
             lock = redis_lock.Lock(r, 'clan_sheet', id = user_id)
             while not lock.acquire(blocking = False):
                 time.sleep(0.1)
-            print('Got the atk lock', user_id)
+            # print('Got the atk lock', user_id)
             reply_msg = update_clan_sign_up(sh, group_id, msg, user_name, boss=boss, damage=damage, status = '出刀')
             lock.release()
         except IndexError:
@@ -532,7 +532,7 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
             lock = redis_lock.Lock(r, 'clan_sheet', id = user_id)
             while not lock.acquire(blocking = False):
                 time.sleep(0.1)
-            print('Got the sign_up lock', user_id)
+            # print('Got the sign_up lock', user_id)
             reply_msg = update_clan_sign_up(sh, group_id, msg, user_name, cycle, boss, complete, damage, '等待')
             lock.release()
         elif msg != '報名':

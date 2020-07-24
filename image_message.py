@@ -145,7 +145,7 @@ def handle_group_image_message(event):
     msg_id = event.message.id
     group_id = event.source.group_id
     user_id = event.source.user_id
-    print('group_id = ', group_id)
+    # print('group_id = ', group_id)
 
     message_content = line_bot_api.get_message_content(msg_id)
     content = message_content.content
@@ -156,7 +156,7 @@ def handle_group_image_message(event):
         return reply_msg
 
     mode, pre_img = preprocessing(img)
-    print('mode=', mode)
+    # print('mode=', mode)
     if mode == 'not record':
         return reply_msg
 
@@ -165,7 +165,7 @@ def handle_group_image_message(event):
         our, enemy, win = upload_battle_processing(pre_img, region, mode)
 
         status = confirm_record_success(our, enemy, mode)
-        print('status=', status)
+        # print('status=', status)
         if status == True:
             if mode == 'friend_upload':
                 our = sort_character_loc(our)
@@ -221,7 +221,7 @@ def handle_group_image_message(event):
             for record in range(len(win)):
                 r.set(key + 'win' + str(record), str(win[record]), ex=10)
 
-            print('win=', win)
+            # print('win=', win)
             r.set(key + 'status', 'True', ex = 30)
             r.set(key + 'mode', '3v3', ex = 30)
             r.set(key + 'count', str(len(win)), ex = 30)
