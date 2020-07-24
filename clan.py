@@ -13,11 +13,13 @@ from dateutil.tz import tzlocal
 from datetime import datetime, timedelta
 
 import redis
+import redis_lock
 import sys
 sys.path.append('./bin')
+import time
 
-r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
-# r = redis.StrictRedis(decode_responses=True)
+# r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
+r = redis.StrictRedis(decode_responses=True)
 
 
 boss_blood_list = [[600, 600, 700, 1500], [800, 800, 900, 1600], [1000, 1000, 1300, 1800], [1200, 1200, 1500, 1900], [1500, 1500, 2000, 2000]]
@@ -27,7 +29,7 @@ boss_cycle_list = [1, 4, 11, 35]
 def clan_time_start():
 
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
-    start = datetime.strptime("2020-07-20 21:00:00", ISOTIMEFORMAT)
+    start = datetime.strptime("2020-07-24 09:00:00", ISOTIMEFORMAT)
 
     return start
 
@@ -500,7 +502,12 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
             boss = msg[0]
             damage = msg[1]
             msg = '出刀'
+            lock = redis_lock.Lock(r, 'clan_sheet', id = user_id)
+            while not lock.acquire(blocking = False):
+                time.sleep(0.1)
+            print('Got the atk lock', user_id)
             reply_msg = update_clan_sign_up(sh, group_id, msg, user_name, boss=boss, damage=damage, status = '出刀')
+            lock.release()
         except IndexError:
             reply_msg = '出刀格式錯誤，請再輸入一次！'
 
@@ -522,7 +529,12 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
         confirm = confirm_atk_info(sh, user_name, complete)
 
         if msg == '報名' and confirm == '成功':
+            lock = redis_lock.Lock(r, 'clan_sheet', id = user_id)
+            while not lock.acquire(blocking = False):
+                time.sleep(0.1)
+            print('Got the sign_up lock', user_id)
             reply_msg = update_clan_sign_up(sh, group_id, msg, user_name, cycle, boss, complete, damage, '等待')
+            lock.release()
         elif msg != '報名':
             reply_msg = user_name + msg
         else:

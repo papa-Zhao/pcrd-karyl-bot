@@ -30,8 +30,9 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 
-r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
-# r = redis.StrictRedis(decode_responses=True)
+# r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
+r = redis.StrictRedis(decode_responses=True)
+
 
 class StrEnum(str, enum.Enum):
      pass
@@ -339,11 +340,6 @@ def handle_group_arena_text_message(group_id, user_id, msg):
     
     if mode == '3v3':
         reply_msg = handle_group_3v3_upload(group_id, user_id, msg)
-
-
-
-
-    
     
     return reply_msg
 
@@ -423,22 +419,11 @@ def handle_group_text_message(event):
         group_member = get_group_member(group_id)
         try:
             group_member[user_name]
-            redis_lock.reset_all(r)
+            # redis_lock.reset_all(r)
             if clan_period():
                 msg = msg[1:]
-                lock = redis_lock.Lock(r, "clan_sheet", id = user_id)
-                if lock.acquire(blocking = False):
-                    print("Got the lock.", user_id)
-                    reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
-                    lock.release()
-                else:
-                    if lock.get_owner_id() == user_id:
-                        print("I already acquired this in another process.")
-                    else:
-                        print("The lock is held on another machine.")
-                # lock.acquire(blocking=False)
-                # reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
-                # lock.release()
+                reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
+
             else:
                 reply_msg = '非戰隊戰期間，不開放此功能'
         except KeyError:
@@ -455,8 +440,10 @@ def handle_group_text_message(event):
 
 
 def handle_room_text_message(event):
-
+    
     handle_key_message(event)
+    reply_msg = ''
+    return reply_msg
 
 
 
