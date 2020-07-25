@@ -21,7 +21,7 @@ import time
 r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
 # r = redis.StrictRedis(decode_responses=True)
 
-
+boss_list = ['一王', '二王', '三王', '四王', '五王']
 boss_blood_list = [[600, 600, 700, 1500], [800, 800, 900, 1600], [1000, 1000, 1300, 1800], [1200, 1200, 1500, 1900], [1500, 1500, 2000, 2000]]
 boss_cycle_list = [1, 4, 11, 35]
 
@@ -59,7 +59,6 @@ def initial_atk_list(sh):
     
     reply_msg = '已將所有成員刀表重置'
     ws = sh.worksheet_by_title('刀表')
-    boss_list = ['一王', '二王', '三王', '四王', '五王']
 
     for boss in boss_list:
         index = ws.find(boss, matchCase=True)
@@ -77,13 +76,11 @@ def initial_sign_up_list(sh):
     ws.update_value('B1', 1)
     ws.update_value('B2', '一王')
     ws.update_value('B3', '6000000')
-
     ws.update_value('E1', 90)
     ws.update_value('E2', 0)
     del_row = ws.rows-4
     if del_row > 0:
         ws.delete_rows(5, number=del_row)
-
 
     return reply_msg
 
@@ -94,7 +91,6 @@ def set_atk_list(sh, name, msg):
     
     msg = msg.replace('回報刀表 ', '')
     msg = msg.split(' ')
-    # print(msg)
     boss_dict = {'一王':2, '二王':4, '三王':6, '四王':8, '五王':10}
     
     name_index = ws.find(name, matchCase=True)
@@ -122,7 +118,6 @@ def set_atk_list(sh, name, msg):
             reply_msg = '指令錯誤，你並未輸入刀表，請重新嘗試'
             return reply_msg
         else:
-            name_index = ws.find(name, matchCase=True)
             ws.update_value((row, col), m[1])
     
     return reply_msg
@@ -131,10 +126,8 @@ def set_atk_list(sh, name, msg):
 def set_atk_time(sh, name, msg):
     
     ws = sh.worksheet_by_title('出刀時間')
-
     msg = msg.replace('出刀時間 ', '')
     msg = msg.split(' ')
-
     time_dict = {'早上':2, '下午':3, '晚上':4}
     
     name_index = ws.find(name, matchCase=True)
@@ -151,7 +144,6 @@ def set_atk_time(sh, name, msg):
         row = index+1
         ws.update_value((row, 1), name)
         reply_msg = name + ', 你的出刀時間已經回報'
-    
 
     for t in msg:
         col = time_dict.get(t, -1)
@@ -159,10 +151,7 @@ def set_atk_time(sh, name, msg):
             reply_msg = '指令錯誤，你並未輸入時段，請重新嘗試'
             break
         else:
-            name_index = ws.find(name, matchCase=True)
             ws.update_value((row, col), True)
-
-    # print(reply_msg)
 
     return reply_msg
 
@@ -350,7 +339,6 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
 
     if '查刀' in msg:
         msg = msg.replace('查刀 ', '')
-        boss_list = ['一王', '二王', '三王', '四王', '五王']
         try:
             boss_list.index(msg)
             ws = sh.worksheet_by_title('刀表')
@@ -504,7 +492,7 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
             msg = '出刀'
             lock = redis_lock.Lock(r, 'clan_sheet', id = user_id)
             while not lock.acquire(blocking = False):
-                time.sleep(0.1)
+                time.sleep(0.01)
             # print('Got the atk lock', user_id)
             reply_msg = update_clan_sign_up(sh, group_id, msg, user_name, boss=boss, damage=damage, status = '出刀')
             lock.release()
@@ -531,7 +519,7 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
         if msg == '報名' and confirm == '成功':
             lock = redis_lock.Lock(r, 'clan_sheet', id = user_id)
             while not lock.acquire(blocking = False):
-                time.sleep(0.1)
+                time.sleep(0.01)
             # print('Got the sign_up lock', user_id)
             reply_msg = update_clan_sign_up(sh, group_id, msg, user_name, cycle, boss, complete, damage, '等待')
             lock.release()
@@ -624,8 +612,6 @@ def update_boss_status(sh, cycle, boss, complete):
         ws.update_value('B1', int(cycle))
 
     ########## Updated Boss ##########
-    boss_list = ['一王', '二王', '三王', '四王', '五王']
-    
     boss_index = (boss_list.index(boss) + 1) %len(boss_list)
 
     ws.update_value('B2', boss_list[boss_index])
@@ -659,6 +645,7 @@ def confirm_atk_info(sh, name, complete):
     
     if name_index:
         for i in range(len(name_index)):
+            print('name_index=', name_index[i].value)
             if name == name_index[i].value:
                 name_index = name_index[i]
         row = name_index.row
@@ -703,8 +690,6 @@ def get_clan_sign_up_info(sh, text):
     boss = ''
     complete = ''
     damage = ''
-
-    boss_list = ['一王', '二王', '三王', '四王', '五王']
 
     ws = sh.worksheet_by_title('報刀')
     msg = '報名'
@@ -755,9 +740,6 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
     cell_id = ws.find(name, matchCase=True)
 
     reply_msg = '更新失敗，請再輸入一次！'
-    
-    boss_list = ['一王', '二王', '三王', '四王', '五王']
-    
 
     if msg == '報名':
 
