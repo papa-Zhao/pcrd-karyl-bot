@@ -98,6 +98,7 @@ def set_atk_list(sh, name, msg):
         for i in range(len(name_index)):
             if name == name_index[i].value:
                 name_index = name_index[i]
+                break
         row = name_index.row
         ws.clear(start=(row, 2), end=(row, 11))
         reply_msg = name + ', 已更改你的刀表'
@@ -135,6 +136,7 @@ def set_atk_time(sh, name, msg):
         for i in range(len(name_index)):
             if name == name_index[i].value:
                 name_index = name_index[i]
+                break
         row = name_index.row
         if '早上' in msg or '下午' in msg or '晚上' in msg:
             ws.clear(start=(row, 2), end=(row, 4))
@@ -642,10 +644,9 @@ def confirm_atk_info(sh, name, complete):
 
     ws = sh.worksheet_by_title('出刀次數')
     name_index = ws.find(name, matchCase=True)
-    print('len=', len(name_index))
+
     if name_index:
         for i in range(len(name_index)):
-            print('name_index=', name_index[i].value)
             if name == name_index[i].value:
                 name_index = name_index[i]
                 break
@@ -828,6 +829,7 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
             for i in range(len(name_index)):
                 if name == name_index[i].value:
                     name_index = name_index[i]
+                    break
             row = name_index.row
             info = ws.get_row(row)
             cycle = info[2]
@@ -888,6 +890,7 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
             for i in range(len(name_index)):
                 if name == name_index[i].value:
                     name_index = name_index[i]
+                    break
             row = name_index.row
         else:
             index = ws.get_col(1).index('')
@@ -929,6 +932,7 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
                 for i in range(len(name_index)):
                     if name == name_index[i].value:
                         name_index = name_index[i]
+                        break
                 row = name_index.row
             else:
                 index = ws.get_col(1).index('')
