@@ -642,7 +642,7 @@ def confirm_atk_info(sh, name, complete):
 
     ws = sh.worksheet_by_title('出刀次數')
     name_index = ws.find(name, matchCase=True)
-    
+    print('len=', len(name_index))
     if name_index:
         for i in range(len(name_index)):
             print('name_index=', name_index[i].value)
