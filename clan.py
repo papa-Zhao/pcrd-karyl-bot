@@ -648,6 +648,7 @@ def confirm_atk_info(sh, name, complete):
             print('name_index=', name_index[i].value)
             if name == name_index[i].value:
                 name_index = name_index[i]
+                break
         row = name_index.row
     else:
         index = ws.get_col(1).index('')
