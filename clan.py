@@ -784,7 +784,10 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
 
         reply_msg = '取消報名失敗，請再輸入一次！'
         if cell_id:
-            cell_id = cell_id[0]
+            for i in range(len(cell_id)):
+                if name == cell_id[i].value:
+                    cell_id = cell_id[i]
+                    break
             ws.delete_rows(cell_id.row, number=1)
             # ws.add_rows(1)
             reply_msg = name + '，已為你取消報名'
@@ -798,6 +801,7 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
             for i in range(len(cell_id)):
                 if name == cell_id[i].value:
                     cell_id = cell_id[i]
+                    break
             row = cell_id.row
             info = ws.get_row(row)
             cycle = ws.get_value('B1')
