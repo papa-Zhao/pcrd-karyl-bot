@@ -426,7 +426,7 @@ def handle_group_text_message(event):
                 lock = redis_lock.Lock(r, 'clan_sheet', id = user_id)
                 print('Got Lock. name=', user_name)
                 while lock.get_owner_id() == user_id:
-                    print('%s already acquired this in another process.', %(user_id))
+                    print('%s already acquired this in another process.' %(user_id))
                     time.sleep(0.01)
                 while not lock.acquire(blocking = False):
                     time.sleep(0.01)
