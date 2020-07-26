@@ -425,6 +425,9 @@ def handle_group_text_message(event):
                 msg = msg[1:]
                 lock = redis_lock.Lock(r, 'clan_sheet', id = user_id)
                 print('Got Lock. name=', user_name)
+                while lock.get_owner_id() == user_id:
+                    print('%s already acquired this in another process.', %(user_id))
+                    time.sleep(0.01)
                 while not lock.acquire(blocking = False):
                     time.sleep(0.01)
                 reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
