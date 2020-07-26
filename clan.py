@@ -199,7 +199,7 @@ def get_clan_atk_times(sh, status):
         if int(info[i]) < 3:
             if status == '完整刀':
                 reply_msg += '\n' + name[i] + ': ' + str((3 - int(info[i])))
-            else:
+            if status == '補償刀' and int(info[i]):
                 reply_msg += '\n' + name[i]
 
     # print(reply_msg)
