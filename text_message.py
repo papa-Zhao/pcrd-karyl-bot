@@ -423,15 +423,21 @@ def handle_group_text_message(event):
             redis_lock.reset_all(r)
             if clan_period():
                 msg = msg[1:]
-                lock = redis_lock.Lock(r, 'clan_sheet', id = user_id)
-                print('Got Lock. name=', user_name)
+                # lock = redis_lock.Lock(r, 'clan_sheet', id = user_id)
+                # print('Got Lock. name=', user_name)
+                
+                with redis_lock.Lock(r, 'clan_sheet', id = user_id, expire = 5):
+                    print('Got Lock. name=', user_name)
+                    reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
+                    lock.release()
+
                 while lock.get_owner_id() == user_id:
                     print('%s already acquired this in another process.' %(user_id))
                     time.sleep(0.01)
-                while not lock.acquire(blocking = False):
-                    time.sleep(0.01)
-                reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
-                lock.release()
+                # while not lock.acquire(blocking = False):
+                #     time.sleep(0.01)
+                # reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
+                # lock.release()
             else:
                 reply_msg = '非戰隊戰期間，不開放此功能'
         except KeyError:
