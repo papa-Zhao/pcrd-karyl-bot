@@ -492,12 +492,7 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
             boss = msg[0]
             damage = msg[1]
             msg = '出刀'
-            lock = redis_lock.Lock(r, 'clan_sheet', id = user_id)
-            while not lock.acquire(blocking = False):
-                time.sleep(0.01)
-            # print('Got the atk lock', user_id)
             reply_msg = update_clan_sign_up(sh, group_id, msg, user_name, boss=boss, damage=damage, status = '出刀')
-            lock.release()
         except IndexError:
             reply_msg = '出刀格式錯誤，請再輸入一次！'
 
@@ -519,12 +514,7 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
         confirm = confirm_atk_info(sh, user_name, complete)
 
         if msg == '報名' and confirm == '成功':
-            lock = redis_lock.Lock(r, 'clan_sheet', id = user_id)
-            while not lock.acquire(blocking = False):
-                time.sleep(0.01)
-            # print('Got the sign_up lock', user_id)
             reply_msg = update_clan_sign_up(sh, group_id, msg, user_name, cycle, boss, complete, damage, '等待')
-            lock.release()
         elif msg != '報名':
             reply_msg = user_name + msg
         else:

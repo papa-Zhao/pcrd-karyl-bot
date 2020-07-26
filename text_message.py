@@ -422,8 +422,12 @@ def handle_group_text_message(event):
             # redis_lock.reset_all(r)
             if clan_period():
                 msg = msg[1:]
+                lock = redis_lock.Lock(r, 'clan_sheet', id = user_id)
+                print('Got Lock. name=', user_name)
+                while not lock.acquire(blocking = False):
+                    time.sleep(0.01)
                 reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
-
+                lock.release()
             else:
                 reply_msg = '非戰隊戰期間，不開放此功能'
         except KeyError:
