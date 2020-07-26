@@ -419,6 +419,7 @@ def handle_group_text_message(event):
         group_member = get_group_member(group_id)
         try:
             group_member[user_name]
+            lock = redis_lock.Lock(r, 'clan_sheet')
             redis_lock.reset_all(r)
             if clan_period():
                 msg = msg[1:]
