@@ -426,7 +426,7 @@ def handle_group_text_message(event):
                 # lock = redis_lock.Lock(r, 'clan_sheet', id = user_id)
                 # print('Got Lock. name=', user_name)
                 
-                with redis_lock.Lock(r, 'clan_sheet', id = user_id, expire = 5):
+                with redis_lock.Lock(r, 'clan_sheet', id = user_id):
                     print('Got Lock. name=', user_name)
                     reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
                     lock.release()
