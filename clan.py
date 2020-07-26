@@ -386,7 +386,7 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
     
     permission = search_user_permission(user_id)
     
-    admin_instruction = ['發送訊息:', '代刀', '代報名', '代取消', '設定周目', '設定boss', '設定BOSS', '設定完整刀', '設定補償刀', '出刀刀表重置', '報名刀表重置']
+    admin_instruction = ['發送訊息:', '刪刀', '代刀', '代報名', '代取消', '設定周目', '設定boss', '設定BOSS', '設定完整刀', '設定補償刀', '出刀刀表重置', '報名刀表重置']
     if permission == False:
         for i in range(len(admin_instruction)):
             if admin_instruction[i] in msg:
@@ -398,6 +398,8 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
         # multicast_group_to_user_info(group_id, msg)
         reply_msg = ''
         return reply_msg
+
+    
 
     if '代刀' in msg:
         try:
