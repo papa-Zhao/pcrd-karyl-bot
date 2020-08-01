@@ -212,18 +212,18 @@ def handle_group_image_message(event):
             for record in range(len(our)):
                 for character in range(len(our[record])):
                     r.rpush(key + "our" + str(record), our[record][character])
-                    r.expire(key + "our" + str(record), time = 30)
+                    r.expire(key + "our" + str(record), time = 10)
             for record in range(len(enemy)):
                 for character in range(len(enemy[record])):
                     r.rpush(key + "enemy" + str(record), enemy[record][character])
-                    r.expire(key + "enemy" + str(record), time = 30)
+                    r.expire(key + "enemy" + str(record), time = 10)
             for record in range(len(win)):
                 r.set(key + 'win' + str(record), str(win[record]), ex=10)
 
             # print('win=', win)
-            r.set(key + 'status', 'True', ex = 30)
-            r.set(key + 'mode', '3v3', ex = 30)
-            r.set(key + 'count', str(len(win)), ex = 30)
+            r.set(key + 'status', 'True', ex = 10)
+            r.set(key + 'mode', '3v3', ex = 10)
+            r.set(key + 'count', str(len(win)), ex = 10)
 
             text_message = TextSendMessage(text= '請問您是哪一方？1(進攻)，0(防守)')
             line_bot_api.reply_message(event.reply_token, text_message)
