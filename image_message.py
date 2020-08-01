@@ -196,7 +196,6 @@ def handle_group_image_message(event):
     if mode == '3v3':
         our, enemy, win = upload_3v3_battle_processing(pre_img)
         reply_msg = get_3v3_record_msg(our, enemy, win)
-        return reply_msg
 
         status = False
         for num in range(len(our)):

@@ -29,19 +29,28 @@ boss_cycle_list = [1, 4, 11, 35]
 def clan_time_start():
 
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
-    start = datetime.strptime("2020-07-24 21:00:00", ISOTIMEFORMAT)
+    start = datetime.strptime("2020-07-30 21:00:00", ISOTIMEFORMAT)
 
     return start
 
 def clan_time_end():
 
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
-    end = datetime.strptime("2020-07-30 16:00:00", ISOTIMEFORMAT)
+    end = datetime.strptime("2020-08-30 16:00:00", ISOTIMEFORMAT)
 
     return end
 
+def get_clan_days():
+
+    ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
+    clan_start = clan_time_start()
+    now = datetime.now().strftime(ISOTIMEFORMAT)
+    now = datetime.strptime(now, ISOTIMEFORMAT)
+    day = (now-clan_start).days + 1
+    return day
 
 def clan_period():
+    return True
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
     
     clan_start = clan_time_start()
@@ -399,7 +408,15 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
         reply_msg = ''
         return reply_msg
 
-
+    if '刪刀' in msg:
+        try:
+            msg = msg.replace('刪刀 ','')
+            no_id = int(msg)
+            name, cycle, boss, damage, complete, kill = get_clan_record_info(sh, no_id)
+            reply_msg = delete_clan_record(sh, no_id, name, cycle, boss, damage, complete, kill)
+        except ValueError:
+            reply_msg = '刪刀格式錯誤，請重新輸入。'
+            return reply_msg
 
     if '代刀' in msg:
         try:
@@ -674,9 +691,6 @@ def confirm_atk_info(sh, name, complete):
 
     return reply_msg
 
-
-
-
 def get_clan_sign_up_info(sh, text):
 
     msg = ''
@@ -700,8 +714,6 @@ def get_clan_sign_up_info(sh, text):
     if len(text) < 2:
         msg = ''
         return msg, cycle, boss, complete, damage
-
-
     
     try:
         if text[0] in boss_list:
@@ -726,25 +738,116 @@ def get_clan_sign_up_info(sh, text):
             
     return msg, cycle, boss, complete, damage
     
+def get_clan_record_info(sh, no_id):
+
+    ws = sh.worksheet_by_title('出刀傷害表')
+    info = ws.get_row(no_id)
+    name, cycle, boss, damage, complete, kill = info[1], info[2], info[3], info[4], info[5], info[6]
+    print(name, cycle, boss, damage, complete, kill)
+    return name, cycle, boss, damage, complete, kill
+
+def delete_clan_record(sh, no_id, name, cycle, boss, damage, complete, kill):
+
+    reply_msg = '刪刀失敗，請再輸入一次！'
+
+    ################  報刀表格  ################
+
+    ws = sh.worksheet_by_title('報刀')
+    ws.update_value('B1', int(cycle))
+    ws.update_value('B2', boss)
+
+    if complete == 'TRUE':
+        val = ws.get_value('E1')
+        ws.update_value('E1', int(val) + 1)
+    else:
+        val = ws.get_value('E2')
+        ws.update_value('E2', int(val) + 1)
+    
+    if kill == 'TRUE':
+        ws.update_value('B3', damage)
+        index = None
+        if complete == 'TRUE':
+            val = ws.get_value('E2')
+            ws.update_value('E2', int(val) - 1)
+    else:
+        boss_blood = ws.get_value('B3')
+        ws.update_value('B3', int(boss_blood) + int(damage))
+    
+
+    ################  出刀次數表格  ################
+
+    ws = sh.worksheet_by_title('出刀次數')
+    name_index = ws.find(name, matchCase=True)
+    for i in range(len(name_index)):
+        if name == name_index[i].value:
+            name_index = name_index[i]
+            break
+
+    if name_index:
+        row = name_index.row
+        if complete == 'TRUE':
+            day_index = get_clan_days() + 1
+        else:
+            day_index = ws.find('補償刀', matchCase=True)[0].col
+        print('出刀次數表格 day_index=', day_index)
+        val = ws.get_value((row, day_index))
+        ws.update_value((row, day_index), int(val) + 1)
+
+    if kill == 'TRUE':
+        day_index = ws.find('補償刀', matchCase=True)[0].col
+        val = ws.get_value((row, day_index))
+        ws.update_value((row, day_index), int(val) + 1)
+
+    ################  刀表表格  ################
+
+    if complete == 'TRUE':
+        ws = sh.worksheet_by_title('刀表')
+        name_index = ws.find(name, matchCase=True)
+        for i in range(len(name_index)):
+            if name == name_index[i].value:
+                name_index = name_index[i]
+                break
+
+        if name_index:
+            row = name_index.row 
+            boss_index = ws.find(boss, matchCase=True)
+            boss_index = boss_index[0]
+            col = boss_index.col
+            ws.update_value((row, col+1), '')
+
+
+    ################  出刀傷害表格  ################
+        
+    ws = sh.worksheet_by_title('出刀傷害表')
+    ws.delete_rows(no_id)
+
+    ################  回報訊息格式  ################
+
+    reply_msg = '出刀者:' + name
+    reply_msg += '\n周目:' + cycle
+    reply_msg += '\nboss:' + boss
+    reply_msg += '\ndamage:' + damage
+    reply_msg += '\n完整刀:' + complete
+    reply_msg += '\n已為你刪除此刀。'
+
+    return reply_msg
 
 def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', damage='', status=''):
 
     
     ws = sh.worksheet_by_title('報刀')
     cell_id = ws.find(name, matchCase=True)
+    for i in range(len(cell_id)):
+        if name == cell_id[i].value:
+            cell_id = cell_id[i]
+            break
 
     reply_msg = '更新失敗，請再輸入一次！'
 
     if msg == '報名':
 
         reply_msg = '報名失敗，請再輸入一次！'
-        
         find = False
-        for i in range(len(cell_id)):
-            if name == cell_id[i].value:
-                find = True
-                cell_id = cell_id[i]
-
         if find == True:
             val = ws.get_value((cell_id.row, 4))
             
@@ -768,18 +871,13 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
             # now = datetime.now().strftime(ISOTIMEFORMAT) + timedelta(hours=8)
             # print(name, now, cycle, boss, damage, complete, '等待')
             sign_up = [name, now, cycle, boss, damage, complete, '等待']
-            ws.update_row(row, values=sign_up)
+            ws.update_row(row, values = sign_up)
 
             # ws.update_values((row, 1), values=[sign_up], )
     
     elif msg == '取消':
-
         reply_msg = '取消報名失敗，請再輸入一次！'
         if cell_id:
-            for i in range(len(cell_id)):
-                if name == cell_id[i].value:
-                    cell_id = cell_id[i]
-                    break
             ws.delete_rows(cell_id.row, number=1)
             # ws.add_rows(1)
             reply_msg = name + '，已為你取消報名'
@@ -787,13 +885,8 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
             reply_msg = '取消報名失敗，' + name + '你並未報名過。'
 
     elif msg == '掛樹':
-
         reply_msg = '更新狀態失敗，請再輸入一次！'
         if cell_id:
-            for i in range(len(cell_id)):
-                if name == cell_id[i].value:
-                    cell_id = cell_id[i]
-                    break
             row = cell_id.row
             info = ws.get_row(row)
             cycle = ws.get_value('B1')
@@ -820,12 +913,12 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
 
         ws = sh.worksheet_by_title('報刀')
         name_index = ws.find(name, matchCase=True)
+        for i in range(len(name_index)):
+            if name == name_index[i].value:
+                name_index = name_index[i]
+                break
 
         if name_index:
-            for i in range(len(name_index)):
-                if name == name_index[i].value:
-                    name_index = name_index[i]
-                    break
             row = name_index.row
             info = ws.get_row(row)
             cycle = info[2]
@@ -881,12 +974,12 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
 
         ws = sh.worksheet_by_title('出刀次數')
         name_index = ws.find(name, matchCase=True)
-        # print(len(name_index))
+        for i in range(len(name_index)):
+            if name == name_index[i].value:
+                name_index = name_index[i]
+                break
+  
         if name_index:
-            for i in range(len(name_index)):
-                if name == name_index[i].value:
-                    name_index = name_index[i]
-                    break
             row = name_index.row
         else:
             index = ws.get_col(1).index('')
@@ -923,12 +1016,12 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
         if '完整' in complete:
             ws = sh.worksheet_by_title('刀表')
             name_index = ws.find(name, matchCase=True)
+            for i in range(len(name_index)):
+                if name == name_index[i].value:
+                    name_index = name_index[i]
+                    break
 
             if name_index:
-                for i in range(len(name_index)):
-                    if name == name_index[i].value:
-                        name_index = name_index[i]
-                        break
                 row = name_index.row
             else:
                 index = ws.get_col(1).index('')
@@ -946,32 +1039,26 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
         ws = sh.worksheet_by_title('出刀傷害表')
         ws.add_rows(1)
         row = ws.rows
+        no_id = ws.rows
 
         # sign_up = [name, cycle, boss, complete, damage]
-        sign_up = [name, cycle, boss, damage]
-        ws.update_row(row, values=sign_up)
+        if '完整刀' in complete:
+            complete = True
+        else:
+            complete = False
+        
+        if int(boss_blood) == 0:
+            kill = True
+        else:
+            kill = False
 
-        ################  真實傷害表表格  ################
-        # damage = msg.split(' ')[1]
-        # ws = sh.worksheet_by_title('真實傷害表')
-        # name_index = ws.find(name, matchCase=True)
+        sign_up = [row, name, cycle, boss, damage, complete, kill]
+        ws.update_row(row, values = sign_up)
 
-        # if name_index:
-        #     name_index = name_index[0]
-        #     row = name_index.row
-        # else:
-        #     index = ws.get_col(1).index('')
-        #     row = index+1
-        #     ws.update_value((row, 1), name)
-
-        # boss_dict = {'一王':0, '二王':1, '三王':2, '四王':3, '五王':4}
-        # cycle = ws.find(info[2] + '周目', matchCase=True)
-        # cycle = cycle[0]
-        # col = cycle.col
-        # ws.update_value((row, col+boss_dict[boss]), damage)
-
+        ################  回報訊息格式  ################
 
         reply_msg = name + '，你的出刀回報成功！\n'
+        reply_msg += '出刀編號: ' + str(no_id) + '\n'
         if boss_blood > 0:
             reply_msg += boss + '剩餘血量為: ' + str(boss_blood)
         else:
