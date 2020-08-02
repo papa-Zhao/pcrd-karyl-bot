@@ -518,7 +518,8 @@ def create_record_img(record, good, bad):
     
     row = 0
     col = 0
-    for i in range(len(record)):
+    len_record = len(record) if len(record) < 10 else 10
+    for i in range(len_record):
         for j in range(len(record[0])):
             icon = record[i][j]
             division = 10000
