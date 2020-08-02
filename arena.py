@@ -512,13 +512,13 @@ def confirm_record_success(our, enemy, mode):
 
 
 def create_record_img(record, good, bad):
-    blank_image = np.zeros((len(record)*62, 530, 3), np.uint8)
+    len_record = len(record) if len(record) < 10 else 10
+    blank_image = np.zeros((len_record*62, 530, 3), np.uint8)
     blank_image.fill(255)
     charas_all = ['./icon/charas.png', './icon/charas_a.png', './icon/charas6x.png']
     
     row = 0
     col = 0
-    len_record = len(record) if len(record) < 10 else 10
     for i in range(len_record):
         for j in range(len(record[0])):
             icon = record[i][j]
