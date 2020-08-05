@@ -227,6 +227,7 @@ def handle_group_image_message(event):
 
             text_message = TextSendMessage(text= '請問您是哪一方？1(進攻)，0(防守)')
             line_bot_api.reply_message(event.reply_token, text_message)
+            reply_msg = ''
     
     if mode == 'search':
         enemy = search_battle_processing(pre_img)
