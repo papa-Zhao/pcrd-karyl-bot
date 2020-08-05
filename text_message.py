@@ -271,16 +271,16 @@ def handle_group_3v3_upload(group_id, user_id, msg):
     
     key = group_id + user_id
     count = r.get(key + 'count')
-    print('count=', count)
+    # print('count=', count)
     
     for record in range(int(count)):
-        print('record=', record)
+        # print('record=', record)
         redis_our = r.lrange(key + 'our' + str(record), 0, -1)
         redis_enemy = r.lrange(key + 'enemy' + str(record), 0, -1)
         win = r.get(key + 'win' + str(record))
-        print(redis_our)
-        print(redis_enemy)
-        print(win)
+        # print(redis_our)
+        # print(redis_enemy)
+        # print(win)
         
         our = [0] * len(redis_our)
         enemy = [0] * len(redis_enemy)
@@ -311,7 +311,7 @@ def handle_group_3v3_upload(group_id, user_id, msg):
         reply_msg = '\natk:' + str(our)
         reply_msg += '\ndef:' + str(enemy)
         reply_msg += '\nwin:' + str(win)
-        print('reply_msg = ', reply_msg)
+        # print('reply_msg = ', reply_msg)
         if our == [] or enemy == []:
             reply_msg = '時效已到期'
         else:
