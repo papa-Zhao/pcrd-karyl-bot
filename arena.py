@@ -206,8 +206,8 @@ def preprocessing(img):
     contours, hierarchy = cv2.findContours(binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     
     status = ''
-    h_threshold = int(2*img.shape[0]/3)
-    w_threshold = int(2*img.shape[1]/3)
+    h_threshold = int(2 * img.shape[0] / 3)
+    w_threshold = int(2 * img.shape[1] / 3)
     for i in range(len(contours)):
         w_min, h_min = contours[i].min(0)[0,0], contours[i].min(0)[0,1]
         w_max, h_max = contours[i].max(0)[0,0], contours[i].max(0)[0,1]
@@ -225,18 +225,17 @@ def preprocessing(img):
             status = 'friend_upload'
             break
 
-    w_min, h_min = contours[goal_index].min(0)[0,0], contours[goal_index].min(0)[0,1]
-    w_max, h_max = contours[goal_index].max(0)[0,0], contours[goal_index].max(0)[0,1]
+    w_min, h_min = contours[goal_index].min(0)[0, 0], contours[goal_index].min(0)[0, 1]
+    w_max, h_max = contours[goal_index].max(0)[0, 0], contours[goal_index].max(0)[0, 1]
     record = gray[h_min:h_max, w_min:w_max]
 
     if status == 'search_or_3v3':
         status = decide_search_or_3v3(record)
-    
     if status == 'friend_upload':
         record =  cv2.resize(record, (630, 630), interpolation=cv2.INTER_CUBIC)
-    elif status == 'upload' or status == 'search':
+    if status == 'upload' or status == 'search':
         record =  cv2.resize(record, (900, 300), interpolation=cv2.INTER_CUBIC)
-    else:
+    if status == '3v3':
         record =  cv2.resize(record, (950, 500), interpolation=cv2.INTER_CUBIC)
 
     return status, record
@@ -276,9 +275,9 @@ def upload_battle_processing(img, region, mode):
         crop_img = img[y:y+h, x+border:x+w-border]
         team.append(get_id(crop_img))
         if mode == 'friend_upload':
-            y = y+h+30
+            y = y + h + 30
         else:
-            x = x+w+7
+            x = x + w + 7
     
     # Enemy team Character
     if mode == 'friend_upload':
@@ -290,12 +289,12 @@ def upload_battle_processing(img, region, mode):
 
     enemy = []
     for i in range(5):
-        crop_img = img[y:y+h, x+border:x+w-border]
+        crop_img = img[y:y + h, x + border:x + w - border]
         enemy.append(get_id(crop_img))
         if mode == 'friend_upload':
-            y = y+h+30
+            y = y + h + 30
         else:
-            x = x+w+7
+            x = x + w + 7
         
     return team, enemy, result
 
@@ -512,13 +511,13 @@ def confirm_record_success(our, enemy, mode):
 
 
 def create_record_img(record, good, bad):
+    
     len_record = len(record) if len(record) < 10 else 10
-    blank_image = np.zeros((len_record*62, 530, 3), np.uint8)
+    blank_image = np.zeros((len_record * 62, 530, 3), np.uint8)
     blank_image.fill(255)
     charas_all = ['./icon/charas.png', './icon/charas_a.png', './icon/charas6x.png']
     
-    row = 0
-    col = 0
+    row, col = 0, 0
     for i in range(len_record):
         for j in range(len(record[0])):
             icon = record[i][j]
@@ -527,12 +526,12 @@ def create_record_img(record, good, bad):
             index = int(icon/division)-1
             icon %= division
             division = int(division/100)
-            pic_row = int(icon/division)*62
-            pic_col = int(icon%division)*62
+            pic_row = int(icon/division) * 62
+            pic_col = int(icon%division) * 62
             charas = cv2.imread(charas_all[index])
-            char_pic = charas[pic_row:pic_row+60, pic_col:pic_col+60, :]
+            char_pic = charas[pic_row:pic_row + 60, pic_col:pic_col + 60, :]
 
-            blank_image[row:row+60, col:col+60] = char_pic
+            blank_image[row:row + 60, col:col + 60] = char_pic
             col += 62
 
         col += 10
@@ -540,17 +539,15 @@ def create_record_img(record, good, bad):
         like = cv2.imread('./icon/like.png')
         icon_size = like.shape[0]
         like = like[:icon_size, :icon_size, :]
-        blank_image[row:row+icon_size, col:col+icon_size] = like
-
-        cv2.putText(blank_image, str(good[i]), (col+40, row+20), cv2.FONT_ITALIC, 0.75, (0, 0, 0), 2)
+        blank_image[row:row + icon_size, col:col + icon_size] = like
+        cv2.putText(blank_image, str(good[i]), (col + 40, row + 20), cv2.FONT_ITALIC, 0.75, (0, 0, 0), 2)
 
         col += 100
         dislike = cv2.imread('./icon/dislike.png')
         icon_size = dislike.shape[0]
         dislike = dislike[:icon_size, :icon_size, :]
         blank_image[row:row+icon_size, col:col+icon_size] = dislike
-
-        cv2.putText(blank_image, str(bad[i]), (col+40, row+20), cv2.FONT_ITALIC, 0.75, (0, 0, 0), 2)
+        cv2.putText(blank_image, str(bad[i]), (col + 40, row + 20), cv2.FONT_ITALIC, 0.75, (0, 0, 0), 2)
 
         row += 32
         col = 0

@@ -39,7 +39,7 @@ def content_to_image(content):
     return img
 
 
-def determine_arena_img(img):
+def is_arena_img(img):
 
     if img.shape[0] > img.shape[1]:
         return False
@@ -66,14 +66,11 @@ def handle_user_image_message(event):
     content = message_content.content
     img = content_to_image(content)
 
-    
-    corrtect = determine_arena_img(img)
-    if corrtect == False:
+    if not is_arena_img(img):
         reply_msg = ''
         return reply_msg
 
     mode, pre_img = preprocessing(img)
-    # print('mode=', mode)
     if mode == 'not record':
         return reply_msg
 
@@ -97,8 +94,7 @@ def handle_user_image_message(event):
                 r.delete(key + "our")
                 r.delete(key + "enemy")
                 r.delete(key + "win")
-                
-                # print('win = ', str(win))
+
                 for i in range(len(our)):
                     r.rpush(key + "our", our[i])
                 for i in range(len(our)):
@@ -106,21 +102,23 @@ def handle_user_image_message(event):
                 r.expire(key + "our", time=10)
                 r.expire(key + "enemy", time=10)
                 r.set(key + 'win', str(win), ex=10)
-                r.set(key + 'status', 'True', ex=10)
+                r.set(key + 'status', 'True')
 
                 with open('./reply_template/atk_quick_reply.json', newline='') as jsonfile:
                     data = json.load(jsonfile)
                 text_message = TextSendMessage(text= '請問您是哪一方？1(進攻)，0(防守)' , quick_reply = data)
                 line_bot_api.reply_message(event.reply_token, text_message)
-    elif mode == '3v3':
+        
+        return reply_msg
+    
+    if mode == '3v3':
         our, enemy, win = upload_3v3_battle_processing(pre_img)
         reply_msg = get_3v3_record_msg(our, enemy, win)
-    else:
-        # print('search')
+    
+    if mode == 'search':
         enemy = search_battle_processing(pre_img)
         status = confirm_record_success([], enemy, mode)
         if status == True:
-            # print('enemy = ', enemy)
             record, good, bad = search_arena_record(enemy, user_id)
             record, good, bad = sort_arena_record(record, good, bad)
             if len(record) > 0:
@@ -128,7 +126,7 @@ def handle_user_image_message(event):
                 # url = upload_album_image(reply_img)
                 # url = get_arena_solutions_image(reply_img)
                 # url = test_kraken_image(reply_img)
-                url = test_nacx_image(reply_img)
+                url = get_nacx_image(reply_img)
                 return url
             else:
                 reply_msg = '此對戰紀錄不存在'
@@ -145,18 +143,15 @@ def handle_group_image_message(event):
     msg_id = event.message.id
     group_id = event.source.group_id
     user_id = event.source.user_id
-    # print('group_id = ', group_id)
 
     message_content = line_bot_api.get_message_content(msg_id)
     content = message_content.content
     img = content_to_image(content)
-    corrtect = determine_arena_img(img)
-
-    if corrtect == False:
+    
+    if not is_arena_img(img):
         return reply_msg
 
     mode, pre_img = preprocessing(img)
-    # print('mode=', mode)
     if mode == 'not record':
         return reply_msg
 
@@ -165,7 +160,6 @@ def handle_group_image_message(event):
         our, enemy, win = upload_battle_processing(pre_img, region, mode)
 
         status = confirm_record_success(our, enemy, mode)
-        # print('status=', status)
         if status == True:
             if mode == 'friend_upload':
                 our = sort_character_loc(our)
@@ -174,7 +168,7 @@ def handle_group_image_message(event):
                 if find_status == 'success':
                     reply_msg = get_group_record_msg(our, enemy, win, find_status)
                     return reply_msg
-            else:
+            if mode == 'upload':
                 key = group_id + user_id
                 r.delete(key + "our")
                 r.delete(key + "enemy")
@@ -187,8 +181,8 @@ def handle_group_image_message(event):
                 r.expire(key + "our", time=10)
                 r.expire(key + "enemy", time=10)
                 r.set(key + 'win', str(win), ex=10)
-                r.set(key + 'status', 'True', ex=10)
-                r.set(key + 'mode', 'Upload', ex=10)
+                r.set(key + 'status', 'True')
+                r.set(key + 'mode', 'Upload')
 
                 text_message = TextSendMessage(text= '請問您是哪一方？1(進攻)，0(防守)')
                 line_bot_api.reply_message(event.reply_token, text_message)
@@ -201,6 +195,7 @@ def handle_group_image_message(event):
         for num in range(len(our)):
             status = confirm_record_success(our[num], enemy[num], mode)
             if status == False:
+                reply_msg = ''
                 break
         
         if status == True:
@@ -220,7 +215,6 @@ def handle_group_image_message(event):
             for record in range(len(win)):
                 r.set(key + 'win' + str(record), str(win[record]), ex=10)
 
-            # print('win=', win)
             r.set(key + 'status', 'True', ex = 10)
             r.set(key + 'mode', '3v3', ex = 10)
             r.set(key + 'count', str(len(win)), ex = 10)
@@ -228,6 +222,7 @@ def handle_group_image_message(event):
             text_message = TextSendMessage(text= '請問您是哪一方？1(進攻)，0(防守)')
             line_bot_api.reply_message(event.reply_token, text_message)
             reply_msg = ''
+            return reply_msg
     
     if mode == 'search':
         enemy = search_battle_processing(pre_img)
@@ -239,7 +234,7 @@ def handle_group_image_message(event):
                 reply_img = create_record_img(record, good, bad)
                 # url = upload_album_image(reply_img)
                 # url = get_arena_solutions_image(reply_img)
-                url = test_nacx_image(reply_img)
+                url = get_nacx_image(reply_img)
                 return url
             else:
                 reply_msg = '此對戰紀錄不存在'

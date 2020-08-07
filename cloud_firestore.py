@@ -18,9 +18,8 @@ firebase_admin.initialize_app(cred, {
 db = firestore.client()
 
 def create_line_user(name, group_id, user_id):
-    # print('create_line_user')
-    initial_score = 5
-    
+
+    initial_score = 5    
     doc_ref = db.collection("line_user")
     keys = ['name', 'group_id', 'user_id', 'data', 'group_data', 'group_notes', 'score', 'search_self_record']
     values =[name, [], user_id, {}, {}, {}, initial_score, False]
@@ -29,7 +28,6 @@ def create_line_user(name, group_id, user_id):
 
 
 def delete_line_user(user_id):
-    # print('delete_line_user')
 
     doc_ref = db.collection("arena_record")
     results = doc_ref.where('provider','array_contains', user_id).stream()
@@ -47,7 +45,6 @@ def delete_line_user(user_id):
         doc.reference.delete()
 
 def update_line_user_data(user_id, data_id, win):
-    # print('update_line_user_data')
     
     status = ''
     doc_ref = db.collection("line_user")
@@ -83,6 +80,7 @@ def update_line_user_data(user_id, data_id, win):
         return status
     
 def get_all_subscriber():
+    
     user = []
     doc_ref = db.collection('news_subscriber')
     results = doc_ref.stream()
@@ -167,7 +165,6 @@ def update_line_group(group_id, user_id, user_name):
 
 def delete_line_group_member(group_id, user_id):
 
-    group_id = 'C1f08f2cc641df24f803b133691e46e92'
     doc_ref = db.collection("line_group")
     results = doc_ref.where('group_id','==', group_id).stream()
     data = {}
@@ -300,7 +297,6 @@ def find_arena_record(our, enemy, win, provider):
 def search_arena_record(enemy, user_id):
     
     way = 'global'
-
     doc_ref = db.collection("line_user")
     results = doc_ref.where('user_id','==', user_id).stream()
     data = {}
@@ -309,18 +305,14 @@ def search_arena_record(enemy, user_id):
         if data['search_self_record'] == True:
             way = 'local'
 
-    # print('way = ', way)
     doc_ref = db.collection('arena_record')
     results = doc_ref.where('def', '==', enemy).stream()
 
-    record = []
-    good = []
-    bad = []
+    record, good, bad = [], [], []
     find = False
     for item in results:
         find = True
         data = item.to_dict()
-        # print('data =', data)
         try:
             if way == 'global':
                 record.append(data['atk'])
@@ -333,22 +325,20 @@ def search_arena_record(enemy, user_id):
                 bad.append(data['bad'])
         except KeyError:
             print('')
-
         
     return record, good, bad
 
 
 def sort_arena_record(record, good, bad):
+    
     records = []
     for i in range(len(record)):
-        score = int(good[i]) - 2*int(bad[i])
+        score = int(good[i]) - 2 * int(bad[i])
         records.append([record[i], good[i], bad[i], score])
 
     records= sorted(records, key = lambda s: s[3], reverse = True)
 
-    record = []
-    good = []
-    bad = []
+    record, good, bad = [], [], []
     for i in range(len(records)):
         record.append(records[i][0])
         good.append(records[i][1])
@@ -398,7 +388,6 @@ def update_group_arena_record(data_id, data):
 
 
 def find_group_arena_record(our, enemy, win, group_id):
-    # print('find_group_arena_record')
     
     status = ''
     ISOTIMEFORMAT = '%Y-%m-%d %H:%M:%S'
@@ -411,7 +400,6 @@ def find_group_arena_record(our, enemy, win, group_id):
     find = False
     for item in results:
         find = True
-        # print('find =', find)
         data_id = item.id
         data = item.to_dict()
         if win == True:
@@ -436,9 +424,7 @@ def search_group_arena_record(enemy, group_id):
     doc_ref = db.collection('group_arena_record')
     results = doc_ref.where('def', '==', enemy).where('group_id', '==', group_id).stream()
 
-    record = []
-    good = []
-    bad = []
+    record, good, bad = [], [], []
     find = False
     for item in results:
         find = True

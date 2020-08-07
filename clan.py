@@ -50,6 +50,7 @@ def get_clan_days():
     return day
 
 def clan_period():
+    
     return True
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
     

@@ -21,7 +21,7 @@ album = {'開車':'RlsqLO5', '表情包':'pLG8EmZ', '聯盟戰':'Ft0fvCO',
 def get_album_image(key):
 
     images = client.get_album_images(album[key])
-    num = random.randint(0,len(images)-1)
+    num = random.randint(0, len(images) - 1)
     url = images[num].link
     return url
 
@@ -38,7 +38,6 @@ def get_arena_solutions_image(image):
 
     path = './image/search.jpg'
     cv2.imwrite(path, image)
-
     with open(path, "rb") as file:
         url = 'https://api.imgbb.com/1/upload'
         payload = {
@@ -54,15 +53,13 @@ def get_arena_solutions_image(image):
     return url
 
 
-def test_nacx_image(image):
+def get_nacx_image(image):
 
     path = './image/search.jpg'
     cv2.imwrite(path, image)
-
     file = {'image':('image.jpg', open(path, 'rb'), "multipart/form-data")}
     request = requests.post('https://api.na.cx/upload', files=file)
     
     res = request.json()
-
     if res.get('status') == 200:
         return res.get('url')

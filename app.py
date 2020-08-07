@@ -38,9 +38,9 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 
-
 @app.route("/callback", methods=['POST'])
 def callback():
+
     # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
 
@@ -60,6 +60,7 @@ def callback():
 
 @app.route('/notify', methods=['GET'])
 def notify():
+
     token = request.args.get('code')
     user_id = request.args.get('state')
     response = get_line_notify_token(token, user_id)
@@ -70,6 +71,13 @@ def notify():
         reply_msg = jsonify({'message': response['message']})
 
     return reply_msg
+
+
+def is_reply_img_url(reply_msg):
+
+    if 'https:' == reply_msg[0:6]:
+        return True
+    return False
 
 
 @handler.add(PostbackEvent)
@@ -100,6 +108,7 @@ def handle_follow(event):
 
 
 def get_group_summary(group_id):
+
     headers = {"content-type": "application/json; charset=UTF-8",'Authorization':'Bearer {}'.format(config.get('line-bot', 'channel_access_token'))}
     url = 'https://api.line.me/v2/bot/group/' + group_id + '/summary'
     response = requests.get(url, headers=headers)
@@ -115,24 +124,11 @@ def handle_join(event):
     response = get_group_summary(group_id)
     print('group_id = ', group_id)
 
-    try:
-        karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92', 'C8c5635612e8d8b6856f805b7522a56f0', 'C6c42bc1911917f460609c6bfe5b2c6ff'
-                        ,'Cdf1027c25ba50ddd3f71fef81ed5fb59']
-        karyl_group.index(group_id)
-    except ValueError:
-        reply_msg = '此群組並非凱留水球噠噠噠群組，無法使用群組功能。'
-        reply_msg += '\n若想使用群組功能請聯絡開發者'
-        reply_msg += '\nEmail: r22742557@gmail.com'
-        reply_msg += '\nLine: robert122'
-        send_msg = TextSendMessage(text= reply_msg )
-        line_bot_api.reply_message(event.reply_token, send_msg)
-        line_bot_api.leave_group(group_id)
-
     group_name = response['groupName']
     create_line_group(group_name, group_id)
 
     reply_msg = '真拿你們沒辦法 只有你們太不可靠了 我也加入' + group_name + '吧！要好好感謝我喔☆'
-    line_bot_api.reply_message(event.reply_token, TextMessage(text=reply_msg))
+    line_bot_api.reply_message(event.reply_token, TextMessage(text = reply_msg))
 
 
 @handler.add(MemberJoinedEvent)
@@ -145,7 +141,7 @@ def handle_join(event):
     name = group_profile.display_name
 
     reply_msg = name + "，你就是我新的身體嗎?"
-    line_bot_api.reply_message(event.reply_token, TextMessage(text=reply_msg))
+    line_bot_api.reply_message(event.reply_token, TextMessage(text = reply_msg))
 
 
 @handler.add(MemberLeftEvent)
@@ -161,7 +157,7 @@ def handle_join(event):
     # print('group = ', event.source.group_id)
     # print('left member = ', event.left.members[0])
     # reply_msg = "我的身體怎麼不見了....?"
-    # line_bot_api.push_message(group_id, TextSendMessage(text=reply_msg))
+    # line_bot_api.push_message(group_id, TextSendMessage(text = reply_msg))
     # print("JoinEvent =", MemberLeftEvent)
 
 
@@ -206,7 +202,7 @@ def handle_message(event):
         bank['footer']['contents'][0]['action']['uri'] = url
         data['contents'].append(bank)
 
-    send_msg = FlexSendMessage(alt_text='振興三倍券', contents=data)
+    send_msg = FlexSendMessage(alt_text = '振興三倍券', contents = data)
     line_bot_api.reply_message(event.reply_token, send_msg)
 
     # send_msg = TextSendMessage(text= reply_msg )
@@ -223,8 +219,8 @@ def handle_message(event):
     elif msg_source == 'user':
         reply_msg = handle_user_image_message(event)
 
-    if 'https:' == reply_msg[0:6]:
-        send_msg = ImageSendMessage(original_content_url=reply_msg, preview_image_url=reply_msg)
+    if is_reply_img_url(reply_msg):
+        send_msg = ImageSendMessage(original_content_url = reply_msg, preview_image_url = reply_msg)
         line_bot_api.reply_message(event.reply_token, send_msg)
     elif reply_msg != '':
         send_msg = TextSendMessage(text= reply_msg )
@@ -245,8 +241,8 @@ def handle_message(event):
     else:
         reply_msg = handle_room_text_message(event)
    
-    if 'https:' == reply_msg[0:6]:
-        send_msg = ImageSendMessage(original_content_url=reply_msg, preview_image_url=reply_msg)
+    if is_reply_img_url(reply_msg):
+        send_msg = ImageSendMessage(original_content_url = reply_msg, preview_image_url = reply_msg)
         line_bot_api.reply_message(event.reply_token, send_msg)
     elif reply_msg != '':
         send_msg = TextSendMessage(text= reply_msg )
@@ -255,6 +251,6 @@ def handle_message(event):
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port = port)
     # app.debug = True
     # app.run()
