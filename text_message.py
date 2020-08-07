@@ -350,6 +350,7 @@ def handle_group_text_message(event):
                 return reply_msg
 
             reply_msg = clan_group_find_str_processing(group_id, user_id, user_name, msg)
+        return reply_msg
 
     if '#' == msg[0]:
         try:
@@ -377,6 +378,7 @@ def handle_group_text_message(event):
         except KeyError:
             reply_msg = user_name + '，你非戰隊成員，請先加入戰隊戰。'
 
+        return reply_msg
     reply_msg = handle_key_message(event)
     return reply_msg
 
