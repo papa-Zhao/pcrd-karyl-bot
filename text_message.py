@@ -240,6 +240,7 @@ def handle_group_upload(group_id, user_id, msg):
 
 def handle_group_3v3_upload(group_id, user_id, msg):
     
+    reply_msg = '時效已到期'
     key = group_id + user_id
     count = r.get(key + 'count')
     
@@ -268,10 +269,6 @@ def handle_group_3v3_upload(group_id, user_id, msg):
                 win = True
             else:
                 win = False
-
-        if our == [] or enemy == []:
-            reply_msg = '時效已到期'
-            return reply_msg
         
         find_status = find_group_arena_record(our, enemy, win, group_id)
         if find_status == 'success':
