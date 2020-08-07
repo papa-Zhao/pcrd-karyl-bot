@@ -167,7 +167,6 @@ def handle_user_text_message(event):
     msg = strQ2B(msg)
     if msg == '進攻' or msg == MsgType.Atk or msg == '防守' or msg == MsgType.Def:
         reply_msg = handle_user_arena_text_message(user_id, msg)
-        print('reply_msg=', reply_msg)
         return reply_msg
 
     if '!' == msg[0]:
@@ -242,7 +241,6 @@ def handle_group_3v3_upload(group_id, user_id, msg):
 
     key = group_id + user_id
     count = r.get(key + 'count')
-
     if not count:
         reply_msg = '時效已到期'
         return reply_msg
@@ -295,8 +293,7 @@ def handle_group_arena_text_message(group_id, user_id, msg):
         reply_msg = handle_group_upload(group_id, user_id, msg)
     if mode == '3v3':
         reply_msg = handle_group_3v3_upload(group_id, user_id, msg)
-    
-    print('reply_msg=', reply_msg)
+
     return reply_msg
 
 def get_group_msg_info(event):

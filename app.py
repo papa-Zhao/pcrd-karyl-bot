@@ -242,7 +242,8 @@ def handle_message(event):
         reply_msg = handle_user_text_message(event)
     else:
         reply_msg = handle_room_text_message(event)
-   
+    
+    print('reply_msg=', reply_msg)
     if is_reply_img_url(reply_msg):
         send_msg = ImageSendMessage(original_content_url = reply_msg, preview_image_url = reply_msg)
         line_bot_api.reply_message(event.reply_token, send_msg)
