@@ -215,8 +215,8 @@ def handle_group_image_message(event):
             for record in range(len(win)):
                 r.set(key + 'win' + str(record), str(win[record]), ex=10)
 
-            r.set(key + 'status', 'True', ex = 10)
-            r.set(key + 'mode', '3v3', ex = 10)
+            r.set(key + 'status', 'True')
+            r.set(key + 'mode', '3v3')
             r.set(key + 'count', str(len(win)), ex = 10)
 
             text_message = TextSendMessage(text= '請問您是哪一方？1(進攻)，0(防守)')
