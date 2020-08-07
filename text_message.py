@@ -239,11 +239,14 @@ def handle_group_upload(group_id, user_id, msg):
 
 
 def handle_group_3v3_upload(group_id, user_id, msg):
-    print('handle_group_3v3_upload')
-    reply_msg = '時效已到期'
+
     key = group_id + user_id
     count = r.get(key + 'count')
-    
+
+    if not count:
+        reply_msg = '時效已到期'
+        return reply_msg
+
     for record in range(int(count)):
         redis_our = r.lrange(key + 'our' + str(record), 0, -1)
         redis_enemy = r.lrange(key + 'enemy' + str(record), 0, -1)
@@ -283,13 +286,11 @@ def handle_group_arena_text_message(group_id, user_id, msg):
     key = group_id + user_id
     status = r.get(key + 'status')
     r.delete(key + 'status')
-    print('status=', status)
     if status != 'True':
         return reply_msg
 
     mode = r.get(key + 'mode')
     r.delete(key + 'mode')
-    print('mode=', mode)
     if mode == 'Upload':
         reply_msg = handle_group_upload(group_id, user_id, msg)
     if mode == '3v3':
