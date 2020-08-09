@@ -350,6 +350,7 @@ def handle_group_text_message(event):
                 return reply_msg
 
             reply_msg = clan_group_find_str_processing(group_id, user_id, user_name, msg)
+        
         return reply_msg
 
     if '#' == msg[0]:
@@ -363,7 +364,6 @@ def handle_group_text_message(event):
         group_member = get_group_member(group_id)
         try:
             group_member[user_name]
-
             if clan_period():
                 msg = msg[1:]
                 lock = redis_lock.Lock(r, 'clan_sheet', id = user_id)
@@ -379,6 +379,7 @@ def handle_group_text_message(event):
             reply_msg = user_name + '，你非戰隊成員，請先加入戰隊戰。'
 
         return reply_msg
+
     reply_msg = handle_key_message(event)
     return reply_msg
 
