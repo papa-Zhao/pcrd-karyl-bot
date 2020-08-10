@@ -392,8 +392,18 @@ def handle_room_text_message(event):
 
 def handle_key_message(event):
 
-    msg, user_id, user_name = get_user_text_msg_info(event)
-    msg = event.message.text
+    if event.source.type == 'group':
+        msg, group_id, user_id, user_name  = get_group_msg_info(event)
+    if event.source.type == 'user':
+        msg, user_id, user_name = get_user_text_msg_info(event)
+    if event.source.type == 'room':
+        room_id = event.source.room_id
+        user_id = event.source.user_id
+        profile = line_bot_api.get_room_member_profile(room_id, user_id)
+        user_name = profile.display_name
+
+    
+    # msg = event.message.text
     image_key = ['街頭霸王', '開車', '表情包', '聯盟戰', '可愛', '抽卡', '吸貓']
     reply_msg = ''
 
