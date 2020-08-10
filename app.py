@@ -75,6 +75,8 @@ def notify():
 
 def is_reply_img_url(reply_msg):
     
+    if not reply_msg:
+        return False
     if '' == reply_msg:
         return False
     if 'https:' == reply_msg[0:6]:

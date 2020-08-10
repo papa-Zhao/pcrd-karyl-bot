@@ -341,6 +341,10 @@ def handle_group_text_message(event):
         msg = msg[1:]
         if '陣容: ' in msg:
             reply_msg = handle_group_text_search(group_id, msg)
+        elif msg == '台聞':
+            reply_msg = scrape_pcrd_sonet()
+        elif msg == '日聞':
+            reply_msg = scrape_pcrd_cygame()
         else:
             try:
                 karyl_group = ['C423cd7dee7263b3a2db0e06ae06d095e', 'C1f08f2cc641df24f803b133691e46e92']
