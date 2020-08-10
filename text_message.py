@@ -434,3 +434,5 @@ def handle_key_message(event):
         if sticker in msg:
             url = get_key_sticker(index)
             return url
+
+    return reply_msg
