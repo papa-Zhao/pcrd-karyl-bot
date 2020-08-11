@@ -342,7 +342,7 @@ def handle_group_text_search(group_id, msg):
 def handle_group_text_message(event):
 
     reply_msg = ''
-    msg, group_id, user_id, user_name = get_group_msg_info(event)
+    msg, group_id, user_id, user_name = get_group_text_msg_info(event)
 
     msg = strQ2B(msg)
     if msg == '進攻' or msg == '1' or msg == '防守' or msg == '0':
