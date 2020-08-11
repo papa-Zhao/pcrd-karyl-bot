@@ -33,24 +33,14 @@ handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
 # r = redis.StrictRedis(decode_responses=True)
 
-def get_user_text_msg_info(event):
-
-    msg = event.message.text
-    user_id = event.source.user_id
-    profile = line_bot_api.get_profile(user_id)
-    user_name = profile.display_name
-
-    return msg, user_id, user_name 
-
-
 class StrEnum(str, enum.Enum):
      pass
 class MsgType(StrEnum):
     Atk = '1'
     Def = '0'
 
-
 def strQ2B(text):
+
     ss = []
     for s in text:
         string = ''
@@ -64,7 +54,39 @@ def strQ2B(text):
                 inside_code -= 65248
             string += chr(inside_code)
         ss.append(string)
+        
     return ''.join(ss)
+
+
+def get_user_text_msg_info(event):
+
+    msg = event.message.text
+    user_id = event.source.user_id
+    profile = line_bot_api.get_profile(user_id)
+    user_name = profile.display_name
+
+    return msg, user_id, user_name 
+
+
+def get_group_text_msg_info(event):
+
+    msg = event.message.text
+    group_id = event.source.group_id
+    user_id = event.source.user_id
+    group_profile = line_bot_api.get_group_member_profile(group_id, user_id)
+    user_name = group_profile.display_name
+
+    return msg, group_id, user_id, user_name 
+
+
+def get_room_text_msg_info(event):
+
+    msg = event.message.text
+    room_id = event.source.room_id
+    user_id = event.source.user_id
+    profile = line_bot_api.get_room_member_profile(room_id, user_id)
+    user_name = profile.display_name
+    return msg, room_id, user_id, user_name
 
 
 def handle_user_arena_text_message(user_id, msg):
@@ -296,16 +318,6 @@ def handle_group_arena_text_message(group_id, user_id, msg):
 
     return reply_msg
 
-def get_group_msg_info(event):
-
-    msg = event.message.text
-    group_id = event.source.group_id
-    user_id = event.source.user_id
-    group_profile = line_bot_api.get_group_member_profile(group_id, user_id)
-    user_name = group_profile.display_name
-
-    return msg, group_id, user_id, user_name 
-
 
 def handle_group_text_search(group_id, msg):
 
@@ -397,16 +409,11 @@ def handle_room_text_message(event):
 def handle_key_message(event):
 
     if event.source.type == 'group':
-        msg, group_id, user_id, user_name  = get_group_msg_info(event)
+        msg, group_id, user_id, user_name  = get_group_text_msg_info(event)
     if event.source.type == 'user':
         msg, user_id, user_name = get_user_text_msg_info(event)
     if event.source.type == 'room':
-        msg = event.message.text
-        room_id = event.source.room_id
-        user_id = event.source.user_id
-        profile = line_bot_api.get_room_member_profile(room_id, user_id)
-        user_name = profile.display_name
-
+        msg, room_id, user_id, user_name = get_room_text_msg_info(event)
     
     # msg = event.message.text
     image_key = ['街頭霸王', '開車', '表情包', '聯盟戰', '可愛', '抽卡', '吸貓']

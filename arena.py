@@ -120,21 +120,21 @@ def battle_result(img, mode):
 
     result = None
     if mode == 'upload':
-        win_template = cv2.imread('./icon/win.jpg', cv2.IMREAD_GRAYSCALE)
+        win_template = cv2.imread('./icon/object/win.jpg', cv2.IMREAD_GRAYSCALE)
     elif mode == 'friend_upload':
-        win_template = cv2.imread('./icon/friend_win.jpg', cv2.IMREAD_GRAYSCALE)
+        win_template = cv2.imread('./icon/object/friend_win.jpg', cv2.IMREAD_GRAYSCALE)
     elif mode == '3v3':
-        win_template = cv2.imread('./icon/3v3_win.jpg', cv2.IMREAD_GRAYSCALE)
+        win_template = cv2.imread('./icon/object/3v3_win.jpg', cv2.IMREAD_GRAYSCALE)
     
     win_res = cv2.matchTemplate(win_template, img, cv2.TM_SQDIFF)
     win_min_val, max_val, win_min_loc, max_loc = cv2.minMaxLoc(win_res)
     
     if mode == 'upload':
-        lose_template = cv2.imread('./icon/lose.jpg', cv2.IMREAD_GRAYSCALE)
+        lose_template = cv2.imread('./icon/object/lose.jpg', cv2.IMREAD_GRAYSCALE)
     elif mode == 'friend_upload':
-        lose_template = cv2.imread('./icon/friend_lose.jpg', cv2.IMREAD_GRAYSCALE)
+        lose_template = cv2.imread('./icon/object/friend_lose.jpg', cv2.IMREAD_GRAYSCALE)
     elif mode == '3v3':
-        lose_template = cv2.imread('./icon/3v3_lose.jpg', cv2.IMREAD_GRAYSCALE)
+        lose_template = cv2.imread('./icon/object/3v3_lose.jpg', cv2.IMREAD_GRAYSCALE)
         
     lose_res = cv2.matchTemplate(lose_template, img, cv2.TM_SQDIFF)
     lose_min_val, max_val, lose_min_loc, max_loc = cv2.minMaxLoc(lose_res)
@@ -154,7 +154,7 @@ def decide_search_or_3v3(img):
     
     img =  cv2.resize(img, (900, 300), interpolation=cv2.INTER_CUBIC)
     result = None
-    state_all = ['./icon/3v3.jpg', './icon/search.jpg']
+    state_all = ['./icon/object/3v3.jpg', './icon/object/3v3_japan.jpg', './icon/object/search.jpg']
     
     min = 1e10
     loc = None
@@ -169,14 +169,14 @@ def decide_search_or_3v3(img):
             index = i
             min = min_val
 
-    state = ['3v3', 'search']
+    state = ['3v3', '3v3', 'search']
     return state[index]
 
 
 def decide_where(img):
     
     result = None
-    region_all = ['./icon/taiwan.png', './icon/china.png', './icon/japan.png']
+    region_all = ['./icon/object/taiwan.png', './icon/object/china.png', './icon/object/japan.png']
     min = sys.maxsize
     loc = None
     index = None
