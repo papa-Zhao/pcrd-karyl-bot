@@ -199,6 +199,16 @@ def handle_group_image_message(event):
         our, enemy, win = upload_3v3_battle_processing(pre_img)
         reply_msg = get_3v3_record_msg(our, enemy, win)
 
+        status = get_group_arena_utmost_star(group_id)
+        if status == True:
+            for num in range(len(our)):
+                print(our[num])
+                print(enemy[num])
+                our[num] = change_character_to_6x(our[num])
+                enemy[num] = change_character_to_6x(enemy[num])
+                print(our[num])
+                print(enemy[num])
+
         status = False
         for num in range(len(our)):
             status = confirm_record_success(our[num], enemy[num], mode)

@@ -347,9 +347,9 @@ def get_group_character_star(group_id, msg):
     if not status:
         reply_msg = ''
     if status == True:
-        reply_msg = '當前角色最高星數為六星'
+        reply_msg = '當前角色最高星數為: 六星'
     else:
-        reply_msg = '當前角色最高星數為五星'
+        reply_msg = '當前角色最高星數為: 五星'
 
     return reply_msg
 

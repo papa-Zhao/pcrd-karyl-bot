@@ -126,8 +126,8 @@ def update_user_arena_database(user_id, status):
 def create_line_group(group_name, group_id):
 
     doc_ref = db.collection("line_group")
-    keys = ['group_name', 'group_id', 'group_admin', 'group_member', 'data', 'sheet_url']
-    values =[group_name, group_id, {}, {}, {},'']
+    keys = ['group_name', 'group_id', 'group_admin', 'group_member', 'data', 'is_char_utmost_6x', 'sheet_url']
+    values =[group_name, group_id, {}, {}, {}, True, '']
     group = dict(zip(keys, values))
     doc_ref.add(group)
 
