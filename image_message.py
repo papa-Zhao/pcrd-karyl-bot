@@ -158,7 +158,15 @@ def handle_group_image_message(event):
     if mode == 'upload' or mode == 'friend_upload':
         region = decide_where(pre_img)
         our, enemy, win = upload_battle_processing(pre_img, region, mode)
-
+        # print('our = ', our)
+        # print('enemy = ', enemy)
+        status = get_group_arena_utmost_star(group_id)
+        if status == True:
+            our = change_character_to_6x(our)
+            enemy = change_character_to_6x(enemy)
+            # print('our = ', our)
+            # print('enemy = ', enemy)
+            
         status = confirm_record_success(our, enemy, mode)
         if status == True:
             if mode == 'friend_upload':
@@ -226,6 +234,12 @@ def handle_group_image_message(event):
     
     if mode == 'search':
         enemy = search_battle_processing(pre_img)
+        # print('enemy = ', enemy)
+        status = get_group_arena_utmost_star(group_id)
+        if status == True:
+            enemy = change_character_to_6x(enemy)
+            # print('enemy = ', enemy)
+
         status = confirm_record_success([], enemy, mode)
         if status == True:
             record, good, bad = search_group_arena_record(enemy, group_id)

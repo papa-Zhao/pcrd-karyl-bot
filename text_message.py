@@ -159,7 +159,7 @@ def user_find_str_processing(user_id, msg):
             return reply_msg
 
     if '查詢方法' == msg:
-        status = get_user_database(user_id)
+        status = get_user_arena_database(user_id)
         if status == True:
             method = '個人資料庫'
         else:
@@ -175,7 +175,7 @@ def user_find_str_processing(user_id, msg):
         else:
             reply_msg = '輸入格式錯誤，請重新輸入。'
             return reply_msg
-        update_user_database(user_id, status)
+        update_user_arena_database(user_id, status)
         reply_msg = '已更改你的作業查詢方法為: ' + msg + '資料庫'
 
     return reply_msg
@@ -339,6 +339,37 @@ def handle_group_text_search(group_id, msg):
         return reply_msg
 
 
+def get_group_character_star(group_id, msg):
+
+    reply_msg = ''
+    msg = msg.replace('查詢星數', '')
+    status = get_group_arena_utmost_star(group_id)
+    if not status:
+        reply_msg = ''
+    if status == True:
+        reply_msg = '當前角色最高星數為六星'
+    else:
+        reply_msg = '當前角色最高星數為五星'
+
+    return reply_msg
+
+
+def handle_group_character_star(group_id, msg):
+
+    reply_msg = ''
+    msg = msg.replace('星數: ', '')
+    if msg == '五星':
+        status = False
+    elif msg == '六星':
+        status = True
+    else:
+        reply_msg = '輸入格式錯誤，請重新輸入。'
+        return reply_msg
+    update_group_arena_utmost_star(group_id, status)
+    reply_msg = '已更改群組的資料最高星數為: ' + msg
+
+    return reply_msg
+
 def handle_group_text_message(event):
 
     reply_msg = ''
@@ -353,6 +384,10 @@ def handle_group_text_message(event):
         msg = msg[1:]
         if '陣容: ' in msg:
             reply_msg = handle_group_text_search(group_id, msg)
+        elif '查詢星數' == msg:
+            reply_msg = get_group_character_star(group_id, msg)
+        elif '星數: ' in msg:
+            reply_msg = handle_group_character_star(group_id, msg)
         elif msg == '台聞':
             reply_msg = scrape_pcrd_sonet()
         elif msg == '日聞':

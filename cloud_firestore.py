@@ -92,8 +92,28 @@ def get_all_subscriber():
     
     return user
 
+def get_group_arena_utmost_star(group_id):
 
-def update_user_database(user_id, status):
+    doc_ref = db.collection("line_group")
+    results = doc_ref.where('group_id', '==', group_id).stream()
+    status = None
+    for item in results:
+        data = item.to_dict()
+        status = data['is_char_utmost_6x']
+
+    return status
+
+
+def update_group_arena_utmost_star(group_id, status):
+
+    doc_ref = db.collection("line_group")
+    results = doc_ref.where('group_id', '==', group_id).stream()
+    for item in results:
+        doc = doc_ref.document(item.id)
+        field_updates = {'is_char_utmost_6x': status}
+        doc.update(field_updates)
+
+def update_user_arena_database(user_id, status):
     
     doc_ref = db.collection("line_user")
     results = doc_ref.where('user_id', '==', user_id).stream()
@@ -214,7 +234,7 @@ def get_user_info(user_id):
         data = item.to_dict()
     return data
 
-def get_user_database(user_id):
+def get_user_arena_database(user_id):
 
     doc_ref = db.collection("line_user")
     results = doc_ref.where('user_id','==', user_id).stream()
