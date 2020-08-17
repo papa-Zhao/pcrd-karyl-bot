@@ -1,6 +1,6 @@
 # PCRD_line_bot
 
-ADd friend
+Add friend
 https://lin.ee/1YzggBX
 
 Discord:
