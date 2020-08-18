@@ -202,12 +202,12 @@ def handle_group_image_message(event):
         status = get_group_arena_utmost_star(group_id)
         if status == True:
             for num in range(len(our)):
-                print(our[num])
-                print(enemy[num])
+                # print(our[num])
+                # print(enemy[num])
                 our[num] = change_character_to_6x(our[num])
                 enemy[num] = change_character_to_6x(enemy[num])
-                print(our[num])
-                print(enemy[num])
+                # print(our[num])
+                # print(enemy[num])
 
         status = False
         for num in range(len(our)):
