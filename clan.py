@@ -18,8 +18,8 @@ import sys
 sys.path.append('./bin')
 import time
 
-# r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
-r = redis.StrictRedis(decode_responses=True)
+r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
+# r = redis.StrictRedis(decode_responses=True)
 
 boss_list = ['一王', '二王', '三王', '四王', '五王']
 boss_blood_list = [[600, 600, 700, 1500], [800, 800, 900, 1600], [1000, 1000, 1300, 1800], [1200, 1200, 1500, 1900], [1500, 1500, 2000, 2000]]

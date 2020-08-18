@@ -30,8 +30,8 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 
-# r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
-r = redis.StrictRedis(decode_responses=True)
+r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
+# r = redis.StrictRedis(decode_responses=True)
 
 class StrEnum(str, enum.Enum):
      pass
