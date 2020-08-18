@@ -5,6 +5,11 @@ import sys
 
 from collections import Counter
 
+from imgur import *
+from app import *
+from arena import *
+from cloud_firestore import *
+
 # Character Image
 # redive.estertion.win
 # Sources: https://pcrdfans.com/static/sprites/charas.png?t=20200630
@@ -105,6 +110,22 @@ def change_character_to_6x(team):
             team[i] = character_5x_to_6x[team[i]]
 
     return team
+
+
+def get_user_search_record(enemy, user_id):
+
+    record, good, bad, provide = search_arena_record(enemy, user_id)
+    record, good, bad, provide = sort_user_arena_record(record, good, bad, provide)
+    if len(record) > 0:
+        reply_img = create_user_record_img(record, good, bad, provide)
+        # url = upload_album_image(reply_img)
+        # url = get_arena_solutions_image(reply_img)
+        # url = test_kraken_image(reply_img)
+        url = get_nacx_image(reply_img)
+        return url
+    else:
+        reply_msg = '此對戰紀錄不存在'
+        return reply_msg
 
 
 # Get Character ID
@@ -548,7 +569,63 @@ def confirm_record_success(our, enemy, mode):
         return False
 
 
-def create_record_img(record, good, bad):
+def create_user_record_img(record, good, bad, provide):
+    
+    len_record = len(record) if len(record) < 10 else 10
+    blank_image = np.zeros((len_record * 62, 550, 3), np.uint8)
+    blank_image.fill(255)
+    charas_all = ['./icon/charas.png', './icon/charas_a.png', './icon/charas6x.png']
+    
+    row, col = 0, 0
+    for i in range(len_record):
+        for j in range(len(record[0])):
+            icon = record[i][j]
+            division = 10000
+                
+            index = int(icon/division)-1
+            icon %= division
+            division = int(division/100)
+            pic_row = int(icon/division) * 62
+            pic_col = int(icon%division) * 62
+            charas = cv2.imread(charas_all[index])
+            char_pic = charas[pic_row:pic_row + 60, pic_col:pic_col + 60, :]
+
+            blank_image[row:row + 60, col:col + 60] = char_pic
+            col += 62
+
+        col += 10
+        row += 30
+        like = cv2.imread('./icon/like.png')
+        icon_size = like.shape[0]
+        like = like[:icon_size, :icon_size, :]
+        blank_image[row:row + icon_size, col:col + icon_size] = like
+        cv2.putText(blank_image, str(good[i]), (col + 40, row + 20), cv2.FONT_ITALIC, 0.75, (0, 0, 0), 2)
+
+        col += 100
+        dislike = cv2.imread('./icon/dislike.png')
+        icon_size = dislike.shape[0]
+        dislike = dislike[:icon_size, :icon_size, :]
+        blank_image[row:row+icon_size, col:col+icon_size] = dislike
+        cv2.putText(blank_image, str(bad[i]), (col + 40, row + 20), cv2.FONT_ITALIC, 0.75, (0, 0, 0), 2)
+
+        if provide[i] != None:
+            col += 80
+            if provide[i] == True:
+                icon = like
+            else:
+                icon = dislike
+            icon_size = icon.shape[0]
+            icon = icon[:icon_size, :icon_size, :]
+            blank_image[row:row+icon_size, col:col+icon_size] = icon
+
+
+        row += 32
+        col = 0
+    
+    return blank_image
+
+
+def create_group_record_img(record, good, bad):
     
     len_record = len(record) if len(record) < 10 else 10
     blank_image = np.zeros((len_record * 62, 530, 3), np.uint8)

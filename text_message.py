@@ -30,8 +30,8 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 
-r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
-# r = redis.StrictRedis(decode_responses=True)
+# r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
+r = redis.StrictRedis(decode_responses=True)
 
 class StrEnum(str, enum.Enum):
      pass
@@ -143,20 +143,12 @@ def user_find_str_processing(user_id, msg):
 
     if '陣容: ' in msg:
         msg = msg.replace('陣容: ', '')
-        reply_msg , enemy = nickname_search_arena_record(msg)
-        if reply_msg == 'True':
+        status , enemy = nickname_search_arena_record(msg)
+        if status == 'True':
             enemy = sort_character_loc(enemy)
-            record, good, bad = search_arena_record(enemy, user_id)
-            record, good, bad = sort_arena_record(record, good, bad)
-            if len(record) > 0:
-                reply_img = create_record_img(record, good, bad)
-                url = upload_album_image(reply_img)
-                return url
-            else:
-                reply_msg = '此對戰紀錄不存在'
-                return reply_msg
-        else:
-            return reply_msg
+            reply_msg = get_user_search_record(enemy, user_id)
+        
+        return reply_msg
 
     if '查詢方法' == msg:
         status = get_user_arena_database(user_id)
@@ -329,7 +321,7 @@ def handle_group_text_search(group_id, msg):
         record, good, bad = search_group_arena_record(enemy, group_id)
         record, good, bad = sort_arena_record(record, good, bad)
         if len(record) > 0:
-            reply_img = create_record_img(record, good, bad)
+            reply_img = create_group_record_img(record, good, bad)
             url = get_nacx_image(reply_img)
             return url
         else:

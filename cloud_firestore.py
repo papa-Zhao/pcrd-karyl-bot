@@ -328,7 +328,7 @@ def search_arena_record(enemy, user_id):
     doc_ref = db.collection('arena_record')
     results = doc_ref.where('def', '==', enemy).stream()
 
-    record, good, bad = [], [], []
+    record, good, bad, provide = [], [], [], []
     find = False
     for item in results:
         find = True
@@ -338,6 +338,10 @@ def search_arena_record(enemy, user_id):
                 record.append(data['atk'])
                 good.append(data['good'])
                 bad.append(data['bad'])
+                if user_id in data['provider']:
+                    provide.append(data['provider'][user_id])
+                else:
+                    provide.append(None)
             
             if way == 'local' and data['provider'][user_id] == True:
                 record.append(data['atk'])
@@ -346,7 +350,26 @@ def search_arena_record(enemy, user_id):
         except KeyError:
             print('')
         
-    return record, good, bad
+    return record, good, bad, provide
+
+
+def sort_user_arena_record(record, good, bad, provide):
+    
+    records = []
+    for i in range(len(record)):
+        score = int(good[i]) - 2 * int(bad[i])
+        records.append([record[i], good[i], bad[i], provide[i], score])
+
+    records= sorted(records, key = lambda s: s[4], reverse = True)
+
+    record, good, bad, provide = [], [], [], []
+    for i in range(len(records)):
+        record.append(records[i][0])
+        good.append(records[i][1])
+        bad.append(records[i][2])
+        provide.append(records[i][3])
+
+    return record, good, bad, provide
 
 
 def sort_arena_record(record, good, bad):

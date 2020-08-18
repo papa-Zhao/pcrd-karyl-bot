@@ -22,8 +22,8 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 
-r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
-# r = redis.StrictRedis(decode_responses=True)
+# r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
+r = redis.StrictRedis(decode_responses=True)
 
 
 def content_to_image(content):
@@ -116,23 +116,13 @@ def handle_user_image_message(event):
         reply_msg = get_3v3_record_msg(our, enemy, win)
     
     if mode == 'search':
+        reply_msg = '查詢失敗，圖片讀取錯誤。'
         enemy = search_battle_processing(pre_img)
         status = confirm_record_success([], enemy, mode)
         if status == True:
-            record, good, bad = search_arena_record(enemy, user_id)
-            record, good, bad = sort_arena_record(record, good, bad)
-            if len(record) > 0:
-                reply_img = create_record_img(record, good, bad)
-                # url = upload_album_image(reply_img)
-                # url = get_arena_solutions_image(reply_img)
-                # url = test_kraken_image(reply_img)
-                url = get_nacx_image(reply_img)
-                return url
-            else:
-                reply_msg = '此對戰紀錄不存在'
-                return reply_msg
-        else:
-            reply_msg = '查詢失敗，圖片讀取錯誤。'
+            reply_msg = get_user_search_record(enemy, user_id)
+        
+        return reply_msg
 
     return reply_msg
 
@@ -255,7 +245,7 @@ def handle_group_image_message(event):
             record, good, bad = search_group_arena_record(enemy, group_id)
             record, good, bad = sort_arena_record(record, good, bad)
             if len(record) > 0:
-                reply_img = create_record_img(record, good, bad)
+                reply_img = create_group_record_img(record, good, bad)
                 # url = upload_album_image(reply_img)
                 # url = get_arena_solutions_image(reply_img)
                 url = get_nacx_image(reply_img)
