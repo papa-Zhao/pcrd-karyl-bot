@@ -347,6 +347,7 @@ def search_arena_record(enemy, user_id):
                 record.append(data['atk'])
                 good.append(data['good'])
                 bad.append(data['bad'])
+                provide.append(None)
         except KeyError:
             print('')
         
