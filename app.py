@@ -244,8 +244,7 @@ def handle_message(event):
         reply_msg = handle_user_text_message(event)
     else:
         reply_msg = handle_room_text_message(event)
-    
-    # print('reply_msg=', reply_msg)
+
     if is_reply_img_url(reply_msg):
         send_msg = ImageSendMessage(original_content_url = reply_msg, preview_image_url = reply_msg)
         line_bot_api.reply_message(event.reply_token, send_msg)
@@ -255,7 +254,7 @@ def handle_message(event):
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port = port)
-    # app.debug = True
-    # app.run()
+    # port = int(os.environ.get('PORT', 5000))
+    # app.run(host='0.0.0.0', port = port)
+    app.debug = True
+    app.run()

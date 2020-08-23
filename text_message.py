@@ -30,8 +30,8 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 
-r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
-# r = redis.StrictRedis(decode_responses=True)
+# r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
+r = redis.StrictRedis(decode_responses=True)
 
 class StrEnum(str, enum.Enum):
      pass
@@ -410,7 +410,7 @@ def handle_group_text_message(event):
             if clan_period():
                 msg = msg[1:]
                 lock = redis_lock.Lock(r, 'clan_sheet', id = user_id)
-                redis_lock.reset_all(r)
+                # redis_lock.reset_all(r)
                 while lock.get_owner_id() == user_id or not lock.acquire(blocking = True, timeout = 10):
                     time.sleep(0.01)
                 print('Got Lock. name=', user_name)

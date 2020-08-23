@@ -18,9 +18,10 @@ import sys
 sys.path.append('./bin')
 import time
 
-r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
-# r = redis.StrictRedis(decode_responses=True)
+# r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
+r = redis.StrictRedis(decode_responses=True)
 
+number_list = ['一', '二', '三', '四', '五']
 boss_list = ['一王', '二王', '三王', '四王', '五王']
 boss_blood_list = [[600, 600, 700, 1500], [800, 800, 900, 1600], [1000, 1000, 1300, 1800], [1200, 1200, 1500, 1900], [1500, 1500, 2000, 2000]]
 boss_cycle_list = [1, 4, 11, 35]
@@ -29,7 +30,7 @@ boss_cycle_list = [1, 4, 11, 35]
 def clan_time_start():
 
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
-    start = datetime.strptime("2020-07-30 21:00:00", ISOTIMEFORMAT)
+    start = datetime.strptime("2020-08-24 21:00:00", ISOTIMEFORMAT)
 
     return start
 
@@ -216,6 +217,27 @@ def get_clan_atk_times(sh, status):
     return reply_msg
 
 
+def get_clan_boss_sign_up(sh, boss):
+
+    ws = sh.worksheet_by_title('報刀')
+    rows = ws.rows
+    name_list = []
+
+    for row in range(5, rows + 1):
+        user_info = ws.get_row(row)
+        if user_info[3] == boss:
+            name_list.append(user_info[0])
+    
+    if len(name_list) == 0:
+        reply_msg = '目前無人報名' + boss
+    else:
+        reply_msg = '目前報名' + boss + '的成員為:'
+        for name in name_list:
+            reply_msg += '\n' + name
+
+    return reply_msg
+
+
 def myAlign(string, length=0):
 	if length == 0:
 		return string
@@ -243,7 +265,7 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
     ############ Our Group function ############
     reply_msg = '指令錯誤，請再輸入一次！'
 
-    sh =initial_worksheet()
+    sh = initial_worksheet()
     ws = sh.worksheet_by_title('報刀')
 
     if msg == '台聞':
@@ -259,7 +281,7 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
 
             ws = sh.worksheet_by_title('報刀')
             rows = ws.rows
-            for row in range(5, rows):
+            for row in range(5, rows + 1):
                 user_info = ws.get_row(row)
                 # print(user_info)
                 reply_msg += '\n'
@@ -349,6 +371,18 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
             reply_msg = '目前無人掛樹'
         # print(reply_msg)
 
+    if '查' in msg:
+        msg = msg.replace('查', '')
+        try:
+            if msg in number_list:
+                boss_idx = number_list.index(msg)
+                msg = boss_list[boss_idx]
+            boss_list.index(msg)
+            reply_msg = get_clan_boss_sign_up(sh, msg)
+        except ValueError:
+            reply_msg = user_name + '，輸入boss錯誤，查詢失敗！'
+
+    """
     if '查刀' in msg:
         msg = msg.replace('查刀 ', '')
         try:
@@ -370,9 +404,9 @@ def clan_group_find_str_processing(group_id, user_id, user_name, msg):
             reply_msg = '目前還有' + msg + '刀的成員為:\n' + name_list
         except ValueError:
             reply_msg = user_name + '，輸入boss錯誤，查詢失敗！'
+    """
 
-    return reply_msg
-
+    return reply_msg 
 
 def search_user_permission(user):
 

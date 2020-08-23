@@ -22,8 +22,8 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 # Channel Secret
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 
-r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
-# r = redis.StrictRedis(decode_responses=True)
+# r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
+r = redis.StrictRedis(decode_responses=True)
 
 
 def content_to_image(content):
@@ -71,13 +71,14 @@ def handle_user_image_message(event):
         return reply_msg
 
     mode, pre_img = preprocessing(img)
+    print('mode=', mode)
     if mode == 'not record':
         return reply_msg
 
     if mode == 'upload' or mode == 'friend_upload':
         region = decide_where(pre_img)
         our, enemy, win = upload_battle_processing(pre_img, region, mode)
-
+        # print(our, enemy, win)
         status = confirm_record_success(our, enemy, mode)
         if status == True:
             if mode == 'friend_upload':
@@ -133,7 +134,7 @@ def handle_group_image_message(event):
     msg_id = event.message.id
     group_id = event.source.group_id
     user_id = event.source.user_id
-
+    print('')
     message_content = line_bot_api.get_message_content(msg_id)
     content = message_content.content
     img = content_to_image(content)
