@@ -18,8 +18,8 @@ import sys
 sys.path.append('./bin')
 import time
 
-# r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
-r = redis.StrictRedis(decode_responses=True)
+r = redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
+# r = redis.StrictRedis(decode_responses=True)
 
 number_list = ['一', '二', '三', '四', '五']
 boss_list = ['一王', '二王', '三王', '四王', '五王']
