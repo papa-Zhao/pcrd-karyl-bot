@@ -711,8 +711,6 @@ def confirm_atk_info(sh, name, complete):
         reply_msg = '，你並未有補償刀，報名失敗！'
         return reply_msg
 
-
-
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
     clan_start = clan_time_start()
     now = datetime.now().strftime(ISOTIMEFORMAT)
@@ -869,11 +867,12 @@ def delete_clan_record(sh, no_id, name, cycle, boss, damage, complete, kill):
 
 def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', damage='', status=''):
 
-    
+    find = False
     ws = sh.worksheet_by_title('報刀')
     cell_id = ws.find(name, matchCase=True)
     for i in range(len(cell_id)):
         if name == cell_id[i].value:
+            find = True
             cell_id = cell_id[i]
             break
 
@@ -882,7 +881,7 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
     if msg == '報名':
 
         reply_msg = '報名失敗，請再輸入一次！'
-        find = False
+
         if find == True:
             val = ws.get_value((cell_id.row, 4))
             
