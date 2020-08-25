@@ -416,7 +416,7 @@ def handle_group_text_message(event):
                 #    time.sleep(0.01)
                 print('Got Lock. name=', user_name)
                 reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
-                lock.release()
+                # lock.release()
             else:
                 reply_msg = '非戰隊戰期間，不開放此功能'
         except KeyError:
