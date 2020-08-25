@@ -411,7 +411,8 @@ def handle_group_text_message(event):
                 msg = msg[1:]
                 lock = redis_lock.Lock(r, 'clan_sheet', id = user_id)
                 # redis_lock.reset_all(r)
-                while lock.get_owner_id() == user_id or not lock.acquire(blocking = False):
+                # while lock.get_owner_id() == user_id or not lock.acquire(blocking = False):
+                while not lock.acquire(blocking = False):
                     time.sleep(0.01)
                 print('Got Lock. name=', user_name)
                 reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
