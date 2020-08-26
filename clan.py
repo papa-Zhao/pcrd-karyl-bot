@@ -428,15 +428,16 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
 
     sh = initial_worksheet()
     
+    """
     permission = search_user_permission(user_id)
-    
     admin_instruction = ['發送訊息:', '刪刀', '代刀', '代報名', '代取消', '設定周目', '設定boss', '設定BOSS', '設定完整刀', '設定補償刀', '出刀刀表重置', '報名刀表重置']
     if permission == False:
         for i in range(len(admin_instruction)):
             if admin_instruction[i] in msg:
                 reply_msg = user_name + '，你權限不符，無法使用此指令。'
                 return reply_msg
-    
+    """
+
     if '發送訊息:' in msg:   ###### Depreciated ######
         msg = msg.replace('發送訊息:', '')
         # multicast_group_to_user_info(group_id, msg)
@@ -867,7 +868,6 @@ def delete_clan_record(sh, no_id, name, cycle, boss, damage, complete, kill):
 
 def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', damage='', status=''):
 
-    find = False
     ws = sh.worksheet_by_title('報刀')
     cell_id = ws.find(name, matchCase=True)
     for i in range(len(cell_id)):
