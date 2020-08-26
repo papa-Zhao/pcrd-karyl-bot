@@ -867,7 +867,7 @@ def delete_clan_record(sh, no_id, name, cycle, boss, damage, complete, kill):
 
 def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', damage='', status=''):
 
-    
+    find = False
     ws = sh.worksheet_by_title('報刀')
     cell_id = ws.find(name, matchCase=True)
     for i in range(len(cell_id)):
