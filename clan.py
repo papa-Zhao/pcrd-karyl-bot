@@ -428,7 +428,6 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
 
     sh = initial_worksheet()
     
-    """
     permission = search_user_permission(user_id)
     admin_instruction = ['發送訊息:', '刪刀', '代刀', '代報名', '代取消', '設定周目', '設定boss', '設定BOSS', '設定完整刀', '設定補償刀', '出刀刀表重置', '報名刀表重置']
     if permission == False:
@@ -436,7 +435,6 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
             if admin_instruction[i] in msg:
                 reply_msg = user_name + '，你權限不符，無法使用此指令。'
                 return reply_msg
-    """
 
     if '發送訊息:' in msg:   ###### Depreciated ######
         msg = msg.replace('發送訊息:', '')
