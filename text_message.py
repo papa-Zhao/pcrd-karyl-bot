@@ -409,7 +409,7 @@ def handle_group_text_message(event):
             group_member[user_name]
             if clan_period():
                 msg = msg[1:]
-                # lock = redis_lock.Lock(r, 'clan_sheet')
+                lock = redis_lock.Lock(r, 'clan_sheet')
                 redis_lock.reset_all(r)
                 # while lock.get_owner_id() == user_id or not lock.acquire(blocking = False):
                 # print('Wait Lock. name=', user_name)
