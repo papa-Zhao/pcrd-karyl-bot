@@ -672,7 +672,7 @@ def create_group_record_img(record, good, bad):
 
 def nickname_search_arena_record(msg):
 
-    msg = msg.replace('#陣容查詢: ', '')
+    # msg = msg.replace('#陣容查詢: ', '')
     msgs = msg.split(' ')
     
     status = 'True'
@@ -682,7 +682,7 @@ def nickname_search_arena_record(msg):
             output.append(character_nickname[msg])
         
     except KeyError as e:
-        status = '關鍵字:%s 搜尋不到，請重新輸入!' %(e.args[0])
+        status = '關鍵字:%s 搜尋不到，請重新輸入!' % (e.args[0])
         # print('關鍵字:%s 搜尋不到，請重新輸入!' %(e.args[0]))
         
     return status, output

@@ -143,11 +143,13 @@ def user_find_str_processing(user_id, msg):
 
     if '陣容: ' in msg:
         msg = msg.replace('陣容: ', '')
-        status , enemy = nickname_search_arena_record(msg)
+        status, enemy = nickname_search_arena_record(msg)
         if status == 'True':
             enemy = sort_character_loc(enemy)
             reply_msg = get_user_search_record(enemy, user_id)
-        
+        else:
+            reply_msg = status
+            
         return reply_msg
 
     if '查詢方法' == msg:
