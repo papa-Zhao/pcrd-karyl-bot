@@ -134,7 +134,7 @@ def handle_group_image_message(event):
     msg_id = event.message.id
     group_id = event.source.group_id
     user_id = event.source.user_id
-    print('')
+    # print('')
     message_content = line_bot_api.get_message_content(msg_id)
     content = message_content.content
     img = content_to_image(content)
