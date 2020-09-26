@@ -546,6 +546,9 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
             msg = msg.split(' ')
             boss = msg[0]
             damage = msg[1]
+            if not damage.isdigit():
+                reply_msg = '傷害請輸入數字'
+                return reply_msg
             msg = '出刀'
             reply_msg = update_clan_sign_up(sh, group_id, msg, user_name, boss=boss, damage=damage, status = '出刀')
         except IndexError:
