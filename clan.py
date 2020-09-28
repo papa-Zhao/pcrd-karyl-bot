@@ -226,7 +226,7 @@ def get_clan_boss_sign_up(sh, boss):
     for row in range(5, rows + 1):
         user_info = ws.get_row(row)
         if user_info[3] == boss:
-            name_list.append(user_info[0], user_info[5])
+            name_list.append([user_info[0], user_info[5]])
     
     if len(name_list) == 0:
         reply_msg = '目前無人報名' + boss
