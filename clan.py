@@ -226,14 +226,14 @@ def get_clan_boss_sign_up(sh, boss):
     for row in range(5, rows + 1):
         user_info = ws.get_row(row)
         if user_info[3] == boss:
-            name_list.append(user_info[0])
+            name_list.append(user_info[0], user_info[5])
     
     if len(name_list) == 0:
         reply_msg = '目前無人報名' + boss
     else:
         reply_msg = '目前報名' + boss + '的成員為:'
-        for name in name_list:
-            reply_msg += '\n' + name
+        for name, atk in name_list:
+            reply_msg += '\n' + name + ': ' + atk
 
     return reply_msg
 
