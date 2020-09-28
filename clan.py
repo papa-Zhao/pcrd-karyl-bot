@@ -961,6 +961,7 @@ def update_clan_sign_up(sh, group_id, msg, name, cycle=0, boss='', complete='', 
             cycle = info[2]
             complete = info[5]
         else:
+            reply_msg = name + '請你報名後再出刀。\n'
             return reply_msg
 
         if boss not in info[3]:
