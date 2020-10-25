@@ -409,19 +409,21 @@ def handle_group_text_message(event):
         group_member = get_group_member(group_id)
         try:
             group_member[user_name]
-            if clan_period():
-                msg = msg[1:]
-                lock = redis_lock.Lock(r, 'clan_sheet')
-                redis_lock.reset_all(r)
-                # while lock.get_owner_id() == user_id or not lock.acquire(blocking = False):
-                # print('Wait Lock. name=', user_name)
-                while not lock.acquire(blocking = True, timeout = 4):
-                    time.sleep(0.01)
-                print('Got Lock. name=', user_name)
-                reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
-                lock.release()
-            else:
-                reply_msg = '非戰隊戰期間，不開放此功能'
+
+            msg = msg[1:]
+            # lock = redis_lock.Lock(r, 'clan_sheet')
+            # redis_lock.reset_all(r)
+            # while lock.get_owner_id() == user_id or not lock.acquire(blocking = False):
+            # print('Wait Lock. name=', user_name)
+            # while not lock.acquire(blocking = True, timeout = 4):
+            # #     time.sleep(0.01)
+            # print('Got Lock. name=', user_name)
+            reply_msg = clan_group_set_str_processing(group_id, user_id, user_name, msg)
+            # lock.release()
+
+            # if clan_period():
+            # else:
+            #     reply_msg = '非戰隊戰期間，不開放此功能'
         except KeyError:
             reply_msg = user_name + '，你非戰隊成員，請先加入戰隊戰。'
 
