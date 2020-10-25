@@ -561,7 +561,7 @@ def clan_group_set_str_processing(group_id, user_id, user_name, msg):
         msg = '取消'
         reply_msg = update_clan_sign_up(sh, group_id, msg, user_name)
 
-    if '報名刀表重置' == msg and permission:
+    if '報名刀表重置' == msg:
         reply_msg = initial_sign_up_list(sh)
         #print('報名刀表重置')
     elif '報名' in msg:
