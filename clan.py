@@ -30,14 +30,14 @@ boss_cycle_list = [1, 4, 11, 35]
 def clan_time_start():
 
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
-    start = datetime.strptime("2020-09-24 21:00:00", ISOTIMEFORMAT)
+    start = datetime.strptime("2020-10-25 21:00:00", ISOTIMEFORMAT)
 
     return start
 
 def clan_time_end():
 
     ISOTIMEFORMAT = "%Y-%m-%d %H:%M:%S"
-    end = datetime.strptime("2020-09-30 16:00:00", ISOTIMEFORMAT)
+    end = datetime.strptime("2020-10-30 16:00:00", ISOTIMEFORMAT)
 
     return end
 
