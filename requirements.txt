@@ -16,4 +16,4 @@ python-redis-lock
 random2
 redis
 requests
-setuptools==40.3.0
+setuptools==65.5.1
